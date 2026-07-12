@@ -1,0 +1,70 @@
+"""
+URL configuration for config project.
+"""
+from django.contrib import admin
+from django.urls import path, include
+from django.conf import settings
+from django.conf.urls.static import static
+from rest_framework.routers import DefaultRouter
+from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
+
+# Import views from our custom apps
+from users.views import RegisterView, UserMeView
+from articles.views import (
+    CategoryListView, TagListView, ArticleListView, ArticleDetailView,
+    CommentCreateView, ArticleCommentListView,
+    CMSArticleViewSet, CMSCategoryViewSet, CMSTagViewSet, CMSCommentViewSet
+)
+from ads.views import ActiveAdView, TrackAnalyticsView, CMSAdSlotViewSet
+from newsletter.views import SubscribeView, CMSSubscriberViewSet, CMSNewsletterCampaignViewSet
+from layout.views import PublicHomepageLayoutView, PublicSiteSettingView, CMSHomepageLayoutViewSet, CMSSiteSettingViewSet
+from media_library.views import CMSMediaAssetViewSet
+
+# Set up routers for CMS CRUD endpoints
+cms_router = DefaultRouter()
+cms_router.register(r'articles', CMSArticleViewSet, basename='cms-articles')
+cms_router.register(r'categories', CMSCategoryViewSet, basename='cms-categories')
+cms_router.register(r'tags', CMSTagViewSet, basename='cms-tags')
+cms_router.register(r'comments', CMSCommentViewSet, basename='cms-comments')
+cms_router.register(r'ads', CMSAdSlotViewSet, basename='cms-ads')
+cms_router.register(r'subscribers', CMSSubscriberViewSet, basename='cms-subscribers')
+cms_router.register(r'campaigns', CMSNewsletterCampaignViewSet, basename='cms-campaigns')
+cms_router.register(r'layout', CMSHomepageLayoutViewSet, basename='cms-layout')
+# Map site settings to a viewport that always fetches the singleton instance
+cms_router.register(r'settings', CMSSiteSettingViewSet, basename='cms-settings')
+cms_router.register(r'media', CMSMediaAssetViewSet, basename='cms-media')
+
+urlpatterns = [
+    path('admin/', admin.site.urls),
+    
+    # Auth endpoints
+    path('api/v1/auth/register/', RegisterView.as_view(), name='auth-register'),
+    path('api/v1/auth/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('api/v1/auth/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    path('api/v1/auth/me/', UserMeView.as_view(), name='auth-me'),
+
+    # Public Read endpoints
+    path('api/v1/categories/', CategoryListView.as_view(), name='public-categories'),
+    path('api/v1/tags/', TagListView.as_view(), name='public-tags'),
+    path('api/v1/articles/', ArticleListView.as_view(), name='public-articles'),
+    path('api/v1/articles/<slug:slug>/', ArticleDetailView.as_view(), name='public-article-detail'),
+    path('api/v1/articles/<slug:slug>/comments/', ArticleCommentListView.as_view(), name='public-article-comments'),
+    path('api/v1/articles/<slug:slug>/comments/create/', CommentCreateView.as_view(), name='public-create-comment'),
+    
+    # Ads & Analytics endpoints
+    path('api/v1/ads/<str:placement>/', ActiveAdView.as_view(), name='active-ad'),
+    path('api/v1/analytics/track/', TrackAnalyticsView.as_view(), name='track-analytics'),
+    
+    # Newsletter & Layout endpoints
+    path('api/v1/newsletter/subscribe/', SubscribeView.as_view(), name='newsletter-subscribe'),
+    path('api/v1/homepage-layout/', PublicHomepageLayoutView.as_view(), name='homepage-layout'),
+    path('api/v1/site-settings/', PublicSiteSettingView.as_view(), name='site-settings'),
+
+    # CMS Protected endpoints
+    path('api/v1/cms/', include(cms_router.urls)),
+]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+
