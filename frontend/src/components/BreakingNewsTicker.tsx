@@ -2,7 +2,6 @@
 
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { AlertCircle } from 'lucide-react';
 
 interface Article {
   id: number;
@@ -19,7 +18,6 @@ export const BreakingNewsTicker: React.FC = () => {
         const res = await fetch('http://127.0.0.1:8000/api/v1/articles/?is_breaking=true');
         if (res.ok) {
           const data = await res.json();
-          // The API might be paginated, check results or direct array
           const articles = Array.isArray(data) ? data : (data.results || []);
           setBreakingArticles(articles);
         }
@@ -31,10 +29,10 @@ export const BreakingNewsTicker: React.FC = () => {
   }, []);
 
   const defaultMessages = [
-    "THE PULSE QUANTUM CORE IS ACTIVE — MULTIPLE FEED DATA STREAMS DECODED IN REALTIME",
-    "MARKET REPORT: NEO-TOKYO METASHELL SHARES UP 14.2% FOLLOWING CORTICAL CHIP MERGER",
-    "SPACE AGENCY EXPEDITION FOUR DEPARTS MARS ORBITAL STATION HEADED FOR GANYMEDE",
-    "GRID BROADCAST SYSTEM: STATUS 200 OK — READ FROM ELEVATED SENSORY BUFFERS"
+    "LOCAL DESIGN TEAMS REDESIGN WORKSPACES TO FACILITATE COLLABORATION",
+    "BUSINESSES ADOPT ELECTRIC VEHICLES TO OPTIMIZE URBAN DELIVERY LOGISTICS",
+    "ORGANIC TEXTILES AND NATURAL DYES DEFINE MODERN WARDROBE TRENDS",
+    "UPSTATE PARK FOREST RECOVERY EFFORTS SHOW TWELVE PERCENT BIODIVERSITY INCREASE"
   ];
 
   const tickerItems = breakingArticles.length > 0
@@ -51,21 +49,20 @@ export const BreakingNewsTicker: React.FC = () => {
   const scrollItems = [...tickerItems, ...tickerItems, ...tickerItems];
 
   return (
-    <div className="w-full px-4 mb-6 md:px-8">
-      <div className="glass-panel w-full max-w-7xl mx-auto rounded-xl py-2.5 px-4 flex items-center overflow-hidden gap-4">
+    <div className="w-full bg-[#FAF8F6] border-b border-[#262626] py-2 px-4 md:px-8">
+      <div className="max-w-7xl mx-auto flex items-center overflow-hidden gap-4">
         {/* Badge */}
-        <div className="flex items-center gap-1.5 px-3 py-1 bg-red-500/10 border border-red-500/30 text-red-500 text-xs font-mono font-bold uppercase rounded-lg tracking-wider shrink-0 animate-pulse">
-          <AlertCircle className="w-3.5 h-3.5" />
-          <span>BREAKING</span>
+        <div className="px-3 py-1 bg-[#df4d38] text-white text-[10px] font-mono font-bold uppercase tracking-widest shrink-0 animate-pulse">
+          BREAKING NEWS
         </div>
 
         {/* Marquee Wrapper */}
         <div className="relative flex-grow overflow-hidden h-5">
-          <div className="animate-marquee flex items-center gap-16 font-mono text-xs font-semibold tracking-wider text-theme-gray-400">
+          <div className="animate-marquee flex items-center gap-16 font-mono text-xs tracking-wider text-[#161616] font-semibold">
             {scrollItems.map((item, idx) => (
               <span key={idx} className="flex items-center shrink-0">
                 {item.link !== "#" ? (
-                  <Link href={item.link} className="hover:text-theme-blue transition-colors hover:underline">
+                  <Link href={item.link} className="hover:text-[#df4d38] transition-colors hover:underline">
                     {item.text}
                   </Link>
                 ) : (

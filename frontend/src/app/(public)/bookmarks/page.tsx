@@ -33,7 +33,6 @@ export default function BookmarksPage() {
         if (res.ok) {
           const data = await res.json();
           const allArticles = Array.isArray(data) ? data : (data.results || []);
-          // Filter to only bookmarked ones
           const bookmarked = allArticles.filter((a: any) => bookmarks.includes(a.slug));
           setArticles(bookmarked);
         }
@@ -49,24 +48,22 @@ export default function BookmarksPage() {
 
   if (loading) {
     return (
-      <div className="max-w-7xl mx-auto px-6 py-20 flex flex-col items-center justify-center">
+      <div className="max-w-7xl mx-auto px-6 py-20 flex flex-col items-center justify-center min-h-[50vh]">
         <div className="w-12 h-12 border-t-2 border-r-2 border-theme-blue rounded-full animate-spin mb-4" />
-        <span className="font-mono text-sm tracking-wider text-theme-gray-400 font-semibold font-mono">RETRIEVING ENCRYPTED DATA...</span>
+        <span className="font-mono text-xs tracking-widest text-theme-gray-400 uppercase font-bold">LOADING BOOKMARKS...</span>
       </div>
     );
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-4 md:px-8 py-8 flex flex-col gap-8 relative">
-      <div className="absolute top-[-50px] left-1/4 w-[300px] h-[300px] bg-theme-blue/5 rounded-full blur-[80px] pointer-events-none -z-10" />
-
+    <div className="max-w-7xl mx-auto px-4 md:px-8 py-8 flex flex-col gap-8 bg-theme-black text-theme-light-gray animate-fade-in">
       {/* Header */}
-      <div className="flex flex-col gap-2 pb-6 border-b border-white/5">
-        <span className="text-xs font-mono text-theme-gray-400 uppercase tracking-widest">Secured Memory Files</span>
+      <div className="flex flex-col gap-2 pb-6 border-b border-theme-blue-deep">
+        <span className="text-[10px] font-mono text-theme-blue uppercase font-bold tracking-widest">Saved Articles</span>
         <div className="flex items-center gap-3">
           <Bookmark className="w-6 h-6 text-theme-blue" />
-          <h1 className="font-mono text-3xl md:text-5xl font-extrabold uppercase text-white">
-            Reading Dispatch List ({articles.length})
+          <h1 className="serif-title text-3xl md:text-5xl font-black uppercase text-theme-light-gray">
+            My Bookmarks ({articles.length})
           </h1>
         </div>
       </div>
@@ -74,54 +71,51 @@ export default function BookmarksPage() {
       {/* Feed list */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {articles.map((art) => (
-          <div key={art.id} className="glass-panel rounded-2xl overflow-hidden flex flex-col group hover:border-theme-blue/30 transition-all duration-300">
-            <div className="h-44 relative overflow-hidden">
-              {art.cover_image && (
-                <img 
-                  src={art.cover_image.startsWith('http') ? art.cover_image : `http://127.0.0.1:8000${art.cover_image}`} 
-                  alt={art.title}
-                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                />
-              )}
-              <div className="absolute inset-0 bg-gradient-to-t from-theme-black/90 to-transparent" />
-              {art.category && (
-                <span 
-                  className="absolute top-3 left-3 px-2 py-0.5 text-[10px] font-bold uppercase font-mono rounded"
-                  style={{ 
-                    backgroundColor: `${art.category.color_accent}20`,
-                    color: art.category.color_accent,
-                    border: `1px solid ${art.category.color_accent}40`
-                  }}
-                >
-                  {art.category.name}
-                </span>
-              )}
+          <div key={art.id} className="border border-theme-blue-deep overflow-hidden flex flex-col justify-between group hover:border-theme-blue transition-all duration-300">
+            <div>
+              <div className="h-44 relative overflow-hidden">
+                {art.cover_image && (
+                  <img 
+                    src={art.cover_image.startsWith('http') ? art.cover_image : `http://127.0.0.1:8000${art.cover_image}`} 
+                    alt={art.title}
+                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                  />
+                )}
+              </div>
+              <div className="p-5 flex flex-col gap-2">
+                {art.category && (
+                  <span className="text-[9px] font-mono font-bold text-theme-blue uppercase tracking-wider">
+                    {art.category.name}
+                  </span>
+                )}
+                <Link href={`/a/${art.slug}`} className="hover:text-theme-blue transition-colors">
+                  <h3 className="serif-title font-bold text-base text-theme-light-gray line-clamp-2 leading-snug">
+                    {art.title}
+                  </h3>
+                </Link>
+                <p className="text-theme-gray-400 text-xs line-clamp-2 leading-relaxed mt-1">
+                  {art.subtitle}
+                </p>
+              </div>
             </div>
-            <div className="p-5 flex flex-col flex-grow gap-3">
-              <Link href={`/a/${art.slug}`} className="group-hover:text-theme-blue transition-colors">
-                <h3 className="font-mono font-bold text-base text-white line-clamp-2 leading-snug">
-                  {art.title}
-                </h3>
-              </Link>
-              <p className="text-theme-gray-400 text-xs line-clamp-2 leading-relaxed flex-grow">
-                {art.subtitle}
-              </p>
-              <div className="flex items-center justify-between mt-4 pt-4 border-t border-white/5 text-[9px] font-mono text-theme-gray-400">
+
+            <div className="p-5 pt-0">
+              <div className="flex items-center justify-between pt-4 border-t border-theme-gray-100 text-[9px] font-mono text-theme-light-gray uppercase font-bold tracking-widest">
                 <span className="flex items-center gap-1">
-                  <Clock className="w-3.5 h-3.5" />
+                  <Clock className="w-3.5 h-3.5 text-theme-blue" />
                   {art.reading_time} MIN
                 </span>
                 <span className="flex items-center gap-1">
-                  <Eye className="w-3.5 h-3.5" />
-                  {art.view_count} SEC
+                  <Eye className="w-3.5 h-3.5 text-theme-blue" />
+                  {art.view_count} VIEWS
                 </span>
                 <button 
                   onClick={() => toggleBookmark(art.slug)}
-                  className="p-1.5 rounded-lg bg-red-500/10 text-red-500 border border-red-500/20 hover:bg-red-500/20 hover:border-red-500/40 transition-all cursor-pointer flex items-center gap-1"
-                  title="Purge Bookmark"
+                  className="p-1 text-red-600 hover:text-red-800 transition-all cursor-pointer flex items-center gap-1 font-bold"
+                  title="Remove Bookmark"
                 >
                   <Trash2 className="w-3.5 h-3.5" />
-                  <span>PURGE</span>
+                  <span>REMOVE</span>
                 </button>
               </div>
             </div>
@@ -130,8 +124,8 @@ export default function BookmarksPage() {
       </div>
 
       {articles.length === 0 && (
-        <div className="text-center py-24 glass-panel rounded-2xl font-mono text-sm tracking-wider text-theme-gray-400 uppercase">
-          Your bookmarked memory archives are empty.
+        <div className="text-center py-20 border border-theme-blue-deep font-mono text-xs uppercase tracking-widest text-theme-gray-400">
+          Your bookmark list is empty.
         </div>
       )}
     </div>

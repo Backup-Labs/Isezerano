@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useApp } from '@/context/AppContext';
-import { Terminal, Key, ShieldAlert } from 'lucide-react';
+import { Key, ShieldAlert } from 'lucide-react';
 import Link from 'next/link';
 
 export default function LoginPage() {
@@ -23,9 +23,6 @@ export default function LoginPage() {
 
     const success = await login(username, password);
     if (success) {
-      // Re-fetch profile details through context before redirecting
-      // Since context loads profile on login, let's redirect.
-      // Fetching profile checks user role. If reader, redirect to /, otherwise /newsroom
       setTimeout(async () => {
         try {
           const res = await fetch('http://127.0.0.1:8000/api/v1/auth/me/', {
@@ -54,54 +51,51 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="max-w-md mx-auto w-full px-6 py-20 relative flex flex-col gap-6">
-      <div className="absolute top-1/4 left-1/4 w-[200px] h-[200px] bg-theme-blue/10 rounded-full blur-[60px] pointer-events-none -z-10" />
-
+    <div className="max-w-md mx-auto w-full px-6 py-20 relative flex flex-col gap-6 bg-theme-black text-theme-light-gray animate-fade-in">
       {/* Brand */}
       <div className="text-center flex flex-col items-center gap-2 mb-4">
-        <Terminal className="w-10 h-10 text-theme-blue" />
-        <h2 className="font-mono text-2xl font-bold uppercase tracking-widest text-white">
-          GRID ACCESS TERMINAL
+        <h2 className="serif-title text-3xl font-black uppercase tracking-tight text-theme-light-gray">
+          Console Portal Sign In
         </h2>
-        <p className="text-xs text-theme-gray-400 font-mono">
-          THE PULSE // HIGH FREQUENCY NETWORK ENTRY
+        <p className="text-[10px] text-theme-gray-400 font-mono uppercase tracking-widest font-bold">
+          THE PULSE // STAFF VERIFICATION
         </p>
       </div>
 
       {/* Form Card */}
-      <div className="glass-panel p-8 rounded-2xl flex flex-col gap-6">
-        <form onSubmit={handleSubmit} className="flex flex-col gap-5">
+      <div className="border border-theme-blue-deep p-8 flex flex-col gap-6 bg-theme-charcoal/20">
+        <form onSubmit={handleSubmit} className="flex flex-col gap-5 text-xs font-mono text-theme-light-gray">
           {/* Username */}
           <div className="flex flex-col gap-2">
-            <label className="text-xs font-mono text-theme-gray-400 uppercase">Operator ID</label>
+            <label className="uppercase font-bold tracking-wider">Username</label>
             <input 
               type="text" 
-              placeholder="username (e.g. admin or editor_alex)"
+              placeholder="Username"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
-              className="bg-theme-black/50 border border-white/10 px-4 py-2.5 rounded-xl text-sm text-white placeholder-theme-gray-400 focus:outline-none focus:border-theme-blue/50"
+              className="bg-transparent border border-theme-blue-deep px-4 py-2.5 text-xs text-theme-light-gray placeholder-theme-gray-400 focus:outline-none focus:border-theme-blue"
               required
             />
           </div>
 
           {/* Password */}
           <div className="flex flex-col gap-2">
-            <label className="text-xs font-mono text-theme-gray-400 uppercase">Access Code</label>
+            <label className="uppercase font-bold tracking-wider">Password</label>
             <input 
               type="password" 
-              placeholder="access passcode"
+              placeholder="Password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="bg-theme-black/50 border border-white/10 px-4 py-2.5 rounded-xl text-sm text-white placeholder-theme-gray-400 focus:outline-none focus:border-theme-blue/50"
+              className="bg-transparent border border-theme-blue-deep px-4 py-2.5 text-xs text-theme-light-gray placeholder-theme-gray-400 focus:outline-none focus:border-theme-blue"
               required
             />
           </div>
 
           {/* Error Notice */}
           {error && (
-            <div className="p-3 bg-red-500/10 border border-red-500/30 text-red-500 text-xs font-mono rounded-xl flex items-center gap-2">
+            <div className="p-3 border border-red-500/30 bg-red-500/5 text-red-600 text-xs font-mono rounded flex items-center gap-2 animate-shake">
               <ShieldAlert className="w-4 h-4 shrink-0" />
-              <span>TERMINATION FAILURE: ACCESS DENIED.</span>
+              <span>AUTHENTICATION FAILURE: ACCESS DENIED.</span>
             </div>
           )}
 
@@ -109,25 +103,25 @@ export default function LoginPage() {
           <button 
             type="submit" 
             disabled={loading}
-            className="w-full py-3 bg-theme-blue hover:bg-theme-blue-glow hover:shadow-[0_0_15px_rgba(47,109,246,0.3)] text-white font-mono font-bold uppercase rounded-xl tracking-wider text-sm transition-all flex items-center justify-center gap-2 cursor-pointer mt-2"
+            className="w-full py-3 bg-theme-blue-deep hover:bg-theme-blue text-theme-black font-mono font-bold uppercase tracking-widest text-xs transition-all flex items-center justify-center gap-2 cursor-pointer mt-2"
           >
             <Key className="w-4 h-4" />
-            {loading ? 'AUTHENTICATING CORRIDORS...' : 'SECURE ENTRY'}
+            {loading ? 'SIGNING IN...' : 'SIGN IN'}
           </button>
         </form>
 
-        <div className="border-t border-white/5 pt-4 text-center">
-          <p className="text-xs text-theme-gray-400 font-mono">
-            Default Admin credentials: <span className="text-white">admin</span> / <span className="text-white">pulse_admin_pass</span>
+        <div className="border-t border-theme-gray-100 pt-4 text-center text-[10px] text-theme-gray-400 font-mono">
+          <p>
+            Default Admin credentials: <span className="text-theme-light-gray font-bold">admin</span> / <span className="text-theme-light-gray font-bold">pulse_admin_pass</span>
           </p>
-          <p className="text-xs text-theme-gray-400 font-mono mt-1">
-            Default Editor credentials: <span className="text-white">editor_alex</span> / <span className="text-white">pulse_editor_pass</span>
+          <p className="mt-1">
+            Default Editor credentials: <span className="text-theme-light-gray font-bold">editor_alex</span> / <span className="text-theme-light-gray font-bold">pulse_editor_pass</span>
           </p>
         </div>
       </div>
 
-      <Link href="/" className="text-center text-xs font-mono text-theme-gray-400 hover:text-white transition-colors">
-        ← Return to Main Grid
+      <Link href="/" className="text-center text-xs font-mono text-theme-gray-400 hover:text-theme-blue transition-colors uppercase font-bold tracking-wider">
+        ← Return to Homepage
       </Link>
     </div>
   );

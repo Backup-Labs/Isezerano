@@ -25,6 +25,7 @@ class ArticleListSerializer(serializers.ModelSerializer):
     author = UserSerializer(read_only=True)
     category = CategorySerializer(read_only=True)
     tags = TagSerializer(many=True, read_only=True)
+    cover_image = serializers.SerializerMethodField()
 
     class Meta:
         model = Article
@@ -33,6 +34,17 @@ class ArticleListSerializer(serializers.ModelSerializer):
             'author', 'status', 'published_at', 'is_breaking', 'is_featured', 
             'is_premium', 'reading_time', 'view_count'
         )
+
+    def get_cover_image(self, obj):
+        if not obj.cover_image:
+            return None
+        name = obj.cover_image.name
+        if name.startswith('http://') or name.startswith('https://'):
+            return name
+        request = self.context.get('request')
+        if request:
+            return request.build_absolute_uri(obj.cover_image.url)
+        return obj.cover_image.url
 
 class ArticleRevisionSerializer(serializers.ModelSerializer):
     author = UserSerializer(read_only=True)
@@ -60,6 +72,7 @@ class ArticleDetailSerializer(serializers.ModelSerializer):
     co_authors = UserSerializer(many=True, read_only=True)
     category = CategorySerializer(read_only=True)
     tags = TagSerializer(many=True, read_only=True)
+    cover_image = serializers.SerializerMethodField()
     comments = serializers.SerializerMethodField()
     revisions = ArticleRevisionSerializer(many=True, read_only=True)
 
@@ -71,6 +84,17 @@ class ArticleDetailSerializer(serializers.ModelSerializer):
             'is_premium', 'reading_time', 'view_count', 'seo_title', 'seo_description',
             'created_at', 'updated_at', 'comments', 'revisions'
         )
+
+    def get_cover_image(self, obj):
+        if not obj.cover_image:
+            return None
+        name = obj.cover_image.name
+        if name.startswith('http://') or name.startswith('https://'):
+            return name
+        request = self.context.get('request')
+        if request:
+            return request.build_absolute_uri(obj.cover_image.url)
+        return obj.cover_image.url
 
     def get_comments(self, obj):
         # Threaded comments: only return top-level (parent is null) and approved comments
