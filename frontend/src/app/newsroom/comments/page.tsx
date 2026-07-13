@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { useApp } from '@/context/AppContext';
-import { Terminal, Check, X, ShieldAlert, AlertCircle, MessageSquare } from 'lucide-react';
+import { Check, X, MessageSquare } from 'lucide-react';
 
 interface Comment {
   id: number;
@@ -71,13 +71,13 @@ export default function CommentsModerator() {
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'approved':
-        return <span className="px-2 py-0.5 bg-green-500/10 border border-green-500/30 text-green-400 text-[10px] font-bold rounded-lg font-mono">APPROVED</span>;
+        return <span className="px-2 py-0.5 border border-green-600 text-green-700 text-[10px] font-bold font-mono">APPROVED</span>;
       case 'flagged':
-        return <span className="px-2 py-0.5 bg-orange-500/10 border border-orange-500/30 text-orange-400 text-[10px] font-bold rounded-lg font-mono">FLAGGED</span>;
+        return <span className="px-2 py-0.5 border border-orange-500 text-orange-600 text-[10px] font-bold font-mono">FLAGGED</span>;
       case 'spam':
-        return <span className="px-2 py-0.5 bg-red-500/10 border border-red-500/30 text-red-400 text-[10px] font-bold rounded-lg font-mono">SPAM</span>;
+        return <span className="px-2 py-0.5 border border-red-600 text-red-700 text-[10px] font-bold font-mono">SPAM</span>;
       default:
-        return <span className="px-2 py-0.5 bg-blue-500/10 border border-blue-500/30 text-theme-blue text-[10px] font-bold rounded-lg font-mono">PENDING</span>;
+        return <span className="px-2 py-0.5 border border-theme-blue text-theme-blue text-[10px] font-bold font-mono">PENDING</span>;
     }
   };
 
@@ -85,83 +85,85 @@ export default function CommentsModerator() {
     return (
       <div className="flex flex-col items-center justify-center min-h-[30vh]">
         <div className="w-8 h-8 border-t-2 border-theme-blue rounded-full animate-spin mb-2" />
-        <span className="font-mono text-xs text-theme-gray-400">PULLING COMMENT DATABASE...</span>
+        <span className="font-mono text-xs text-theme-gray-400">LOADING COMMENTS...</span>
       </div>
     );
   }
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="flex flex-col gap-6 text-theme-light-gray">
       {/* Header bar */}
-      <div className="flex flex-col gap-1 pb-4 border-b border-white/5">
-        <h1 className="font-mono text-2xl font-bold uppercase tracking-wider text-white flex items-center gap-2">
+      <div className="flex flex-col gap-1 pb-4 border-b border-theme-blue-deep">
+        <h1 className="serif-title text-2xl font-bold uppercase tracking-wider text-theme-light-gray flex items-center gap-2">
           <MessageSquare className="w-6 h-6 text-theme-blue" />
-          Forums Moderation Desk
+          Moderate Comments
         </h1>
         <p className="text-xs text-theme-gray-400 font-mono">
-          MONITOR FEED BACKLOGS, REMOVE BAD TRANSMISSIONS, AND SECURE DISCUSSION NODES
+          Review reader comments and manage forum permissions
         </p>
       </div>
 
       {/* Table grid queue */}
-      <div className="glass-panel rounded-2xl overflow-hidden">
+      <div className="border border-theme-blue-deep overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
-              <tr className="border-b border-white/5 text-[10px] font-mono text-theme-gray-400 uppercase bg-white/2">
-                <th className="p-4 pl-6">Terminal User</th>
-                <th className="p-4">Message payload</th>
-                <th className="p-4">Index Status</th>
+              <tr className="border-b border-theme-blue-deep text-[10px] font-mono text-theme-gray-400 uppercase bg-theme-charcoal/40">
+                <th className="p-4 pl-6">User</th>
+                <th className="p-4">Comment Body</th>
+                <th className="p-4">Status</th>
                 <th className="p-4">Timestamp</th>
-                <th className="p-4 pr-6 text-right">Moderations</th>
+                <th className="p-4 pr-6 text-right">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-white/5 text-sm text-theme-gray-400">
+            <tbody className="divide-y divide-theme-gray-100 text-sm text-theme-gray-400 bg-theme-charcoal/10">
               {comments.map((comment) => (
-                <tr key={comment.id} className="hover:bg-white/2 transition-colors">
-                  <td className="p-4 pl-6 font-mono text-white text-xs">
+                <tr key={comment.id} className="hover:bg-theme-charcoal/30 transition-colors">
+                  <td className="p-4 pl-6 font-mono text-theme-light-gray text-xs">
                     @{comment.user.username}
                   </td>
                   <td className="p-4 max-w-md">
-                    <p className="text-xs leading-relaxed line-clamp-3 italic text-theme-gray-400">
+                    <p className="text-xs leading-relaxed line-clamp-3 text-theme-light-gray">
                       "{comment.body}"
                     </p>
                   </td>
                   <td className="p-4">
                     {getStatusBadge(comment.status)}
                   </td>
-                  <td className="p-4 text-[10px] font-mono whitespace-nowrap">
+                  <td className="p-4 text-[10px] font-mono whitespace-nowrap text-theme-light-gray">
                     {new Date(comment.created_at).toLocaleDateString()}
                   </td>
-                  <td className="p-4 pr-6 text-right flex items-center justify-end gap-2 mt-2">
-                    {comment.status !== 'approved' && (
-                      <button 
-                        onClick={() => handleApprove(comment.id)}
-                        className="p-1.5 rounded-lg bg-green-500/10 text-green-400 border border-green-500/20 hover:bg-green-500/20 hover:border-green-500/40 transition-all cursor-pointer flex items-center gap-0.5"
-                        title="Approve Comment"
-                      >
-                        <Check className="w-3.5 h-3.5" />
-                        <span className="text-[10px] font-mono font-bold uppercase">Approve</span>
-                      </button>
-                    )}
-                    {comment.status !== 'flagged' && (
-                      <button 
-                        onClick={() => handleReject(comment.id)}
-                        className="p-1.5 rounded-lg bg-red-500/10 text-red-400 border border-red-500/20 hover:bg-red-500/20 hover:border-red-500/40 transition-all cursor-pointer flex items-center gap-0.5"
-                        title="Flag/Reject Comment"
-                      >
-                        <X className="w-3.5 h-3.5" />
-                        <span className="text-[10px] font-mono font-bold uppercase">Flag</span>
-                      </button>
-                    )}
+                  <td className="p-4 pr-6 text-right">
+                    <div className="flex items-center justify-end gap-2">
+                      {comment.status !== 'approved' && (
+                        <button 
+                          onClick={() => handleApprove(comment.id)}
+                          className="p-1.5 bg-green-500/10 text-green-700 border border-green-500/20 hover:bg-green-500/20 hover:border-green-500/40 transition-all cursor-pointer flex items-center gap-0.5"
+                          title="Approve Comment"
+                        >
+                          <Check className="w-3.5 h-3.5" />
+                          <span className="text-[10px] font-mono font-bold uppercase">Approve</span>
+                        </button>
+                      )}
+                      {comment.status !== 'flagged' && (
+                        <button 
+                          onClick={() => handleReject(comment.id)}
+                          className="p-1.5 bg-red-500/10 text-red-700 border border-red-500/20 hover:bg-red-500/20 hover:border-red-500/40 transition-all cursor-pointer flex items-center gap-0.5"
+                          title="Reject / Flag"
+                        >
+                          <X className="w-3.5 h-3.5" />
+                          <span className="text-[10px] font-mono font-bold uppercase">Reject</span>
+                        </button>
+                      )}
+                    </div>
                   </td>
                 </tr>
               ))}
 
               {comments.length === 0 && (
                 <tr>
-                  <td colSpan={5} className="text-center py-12 font-mono text-xs uppercase tracking-wider">
-                    Comments backlog empty.
+                  <td colSpan={5} className="text-center py-12 font-mono text-xs uppercase tracking-wider text-theme-gray-400">
+                    No comments found.
                   </td>
                 </tr>
               )}

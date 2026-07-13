@@ -49,20 +49,20 @@ export const BreakingNewsTicker: React.FC = () => {
   const scrollItems = [...tickerItems, ...tickerItems, ...tickerItems];
 
   return (
-    <div className="w-full bg-[#FAF8F6] border-b border-[#262626] py-2 px-4 md:px-8">
+    <div className="w-full bg-theme-black border-b border-theme-blue-deep py-2 px-4 md:px-8">
       <div className="max-w-7xl mx-auto flex items-center overflow-hidden gap-4">
         {/* Badge */}
-        <div className="px-3 py-1 bg-[#df4d38] text-white text-[10px] font-mono font-bold uppercase tracking-widest shrink-0 animate-pulse">
+        <div className="px-3 py-1 bg-theme-blue text-theme-black text-[10px] font-mono font-bold uppercase tracking-widest shrink-0 animate-pulse">
           BREAKING NEWS
         </div>
 
         {/* Marquee Wrapper */}
-        <div className="relative flex-grow overflow-hidden h-5">
-          <div className="animate-marquee flex items-center gap-16 font-mono text-xs tracking-wider text-[#161616] font-semibold">
+        <div className="relative grow overflow-hidden h-5">
+          <div className="animate-marquee flex items-center gap-16 font-mono text-xs tracking-wider text-theme-light-gray font-semibold">
             {scrollItems.map((item, idx) => (
               <span key={idx} className="flex items-center shrink-0">
                 {item.link !== "#" ? (
-                  <Link href={item.link} className="hover:text-[#df4d38] transition-colors hover:underline">
+                  <Link href={item.link} className="hover:text-theme-blue transition-colors hover:underline">
                     {item.text}
                   </Link>
                 ) : (

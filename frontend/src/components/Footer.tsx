@@ -74,12 +74,12 @@ export const Footer: React.FC = () => {
             placeholder="ENTER YOUR EMAIL..."
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="w-full md:w-64 bg-transparent border border-[#262626] px-4 py-2.5 text-xs font-mono placeholder-[#666] focus:outline-none focus:border-[#df4d38] text-[#161616]"
+            className="w-full md:w-64 bg-transparent border border-theme-blue-deep px-4 py-2.5 text-xs font-mono placeholder-theme-gray-400 focus:outline-none focus:border-theme-blue text-theme-light-gray"
             required
           />
           <button 
             type="submit"
-            className="px-5 py-3 bg-[#161616] hover:bg-[#df4d38] text-[#FAF8F6] font-mono text-xs uppercase font-bold tracking-widest transition-all flex items-center gap-1 cursor-pointer"
+            className="px-5 py-3 bg-theme-blue-deep hover:bg-theme-blue text-theme-black font-mono text-xs uppercase font-bold tracking-widest transition-all flex items-center gap-1 cursor-pointer"
           >
             <span>Subscribe</span>
             <Send className="w-3.5 h-3.5" />
@@ -88,8 +88,8 @@ export const Footer: React.FC = () => {
       </div>
 
       {/* 2. Secondary Marquee News Ticker */}
-      <div className="w-full border-b border-[#262626] py-2.5 overflow-hidden bg-[#F3ECE3]">
-        <div className="animate-marquee flex items-center gap-16 font-mono text-[10px] tracking-widest text-[#161616] font-bold uppercase">
+      <div className="w-full border-b border-theme-blue-deep py-2.5 overflow-hidden bg-theme-charcoal">
+        <div className="animate-marquee flex items-center gap-16 font-mono text-[10px] tracking-widest text-theme-light-gray font-bold uppercase">
           <span>THE PULSE GAZETTE</span>
           <span>•</span>
           <span>LATEST STORIES • GLOBAL BUSINESS TRENDS • NATURE CONSERVATION REPORTS • URBAN CULTURE NEWS</span>
@@ -105,18 +105,18 @@ export const Footer: React.FC = () => {
         {/* Column 1: Brand Info */}
         <div className="flex flex-col gap-4">
           <h2 className="serif-title text-3xl font-black uppercase tracking-tighter">THE PULSE</h2>
-          <p className="text-xs leading-relaxed text-[#666]">
+          <p className="text-xs leading-relaxed text-theme-gray-400">
             Elegant newspaper layouts reinterpreting digital headlines with classic print density.
           </p>
         </div>
 
         {/* Column 2: Channels */}
         <div>
-          <h4 className="font-mono text-xs font-bold uppercase tracking-widest text-[#161616] mb-6">Channels</h4>
-          <ul className="flex flex-col gap-3 text-xs font-mono uppercase tracking-wider text-[#666]">
+          <h4 className="font-mono text-xs font-bold uppercase tracking-widest text-theme-light-gray mb-6">Channels</h4>
+          <ul className="flex flex-col gap-3 text-xs font-mono uppercase tracking-wider text-theme-gray-400">
             {categories.map((cat) => (
               <li key={cat.id}>
-                <Link href={`/c/${cat.slug}`} className="hover:text-[#df4d38] transition-colors">
+                <Link href={`/c/${cat.slug}`} className="hover:text-theme-blue transition-colors">
                   {cat.name}
                 </Link>
               </li>
@@ -126,11 +126,11 @@ export const Footer: React.FC = () => {
 
         {/* Column 3: Site Navigation */}
         <div>
-          <h4 className="font-mono text-xs font-bold uppercase tracking-widest text-[#161616] mb-6">Navigation</h4>
-          <ul className="flex flex-col gap-3 text-xs font-mono uppercase tracking-wider text-[#666]">
-            <li><Link href="/" className="hover:text-[#df4d38] transition-colors">Homepage</Link></li>
-            <li><Link href="/bookmarks" className="hover:text-[#df4d38] transition-colors">Saved Articles</Link></li>
-            <li><Link href="/login" className="hover:text-[#df4d38] transition-colors">Staff Portal</Link></li>
+          <h4 className="font-mono text-xs font-bold uppercase tracking-widest text-theme-light-gray mb-6">Navigation</h4>
+          <ul className="flex flex-col gap-3 text-xs font-mono uppercase tracking-wider text-theme-gray-400">
+            <li><Link href="/" className="hover:text-theme-blue transition-colors">Homepage</Link></li>
+            <li><Link href="/bookmarks" className="hover:text-theme-blue transition-colors">Saved Articles</Link></li>
+            <li><Link href="/login" className="hover:text-theme-blue transition-colors">Staff Portal</Link></li>
           </ul>
         </div>
 

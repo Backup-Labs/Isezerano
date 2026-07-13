@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useApp } from '@/context/AppContext';
-import { Terminal, Send, ArrowLeft, Image as ImageIcon } from 'lucide-react';
+import { Send, ArrowLeft, Image as ImageIcon, Notebook } from 'lucide-react';
 import Link from 'next/link';
 
 interface Category {
@@ -92,7 +92,6 @@ export default function CreateArticle() {
     formData.append('seo_title', seoTitle || title);
     formData.append('seo_description', seoDescription || subtitle);
     
-    // Django M2M needs separate appends for lists
     selectedTags.forEach(id => {
       formData.append('tags', id.toString());
     });
@@ -109,7 +108,7 @@ export default function CreateArticle() {
       if (res.ok) {
         router.push('/newsroom/articles');
       } else {
-        alert("Failed to transmit article data. Check fields.");
+        alert("Failed to create article. Please check input fields.");
       }
     } catch (err) {
       console.error(err);
@@ -119,41 +118,41 @@ export default function CreateArticle() {
   };
 
   return (
-    <div className="flex flex-col gap-6">
-      <Link href="/newsroom/articles" className="flex items-center gap-1 text-xs font-mono text-theme-gray-400 hover:text-white transition-colors mr-auto">
+    <div className="flex flex-col gap-6 text-theme-light-gray animate-fade-in">
+      <Link href="/newsroom/articles" className="flex items-center gap-1 text-xs font-mono text-theme-gray-400 hover:text-theme-blue transition-colors mr-auto uppercase font-bold tracking-wider">
         <ArrowLeft className="w-4 h-4" />
-        RETURN TERMINAL
+        Return to Articles List
       </Link>
 
-      <div className="flex items-center gap-2 pb-4 border-b border-white/5">
-        <Terminal className="w-5 h-5 text-theme-blue animate-pulse" />
-        <h1 className="font-mono text-2xl font-bold uppercase tracking-wider text-white">
-          Transmit New dispatch
+      <div className="flex items-center gap-2 pb-4 border-b border-theme-blue-deep">
+        <Notebook className="w-5 h-5 text-theme-blue" />
+        <h1 className="serif-title text-2xl font-bold uppercase tracking-wider text-theme-light-gray">
+          Write New Article
         </h1>
       </div>
 
       <form onSubmit={handleSubmit} className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Editor columns (2/3 width) */}
-        <div className="lg:col-span-2 flex flex-col gap-6 glass-panel p-6 rounded-2xl">
+        <div className="lg:col-span-2 flex flex-col gap-6 border border-theme-blue-deep p-6 bg-theme-charcoal/20">
           {/* Title */}
           <div className="flex flex-col gap-2">
-            <label className="text-xs font-mono text-theme-gray-400 uppercase">Headline Title</label>
+            <label className="text-[10px] font-mono text-theme-gray-400 uppercase font-bold tracking-wider">Headline Title</label>
             <input 
               type="text"
-              placeholder="e.g. Quantum Singularity Whispers..."
+              placeholder="e.g. Modern Office Collaboration Designs..."
               value={title}
               onChange={(e) => {
                 setTitle(e.target.value);
                 setSeoTitle(e.target.value);
               }}
-              className="bg-theme-black/50 border border-white/10 px-4 py-2.5 rounded-xl text-base text-white placeholder-theme-gray-400 focus:outline-none focus:border-theme-blue/50"
+              className="bg-theme-black border border-theme-blue-deep px-4 py-2.5 text-base text-theme-light-gray placeholder-theme-gray-400 focus:outline-none focus:border-theme-blue"
               required
             />
           </div>
 
           {/* Subtitle */}
           <div className="flex flex-col gap-2">
-            <label className="text-xs font-mono text-theme-gray-400 uppercase">Subtitle / Deck</label>
+            <label className="text-[10px] font-mono text-theme-gray-400 uppercase font-bold tracking-wider">Subtitle / Deck</label>
             <textarea 
               rows={2}
               placeholder="Provide a quick editorial summary description..."
@@ -162,19 +161,19 @@ export default function CreateArticle() {
                 setSubtitle(e.target.value);
                 setSeoDescription(e.target.value);
               }}
-              className="bg-theme-black/50 border border-white/10 px-4 py-2.5 rounded-xl text-sm text-white placeholder-theme-gray-400 focus:outline-none focus:border-theme-blue/50"
+              className="bg-theme-black border border-theme-blue-deep px-4 py-2.5 text-sm text-theme-light-gray placeholder-theme-gray-400 focus:outline-none focus:border-theme-blue"
             />
           </div>
 
           {/* Body */}
           <div className="flex flex-col gap-2">
-            <label className="text-xs font-mono text-theme-gray-400 uppercase">Article Corpus Body</label>
+            <label className="text-[10px] font-mono text-theme-gray-400 uppercase font-bold tracking-wider">Article Body</label>
             <textarea 
               rows={15}
-              placeholder="Write long form editorial body here. Use markdown style headings to organize content..."
+              placeholder="Write the article copy here..."
               value={body}
               onChange={(e) => setBody(e.target.value)}
-              className="bg-theme-black/50 border border-white/10 px-4 py-2.5 rounded-xl text-sm text-white placeholder-theme-gray-400 font-sans focus:outline-none focus:border-theme-blue/50"
+              className="bg-theme-black border border-theme-blue-deep px-4 py-2.5 text-sm text-theme-light-gray placeholder-theme-gray-400 font-sans focus:outline-none focus:border-theme-blue"
               required
             />
           </div>
@@ -182,28 +181,28 @@ export default function CreateArticle() {
 
         {/* Sidebar Controls column */}
         <div className="flex flex-col gap-6">
-          <div className="glass-panel p-6 rounded-2xl flex flex-col gap-5">
+          <div className="border border-theme-blue-deep p-6 flex flex-col gap-5 bg-theme-charcoal/20">
             {/* Status Select */}
             <div className="flex flex-col gap-2">
-              <label className="text-xs font-mono text-theme-gray-400 uppercase">Index State</label>
+              <label className="text-[10px] font-mono text-theme-gray-400 uppercase font-bold tracking-wider">Article Status</label>
               <select 
                 value={status}
                 onChange={(e) => setStatus(e.target.value)}
-                className="bg-theme-black/50 border border-white/10 px-4 py-2 rounded-xl text-xs font-mono text-white focus:outline-none focus:border-theme-blue/50"
+                className="bg-theme-black border border-theme-blue-deep px-4 py-2 text-xs font-mono text-theme-light-gray focus:outline-none"
               >
-                <option value="draft">Draft File (Private)</option>
-                <option value="in_review">Submit for review</option>
-                {user?.role !== 'journalist' && <option value="published">Publish instantly</option>}
+                <option value="draft">Draft (Private)</option>
+                <option value="in_review">Submit for Review</option>
+                {user?.role !== 'journalist' && <option value="published">Publish Instantly</option>}
               </select>
             </div>
 
             {/* Category Select */}
             <div className="flex flex-col gap-2">
-              <label className="text-xs font-mono text-theme-gray-400 uppercase">Publishing Channel</label>
+              <label className="text-[10px] font-mono text-theme-gray-400 uppercase font-bold tracking-wider">Publishing Category</label>
               <select 
                 value={category}
                 onChange={(e) => setCategory(e.target.value)}
-                className="bg-theme-black/50 border border-white/10 px-4 py-2 rounded-xl text-xs font-mono text-white focus:outline-none"
+                className="bg-theme-black border border-theme-blue-deep px-4 py-2 text-xs font-mono text-theme-light-gray focus:outline-none"
               >
                 {categories.map((cat) => (
                   <option key={cat.id} value={cat.id}>{cat.name}</option>
@@ -212,45 +211,45 @@ export default function CreateArticle() {
             </div>
 
             {/* Checkbox settings */}
-            <div className="flex flex-col gap-3 py-2 border-y border-white/5">
-              <label className="flex items-center gap-2 text-xs font-mono text-theme-gray-400 cursor-pointer">
+            <div className="flex flex-col gap-3 py-2 border-y border-theme-gray-100">
+              <label className="flex items-center gap-2 text-xs font-mono text-theme-gray-400 cursor-pointer font-bold uppercase tracking-wider">
                 <input 
                   type="checkbox"
                   checked={isBreaking}
                   onChange={(e) => setIsBreaking(e.target.checked)}
-                  className="rounded border-white/10 text-theme-blue focus:ring-0 cursor-pointer"
+                  className="rounded border-theme-blue-deep text-theme-blue focus:ring-0 cursor-pointer"
                 />
-                <span>BREAKING NEWS FLASH</span>
+                <span>Breaking News Flash</span>
               </label>
 
-              <label className="flex items-center gap-2 text-xs font-mono text-theme-gray-400 cursor-pointer">
+              <label className="flex items-center gap-2 text-xs font-mono text-theme-gray-400 cursor-pointer font-bold uppercase tracking-wider">
                 <input 
                   type="checkbox"
                   checked={isFeatured}
                   onChange={(e) => setIsFeatured(e.target.checked)}
-                  className="rounded border-white/10 text-theme-blue focus:ring-0 cursor-pointer"
+                  className="rounded border-theme-blue-deep text-theme-blue focus:ring-0 cursor-pointer"
                 />
-                <span>HOMEPAGE HERO FEATURED</span>
+                <span>Homepage Hero Featured</span>
               </label>
 
-              <label className="flex items-center gap-2 text-xs font-mono text-theme-gray-400 cursor-pointer">
+              <label className="flex items-center gap-2 text-xs font-mono text-theme-gray-400 cursor-pointer font-bold uppercase tracking-wider">
                 <input 
                   type="checkbox"
                   checked={isPremium}
                   onChange={(e) => setIsPremium(e.target.checked)}
-                  className="rounded border-white/10 text-theme-blue focus:ring-0 cursor-pointer"
+                  className="rounded border-theme-blue-deep text-theme-blue focus:ring-0 cursor-pointer"
                 />
-                <span>SECURED CODES (PREMIUM)</span>
+                <span>Premium Article</span>
               </label>
             </div>
 
             {/* Image upload */}
             <div className="flex flex-col gap-2">
-              <label className="text-xs font-mono text-theme-gray-400 uppercase">Cover graphic upload</label>
+              <label className="text-[10px] font-mono text-theme-gray-400 uppercase font-bold tracking-wider">Cover Image</label>
               <div className="flex items-center gap-2">
-                <label className="flex items-center gap-1.5 px-3 py-2 bg-white/5 border border-white/10 rounded-xl text-xs font-mono cursor-pointer hover:bg-white/10 hover:text-white transition-all text-theme-gray-400">
+                <label className="flex items-center gap-1.5 px-3 py-2 bg-theme-charcoal border border-theme-blue-deep text-xs font-mono cursor-pointer hover:bg-theme-blue hover:text-theme-black transition-all text-theme-light-gray font-bold uppercase">
                   <ImageIcon className="w-4 h-4" />
-                  Select File
+                  Upload Image
                   <input 
                     type="file" 
                     accept="image/*"
@@ -258,16 +257,16 @@ export default function CreateArticle() {
                     className="hidden"
                   />
                 </label>
-                <span className="text-[10px] text-theme-gray-400 font-mono truncate max-w-[150px]">
-                  {coverImage ? coverImage.name : 'No file loaded'}
+                <span className="text-[10px] text-theme-gray-400 font-mono truncate max-w-[150px] font-semibold">
+                  {coverImage ? coverImage.name : 'No file selected'}
                 </span>
               </div>
             </div>
 
             {/* Tags Multiple Grid */}
             <div className="flex flex-col gap-2">
-              <label className="text-xs font-mono text-theme-gray-400 uppercase">Dispatched Tags</label>
-              <div className="grid grid-cols-2 gap-2 max-h-36 overflow-y-auto scrollbar-thin p-1 border border-white/5 rounded-xl">
+              <label className="text-[10px] font-mono text-theme-gray-400 uppercase font-bold tracking-wider">Tags</label>
+              <div className="grid grid-cols-2 gap-2 max-h-36 overflow-y-auto scrollbar-thin p-1.5 border border-theme-blue-deep bg-theme-black">
                 {tags.map((tag) => {
                   const isChecked = selectedTags.includes(tag.id);
                   return (
@@ -275,8 +274,8 @@ export default function CreateArticle() {
                       type="button"
                       key={tag.id}
                       onClick={() => handleTagToggle(tag.id)}
-                      className={`px-2 py-1 text-[10px] font-mono text-left rounded transition-all cursor-pointer ${
-                        isChecked ? 'bg-theme-blue/20 text-theme-blue border border-theme-blue/40' : 'bg-white/2 text-theme-gray-400 border border-transparent'
+                      className={`px-2 py-1 text-[10px] font-mono text-left rounded transition-all cursor-pointer font-semibold ${
+                        isChecked ? 'bg-theme-blue/20 text-theme-blue border border-theme-blue' : 'bg-transparent text-theme-gray-400 border border-transparent'
                       }`}
                     >
                       #{tag.name}
@@ -290,10 +289,10 @@ export default function CreateArticle() {
             <button 
               type="submit"
               disabled={submitting}
-              className="w-full py-3 bg-theme-blue hover:bg-theme-blue-glow hover:shadow-[0_0_15px_rgba(47,109,246,0.3)] text-white font-mono font-bold uppercase rounded-xl tracking-wider text-xs transition-all flex items-center justify-center gap-1.5 cursor-pointer"
+              className="w-full py-3 bg-theme-blue-deep hover:bg-theme-blue text-theme-black font-mono font-bold uppercase rounded-xl tracking-widest text-xs transition-all flex items-center justify-center gap-1.5 cursor-pointer mt-2"
             >
               <Send className="w-4 h-4" />
-              {submitting ? 'TRANSMITTING...' : 'TRANSMIT BROADCAST'}
+              {submitting ? 'SAVING...' : 'Save Article'}
             </button>
           </div>
         </div>
