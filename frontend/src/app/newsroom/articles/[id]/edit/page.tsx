@@ -1,9 +1,9 @@
 "use client";
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import { useApp } from '@/context/AppContext';
-import { Send, ArrowLeft, Image as ImageIcon, History, RefreshCw } from 'lucide-react';
+import { Send, ArrowLeft, Image as ImageIcon, History, RefreshCw, Bold, Italic, Underline as UnderlineIcon, Heading1, Heading2, Quote, Link2, List } from 'lucide-react';
 import Link from 'next/link';
 
 interface Category {
@@ -70,6 +70,7 @@ export default function EditArticle() {
 
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   const loadArticleData = async () => {
     try {
@@ -129,6 +130,52 @@ export default function EditArticle() {
     alert("Loaded revision backup history. Save changes to apply.");
   };
 
+  const insertFormat = (type: 'bold' | 'italic' | 'underline' | 'h2' | 'h3' | 'quote' | 'link' | 'list') => {
+    const el = textareaRef.current;
+    if (!el) return;
+
+    const start = el.selectionStart;
+    const end = el.selectionEnd;
+    const text = el.value;
+    const selected = text.substring(start, end);
+
+    let formatted = '';
+    switch (type) {
+      case 'bold':
+        formatted = `**${selected || 'bold text'}**`;
+        break;
+      case 'italic':
+        formatted = `*${selected || 'italic text'}*`;
+        break;
+      case 'underline':
+        formatted = `<u>${selected || 'underlined text'}</u>`;
+        break;
+      case 'h2':
+        formatted = `\n## ${selected || 'Heading 2'}\n`;
+        break;
+      case 'h3':
+        formatted = `\n### ${selected || 'Heading 3'}\n`;
+        break;
+      case 'quote':
+        formatted = `\n> ${selected || 'Blockquote'}\n`;
+        break;
+      case 'link':
+        formatted = `[${selected || 'Link Text'}](https://example.com)`;
+        break;
+      case 'list':
+        formatted = `\n- ${selected || 'List item'}\n`;
+        break;
+    }
+
+    const newValue = text.substring(0, start) + formatted + text.substring(end);
+    setBody(newValue);
+
+    setTimeout(() => {
+      el.focus();
+      el.setSelectionRange(start, start + formatted.length);
+    }, 10);
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!title || !body || submitting) return;
@@ -173,6 +220,9 @@ export default function EditArticle() {
       setSubmitting(false);
     }
   };
+
+  // Sort tags alphabetically in ascending order
+  const sortedTags = [...tags].sort((a, b) => a.name.localeCompare(b.name));
 
   if (loading) {
     return (
@@ -225,14 +275,87 @@ export default function EditArticle() {
               />
             </div>
 
-            {/* Body */}
+            {/* Body with Formatting Toolbar */}
             <div className="flex flex-col gap-2">
               <label className="text-[10px] font-mono text-theme-gray-400 uppercase font-bold tracking-wider">Article Body</label>
+              
+              {/* Formatting Toolbar */}
+              <div className="bg-theme-charcoal border border-theme-blue-deep border-b-0 p-1.5 flex items-center gap-1 overflow-x-auto select-none">
+                <button
+                  type="button"
+                  onClick={() => insertFormat('bold')}
+                  className="p-1 hover:bg-theme-blue hover:text-theme-black text-theme-light-gray transition-colors border border-transparent font-bold flex items-center justify-center w-8 h-8"
+                  title="Bold"
+                >
+                  <Bold className="w-3.5 h-3.5" />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => insertFormat('italic')}
+                  className="p-1 hover:bg-theme-blue hover:text-theme-black text-theme-light-gray transition-colors border border-transparent italic flex items-center justify-center w-8 h-8"
+                  title="Italic"
+                >
+                  <Italic className="w-3.5 h-3.5" />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => insertFormat('underline')}
+                  className="p-1 hover:bg-theme-blue hover:text-theme-black text-theme-light-gray transition-colors border border-transparent flex items-center justify-center w-8 h-8"
+                  title="Underline"
+                >
+                  <UnderlineIcon className="w-3.5 h-3.5" />
+                </button>
+                <div className="h-4 w-[1px] bg-theme-blue-deep mx-1" />
+                <button
+                  type="button"
+                  onClick={() => insertFormat('h2')}
+                  className="p-1 hover:bg-theme-blue hover:text-theme-black text-theme-light-gray transition-colors border border-transparent font-mono text-xs flex items-center justify-center w-8 h-8"
+                  title="Heading 2"
+                >
+                  <Heading1 className="w-3.5 h-3.5" />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => insertFormat('h3')}
+                  className="p-1 hover:bg-theme-blue hover:text-theme-black text-theme-light-gray transition-colors border border-transparent font-mono text-[10px] flex items-center justify-center w-8 h-8"
+                  title="Heading 3"
+                >
+                  <Heading2 className="w-3.5 h-3.5" />
+                </button>
+                <div className="h-4 w-[1px] bg-theme-blue-deep mx-1" />
+                <button
+                  type="button"
+                  onClick={() => insertFormat('quote')}
+                  className="p-1 hover:bg-theme-blue hover:text-theme-black text-theme-light-gray transition-colors border border-transparent flex items-center justify-center w-8 h-8"
+                  title="Blockquote"
+                >
+                  <Quote className="w-3.5 h-3.5" />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => insertFormat('link')}
+                  className="p-1 hover:bg-theme-blue hover:text-theme-black text-theme-light-gray transition-colors border border-transparent flex items-center justify-center w-8 h-8"
+                  title="Insert Link"
+                >
+                  <Link2 className="w-3.5 h-3.5" />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => insertFormat('list')}
+                  className="p-1 hover:bg-theme-blue hover:text-theme-black text-theme-light-gray transition-colors border border-transparent flex items-center justify-center w-8 h-8"
+                  title="Bullet List"
+                >
+                  <List className="w-3.5 h-3.5" />
+                </button>
+              </div>
+
               <textarea 
+                ref={textareaRef}
                 rows={15}
+                placeholder="Write the article copy here. Select text and click the format buttons above to style your content..."
                 value={body}
                 onChange={(e) => setBody(e.target.value)}
-                className="bg-theme-black border border-theme-blue-deep px-4 py-2.5 text-sm text-theme-light-gray placeholder-theme-gray-400 font-sans focus:outline-none focus:border-theme-blue"
+                className="bg-theme-black border border-theme-blue-deep px-4 py-2.5 text-sm text-theme-light-gray placeholder-theme-gray-400 font-sans focus:outline-none focus:border-theme-blue w-full"
                 required
               />
             </div>
@@ -331,7 +454,7 @@ export default function EditArticle() {
               <div className="flex flex-col gap-2">
                 <label className="text-[10px] font-mono text-theme-gray-400 uppercase font-bold tracking-wider">Tags</label>
                 <div className="grid grid-cols-2 gap-2 max-h-36 overflow-y-auto scrollbar-thin p-1.5 border border-theme-blue-deep bg-theme-black">
-                  {tags.map((tag) => {
+                  {sortedTags.map((tag) => {
                     const isChecked = selectedTags.includes(tag.id);
                     return (
                       <button

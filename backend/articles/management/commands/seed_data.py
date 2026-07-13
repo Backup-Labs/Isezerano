@@ -21,6 +21,7 @@ class Command(BaseCommand):
         AdSlot.objects.all().delete()
         HomepageLayout.objects.all().delete()
         SiteSetting.objects.all().delete()
+        Subscriber.objects.all().delete()
 
         self.stdout.write('Seeding database with realistic content...')
 
@@ -292,20 +293,22 @@ class Command(BaseCommand):
         # 6. Create Ad Slots
         self.stdout.write('- Creating ad slots...')
         AdSlot.objects.create(
-            name='Modern Furniture Sponsorship',
+            name='Modern Office Furnishings',
             placement='in-feed-native',
             target_url='https://example.com/furniture',
-            html_content='<div style="background-color:#F3ECE3; padding:15px; border:1px solid #262626; text-align:center;"><h4 style="font-family:serif; margin:0 0 5px 0; color:#161616; text-transform:uppercase;">Minimalist Living</h4><p style="font-size:11px; margin:0; color:#666;">Crafted desks and organic chairs for quiet focus work.</p></div>',
+            image='https://images.unsplash.com/photo-1524758631624-e2822e304c36?q=80&w=800&auto=format&fit=crop',
+            cta_text='Shop Now',
             start_date=timezone.now(),
             end_date=timezone.now() + datetime.timedelta(days=30),
             priority=1,
             is_active=True
         )
         AdSlot.objects.create(
-            name='Local organic Coffee',
+            name='Independent Coffee Roasters',
             placement='sidebar-rail',
             target_url='https://example.com/coffee',
-            html_content='<div style="background-color:#FAF8F6; padding:20px; border:1px solid #262626; text-align:center; height:300px; display:flex; flex-direction:column; justify-content:center;"><span style="font-size:9px; font-family:monospace; color:#df4d38; text-transform:uppercase;">Local Partner</span><h3 style="font-family:serif; font-size:24px; margin:10px 0; color:#161616;">BREWED INDEPENDENTLY</h3><p style="font-size:11px; color:#666;">Fresh organic beans roasted in small neighborhood batches daily.</p></div>',
+            image='https://images.unsplash.com/photo-1447933601403-0c6688de566e?q=80&w=800&auto=format&fit=crop',
+            cta_text='Order Now',
             start_date=timezone.now(),
             end_date=timezone.now() + datetime.timedelta(days=30),
             priority=1,

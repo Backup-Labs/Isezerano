@@ -17,6 +17,7 @@ class AdSlot(models.Model):
     image = models.ImageField(upload_to='ads/', null=True, blank=True)
     html_content = models.TextField(blank=True, help_text="For custom HTML/JS ad codes like Google Adsense")
     target_url = models.URLField(blank=True)
+    cta_text = models.CharField(max_length=50, default='Learn More')
     
     start_date = models.DateTimeField()
     end_date = models.DateTimeField()
