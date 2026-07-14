@@ -1,6 +1,6 @@
-# "The Pulse" Design System Guide
+# "Isezerano" Design System Guide
 
-This document defines the visual layout tokens, typography patterns, motion standards, and component interfaces established for "The Pulse" Digital Newspaper Platform.
+This document defines the visual layout tokens, typography patterns, motion standards, and component interfaces established for "Isezerano" Digital Newspaper Platform.
 
 ---
 

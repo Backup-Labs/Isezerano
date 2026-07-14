@@ -58,7 +58,7 @@ export default function LoginPage() {
           Console Portal Sign In
         </h2>
         <p className="text-[10px] text-theme-gray-400 font-mono uppercase tracking-widest font-bold">
-          THE PULSE // STAFF VERIFICATION
+          ISEZERANO // STAFF VERIFICATION
         </p>
       </div>
 

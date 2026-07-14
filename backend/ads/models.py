@@ -4,12 +4,30 @@ from articles.models import Article
 
 class AdSlot(models.Model):
     PLACEMENT_CHOICES = (
-        ('header-banner', 'Header Banner (970x250)'),
-        ('sidebar-rail', 'Sidebar Rail (300x600)'),
-        ('in-feed-native', 'In-Feed Native Ad Card'),
-        ('in-article-inline', 'In-Article Inline (336x280)'),
-        ('footer-banner', 'Footer Banner (728x90)'),
-        ('interstitial', 'Interstitial Modal (Glass popup)'),
+        ('header_banner', 'Header Banner (970x90 Leaderboard)'),
+        ('hero_sidebar', 'Hero Sidebar (300x600 Skyscraper)'),
+        ('daily_verse_sidebar', 'Daily Verse Sidebar (300x250 Medium Rectangle)'),
+        ('news_desk_sidebar', 'News Desk Sidebar (300x600 Skyscraper)'),
+        ('full_width_1', 'Full Width Banner 1 (728x90)'),
+        ('full_width_2', 'Full Width Banner 2 (728x90)'),
+        ('full_width_3', 'Full Width Banner 3 (728x90)'),
+        ('full_width_4', 'Full Width Banner 4 (728x90)'),
+        ('sponsored_content', 'Sponsored Content Block (Tax Corner style)'),
+        ('grid_sidebar_stack_1', 'Grid Sidebar Stack Ad 1 (300x250)'),
+        ('grid_sidebar_stack_2', 'Grid Sidebar Stack Ad 2 (300x250)'),
+        ('grid_sidebar_stack_3', 'Grid Sidebar Stack Ad 3 (300x250)'),
+        ('sports_sidebar', 'Sports Sidebar (300x600 Skyscraper)'),
+        ('flyer_1', 'Flyer Ad 1 (Square/Portrait)'),
+        ('flyer_2', 'Flyer Ad 2 (Square/Portrait)'),
+        ('flyer_3', 'Flyer Ad 3 (Square/Portrait)'),
+        
+        # Legacy/Other Placements
+        ('header-banner', 'Legacy Header Banner (970x250)'),
+        ('sidebar-rail', 'Legacy Sidebar Rail (300x600)'),
+        ('in-feed-native', 'Legacy In-Feed Native Ad Card'),
+        ('in-article-inline', 'Legacy In-Article Inline (336x280)'),
+        ('footer-banner', 'Legacy Footer Banner (728x90)'),
+        ('interstitial', 'Legacy Interstitial Modal (Glass popup)'),
     )
 
     name = models.CharField(max_length=100)
@@ -19,6 +37,11 @@ class AdSlot(models.Model):
     target_url = models.URLField(blank=True)
     cta_text = models.CharField(max_length=50, default='Learn More')
     
+    # Sponsored Rich Content fields
+    sponsored_logo = models.ImageField(upload_to='ads/logos/', null=True, blank=True)
+    sponsored_headline = models.CharField(max_length=255, blank=True)
+    sponsored_video_url = models.URLField(blank=True, help_text="For sponsored video embed block")
+
     start_date = models.DateTimeField()
     end_date = models.DateTimeField()
     priority = models.PositiveIntegerField(default=0, help_text="Higher priority ads are served first")

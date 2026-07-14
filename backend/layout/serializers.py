@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import HomepageLayout, SiteSetting
+from .models import HomepageLayout, SiteSetting, DailyVerse
 from articles.serializers import CategorySerializer
 from ads.serializers import AdSlotSerializer
 
@@ -15,3 +15,8 @@ class SiteSettingSerializer(serializers.ModelSerializer):
     class Meta:
         model = SiteSetting
         fields = ('site_name', 'logo_light', 'logo_dark', 'primary_color', 'maintenance_mode', 'facebook_url', 'twitter_url', 'instagram_url', 'youtube_url', 'footer_text')
+
+class DailyVerseSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = DailyVerse
+        fields = ('id', 'date', 'verse_reference', 'verse_text_kinyarwanda', 'verse_text_english')

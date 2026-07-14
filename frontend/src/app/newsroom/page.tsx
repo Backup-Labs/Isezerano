@@ -91,11 +91,11 @@ export default function AnalyticsDashboard() {
   ];
 
   return (
-    <div className="flex flex-col gap-8 text-theme-light-gray">
+    <div className="flex flex-col gap-8 text-theme-black">
       {/* Title */}
-      <div className="flex items-center gap-2 pb-4 border-b border-theme-blue-deep">
+      <div className="flex items-center gap-2 pb-4 border-b border-theme-gray-100">
         <Sparkles className="w-5 h-5 text-theme-blue" />
-        <h1 className="serif-title text-2xl font-bold uppercase tracking-wide text-theme-light-gray">
+        <h1 className="serif-title text-2xl font-bold uppercase tracking-wide text-theme-black">
           Dashboard Analytics
         </h1>
       </div>
@@ -103,13 +103,13 @@ export default function AnalyticsDashboard() {
       {/* Stat Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         {statCards.map((card, idx) => (
-          <div key={idx} className="border border-theme-blue-deep p-6 flex items-center justify-between group hover:border-theme-blue transition-all bg-theme-charcoal/20">
+          <div key={idx} className="border border-theme-gray-100 p-6 flex items-center justify-between group hover:border-theme-blue transition-all bg-theme-light-gray/40 rounded-md">
             <div className="flex flex-col gap-1">
               <span className="text-[10px] text-theme-gray-400 font-mono uppercase font-bold tracking-wider">{card.name}</span>
-              <span className="serif-title text-3xl font-black text-theme-light-gray">{card.value}</span>
+              <span className="serif-title text-3xl font-black text-theme-black">{card.value}</span>
               <span className="text-[10px] text-theme-gray-400 font-mono mt-1 font-semibold">{card.desc}</span>
             </div>
-            <div className="w-12 h-12 flex items-center justify-center shrink-0 border border-theme-blue-deep bg-theme-charcoal group-hover:bg-theme-blue group-hover:text-theme-black transition-all">
+            <div className="w-12 h-12 flex items-center justify-center shrink-0 border border-theme-gray-100 bg-theme-light-gray group-hover:bg-theme-blue group-hover:text-white transition-all rounded">
               {card.icon}
             </div>
           </div>
@@ -119,8 +119,8 @@ export default function AnalyticsDashboard() {
       {/* Charts Section */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-4">
         {/* Weekly Traffic line chart */}
-        <div className="border border-theme-blue-deep p-6 flex flex-col gap-4 bg-theme-charcoal/20">
-          <h3 className="serif-title text-base font-bold uppercase tracking-tight text-theme-light-gray border-b border-theme-gray-100 pb-2">
+        <div className="border border-theme-gray-100 p-6 flex flex-col gap-4 bg-theme-light-gray/20 rounded-md">
+          <h3 className="serif-title text-base font-bold uppercase tracking-tight text-theme-black border-b border-theme-gray-100 pb-2">
             Weekly Traffic Overview
           </h3>
           <div className="w-full h-80">
@@ -130,7 +130,7 @@ export default function AnalyticsDashboard() {
                 <XAxis dataKey="day" stroke="#666" fontSize={11} tickLine={false} />
                 <YAxis stroke="#666" fontSize={11} tickLine={false} />
                 <Tooltip 
-                  contentStyle={{ background: '#F5F6F8', border: '1px solid #000000' }}
+                  contentStyle={{ background: '#F5F6F8', border: '1px solid #e5e7eb' }}
                   labelStyle={{ color: '#000', fontFamily: 'monospace', fontWeight: 'bold' }}
                   itemStyle={{ color: '#1B3B6F', fontFamily: 'monospace' }}
                 />
@@ -141,8 +141,8 @@ export default function AnalyticsDashboard() {
         </div>
 
         {/* Categories bar chart */}
-        <div className="border border-theme-blue-deep p-6 flex flex-col gap-4 bg-theme-charcoal/20">
-          <h3 className="serif-title text-base font-bold uppercase tracking-tight text-theme-light-gray border-b border-theme-gray-100 pb-2">
+        <div className="border border-theme-gray-100 p-6 flex flex-col gap-4 bg-theme-light-gray/20 rounded-md">
+          <h3 className="serif-title text-base font-bold uppercase tracking-tight text-theme-black border-b border-theme-gray-100 pb-2">
             Views by Category
           </h3>
           <div className="w-full h-80">
@@ -152,7 +152,7 @@ export default function AnalyticsDashboard() {
                 <XAxis dataKey="name" stroke="#666" fontSize={11} tickLine={false} />
                 <YAxis stroke="#666" fontSize={11} tickLine={false} />
                 <Tooltip 
-                  contentStyle={{ background: '#F5F6F8', border: '1px solid #000000' }}
+                  contentStyle={{ background: '#F5F6F8', border: '1px solid #e5e7eb' }}
                   labelStyle={{ color: '#000', fontFamily: 'monospace', fontWeight: 'bold' }}
                   itemStyle={{ color: '#1B3B6F', fontFamily: 'monospace' }}
                 />

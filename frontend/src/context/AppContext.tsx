@@ -39,6 +39,8 @@ interface AppContextType {
   bookmarks: string[];
   isBookmarked: (slug: string) => boolean;
   toggleBookmark: (slug: string) => void;
+  language: 'RW' | 'EN' | 'FR';
+  setLanguage: (lang: 'RW' | 'EN' | 'FR') => void;
   siteSettings: SiteSettings | null;
   fetchSiteSettings: () => Promise<void>;
   loading: boolean;
@@ -51,6 +53,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const [user, setUser] = useState<User | null>(null);
   const [token, setToken] = useState<string | null>(null);
   const [bookmarks, setBookmarks] = useState<string[]>([]);
+  const [language, setLanguageState] = useState<'RW' | 'EN' | 'FR'>('RW');
   const [siteSettings, setSiteSettings] = useState<SiteSettings | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
 
@@ -82,6 +85,12 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       fetchUserProfile(savedToken);
     } else {
       setLoading(false);
+    }
+
+    // 3.5 Language Check
+    const savedLanguage = localStorage.getItem('language') as 'RW' | 'EN' | 'FR' | null;
+    if (savedLanguage) {
+      setLanguageState(savedLanguage);
     }
 
     // 4. Fetch site settings
@@ -178,6 +187,11 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     localStorage.setItem('bookmarks', JSON.stringify(nextBookmarks));
   };
 
+  const setLanguage = (lang: 'RW' | 'EN' | 'FR') => {
+    setLanguageState(lang);
+    localStorage.setItem('language', lang);
+  };
+
   return (
     <AppContext.Provider
       value={{
@@ -190,6 +204,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         bookmarks,
         isBookmarked,
         toggleBookmark,
+        language,
+        setLanguage,
         siteSettings,
         fetchSiteSettings,
         loading

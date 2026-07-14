@@ -35,7 +35,7 @@ class HomepageLayout(models.Model):
         return f"{self.order}. {desc}"
 
 class SiteSetting(models.Model):
-    site_name = models.CharField(max_length=100, default='The Pulse')
+    site_name = models.CharField(max_length=100, default='Isezerano')
     logo_light = models.ImageField(upload_to='settings/', null=True, blank=True)
     logo_dark = models.ImageField(upload_to='settings/', null=True, blank=True)
     
@@ -47,7 +47,7 @@ class SiteSetting(models.Model):
     instagram_url = models.URLField(blank=True)
     youtube_url = models.URLField(blank=True)
     
-    footer_text = models.TextField(blank=True, default="© 2026 The Pulse. Futuristic Digital Journalism.")
+    footer_text = models.TextField(blank=True, default="© 2026 Isezerano. Futuristic Digital Journalism.")
 
     class Meta:
         verbose_name = "Site Settings"
@@ -60,3 +60,17 @@ class SiteSetting(models.Model):
 
     def __str__(self):
         return f"{self.site_name} Settings"
+
+class DailyVerse(models.Model):
+    date = models.DateField(unique=True, help_text="Date for which this verse is shown")
+    verse_reference = models.CharField(max_length=255, help_text="e.g., Yohana 3:16 / John 3:16")
+    verse_text_kinyarwanda = models.TextField(help_text="Verse text in Kinyarwanda")
+    verse_text_english = models.TextField(help_text="Verse text in English")
+
+    class Meta:
+        ordering = ['-date']
+        verbose_name = "Daily Verse"
+        verbose_name_plural = "Daily Verses"
+
+    def __str__(self):
+        return f"{self.date} - {self.verse_reference}"

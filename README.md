@@ -1,4 +1,4 @@
-# "The Pulse" Digital Newspaper Platform
+# "Isezerano" Digital Newspaper Platform
 
 A futuristic, glassmorphic, and production-grade digital newspaper platform built with Next.js (App Router, TypeScript) and Django + Django REST Framework.
 

@@ -17,8 +17,14 @@ from articles.views import (
 )
 from ads.views import ActiveAdView, TrackAnalyticsView, CMSAdSlotViewSet
 from newsletter.views import SubscribeView, CMSSubscriberViewSet, CMSNewsletterCampaignViewSet
-from layout.views import PublicHomepageLayoutView, PublicSiteSettingView, CMSHomepageLayoutViewSet, CMSSiteSettingViewSet
+from layout.views import (
+    PublicHomepageLayoutView, PublicSiteSettingView, CMSHomepageLayoutViewSet,
+    CMSSiteSettingViewSet, DailyVerseTodayView, CMSDailyVerseViewSet
+)
 from media_library.views import CMSMediaAssetViewSet
+from announcements.views import (
+    PublicAnnouncementListView, PublicAnnouncementDetailView, CMSAnnouncementViewSet
+)
 
 # Set up routers for CMS CRUD endpoints
 cms_router = DefaultRouter()
@@ -30,6 +36,8 @@ cms_router.register(r'ads', CMSAdSlotViewSet, basename='cms-ads')
 cms_router.register(r'subscribers', CMSSubscriberViewSet, basename='cms-subscribers')
 cms_router.register(r'campaigns', CMSNewsletterCampaignViewSet, basename='cms-campaigns')
 cms_router.register(r'layout', CMSHomepageLayoutViewSet, basename='cms-layout')
+cms_router.register(r'daily-verses', CMSDailyVerseViewSet, basename='cms-daily-verses')
+cms_router.register(r'announcements', CMSAnnouncementViewSet, basename='cms-announcements')
 # Map site settings to a viewport that always fetches the singleton instance
 cms_router.register(r'settings', CMSSiteSettingViewSet, basename='cms-settings')
 cms_router.register(r'media', CMSMediaAssetViewSet, basename='cms-media')
@@ -50,6 +58,8 @@ urlpatterns = [
     path('api/v1/articles/<slug:slug>/', ArticleDetailView.as_view(), name='public-article-detail'),
     path('api/v1/articles/<slug:slug>/comments/', ArticleCommentListView.as_view(), name='public-article-comments'),
     path('api/v1/articles/<slug:slug>/comments/create/', CommentCreateView.as_view(), name='public-create-comment'),
+    path('api/v1/announcements/', PublicAnnouncementListView.as_view(), name='public-announcement-list'),
+    path('api/v1/announcements/<int:pk>/', PublicAnnouncementDetailView.as_view(), name='public-announcement-detail'),
     
     # Ads & Analytics endpoints
     path('api/v1/ads/<str:placement>/', ActiveAdView.as_view(), name='active-ad'),
@@ -59,6 +69,7 @@ urlpatterns = [
     path('api/v1/newsletter/subscribe/', SubscribeView.as_view(), name='newsletter-subscribe'),
     path('api/v1/homepage-layout/', PublicHomepageLayoutView.as_view(), name='homepage-layout'),
     path('api/v1/site-settings/', PublicSiteSettingView.as_view(), name='site-settings'),
+    path('api/v1/daily-verse/today/', DailyVerseTodayView.as_view(), name='daily-verse-today'),
 
     # CMS Protected endpoints
     path('api/v1/cms/', include(cms_router.urls)),

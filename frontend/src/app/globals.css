@@ -1,24 +1,26 @@
 @import "tailwindcss";
 
 :root {
-  /* Editorial Color Palette mapping (Dark Blue, Light Gray, Black) */
-  --color-black: #F5F6F8;          /* Primary Light Gray background */
-  --color-charcoal: #EEF0F3;       /* Secondary Light Gray background */
-  --color-light-gray: #000000;     /* Primary text color (Black) */
-  --color-gray-100: #D0D4DC;       /* Muted gray dividers */
-  --color-gray-400: #4F5E71;       /* Secondary text color (Slate Gray) */
-  --color-blue: #1B3B6F;           /* Primary accent (Dark Blue) */
-  --color-blue-glow: #0F2A4A;      /* Dark Blue Hover state */
-  --color-blue-deep: #000000;      /* Bold Black line borders */
+  /* Clean Color System: Black, White, White-Gray, Dark Blue, Accent Blue */
+  --color-black: #0A0B0D;            /* Deep black for texts/borders */
+  --color-dark-section: #14161A;     /* Near-black card background */
+  --color-light-gray: #F3F4F6;       /* Clean white-gray for cards/panels */
+  --color-white: #FFFFFF;            /* Pure white background */
+  --color-gray-100: #E5E7EB;         /* Subtle gray divider border */
+  --color-gray-400: #6B7280;         /* Slate gray muted text */
+  --color-blue: #2F6DF6;             /* Accent blue */
+  --color-dark-blue: #1B3B6F;        /* Rich dark blue */
+  --color-blue-glow: #1C51C9;        /* Hover blue */
+  --color-border: #0A0B0D;           /* Bold line borders */
   
-  --bg-primary: var(--color-black);
-  --bg-secondary: var(--color-charcoal);
-  --text-primary: var(--color-light-gray);
+  --bg-primary: var(--color-white);
+  --bg-secondary: var(--color-light-gray);
+  --text-primary: var(--color-black);
   --text-secondary: var(--color-gray-400);
-  --border-color: var(--color-blue-deep);
+  --border-color: var(--color-border);
   --border-muted: var(--color-gray-100);
 
-  /* Glassmorphism replaced with paper dividers */
+  /* Glassmorphic paper panels */
   --glass-bg: #FAF8F6;
   --glass-border: var(--border-color);
   --glass-shadow: none;
@@ -31,13 +33,15 @@
 
 @theme {
   --color-theme-black: var(--color-black);
-  --color-theme-charcoal: var(--color-charcoal);
+  --color-theme-charcoal: var(--color-dark-section);
   --color-theme-light-gray: var(--color-light-gray);
+  --color-theme-white: var(--color-white);
   --color-theme-gray-100: var(--color-gray-100);
   --color-theme-gray-400: var(--color-gray-400);
   --color-theme-blue: var(--color-blue);
+  --color-theme-dark-blue: var(--color-dark-blue);
   --color-theme-blue-glow: var(--color-blue-glow);
-  --color-theme-blue-deep: var(--color-blue-deep);
+  --color-theme-blue-deep: var(--color-border);
 }
 
 body {

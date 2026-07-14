@@ -5,13 +5,14 @@ from django.utils import timezone
 from django.utils.text import slugify
 from articles.models import Category, Tag, Article, Comment
 from ads.models import AdSlot
-from layout.models import HomepageLayout, SiteSetting
+from layout.models import HomepageLayout, SiteSetting, DailyVerse
 from newsletter.models import Subscriber
+from announcements.models import Announcement
 
 User = get_user_model()
 
 class Command(BaseCommand):
-    help = 'Seeds realistic, non-technical editorial content for PressPoint digital newspaper'
+    help = 'Seeds realistic, non-technical editorial content for Isezerano digital newspaper'
 
     def handle(self, *args, **kwargs):
         self.stdout.write('Purging old data...')
@@ -22,6 +23,8 @@ class Command(BaseCommand):
         HomepageLayout.objects.all().delete()
         SiteSetting.objects.all().delete()
         Subscriber.objects.all().delete()
+        DailyVerse.objects.all().delete()
+        Announcement.objects.all().delete()
 
         self.stdout.write('Seeding database with realistic content...')
 
@@ -30,7 +33,7 @@ class Command(BaseCommand):
         admin_user, created = User.objects.get_or_create(
             username='admin',
             defaults={
-                'email': 'admin@presspoint.com',
+                'email': 'admin@isezerano.com',
                 'first_name': 'Amani',
                 'last_name': 'Admin',
                 'role': 'admin',
@@ -45,7 +48,7 @@ class Command(BaseCommand):
         editor_user, created = User.objects.get_or_create(
             username='editor_alex',
             defaults={
-                'email': 'alex@presspoint.com',
+                'email': 'alex@isezerano.com',
                 'first_name': 'Alex',
                 'last_name': 'Editor',
                 'role': 'editor',
@@ -59,7 +62,7 @@ class Command(BaseCommand):
         journalist1, created = User.objects.get_or_create(
             username='writer_elena',
             defaults={
-                'email': 'elena@presspoint.com',
+                'email': 'elena@isezerano.com',
                 'first_name': 'Elena',
                 'last_name': 'Rostova',
                 'role': 'journalist',
@@ -74,7 +77,7 @@ class Command(BaseCommand):
         journalist2, created = User.objects.get_or_create(
             username='writer_marcus',
             defaults={
-                'email': 'marcus@presspoint.com',
+                'email': 'marcus@isezerano.com',
                 'first_name': 'Marcus',
                 'last_name': 'Vance',
                 'role': 'journalist',
@@ -89,7 +92,7 @@ class Command(BaseCommand):
         reader1, created = User.objects.get_or_create(
             username='reader_jane',
             defaults={
-                'email': 'jane@presspoint.com',
+                'email': 'jane@isezerano.com',
                 'first_name': 'Jane',
                 'last_name': 'Doe',
                 'role': 'reader'
@@ -108,6 +111,8 @@ class Command(BaseCommand):
         design_cat = Category.objects.create(slug='design', name='Design', color_accent='#df4d38', order=5)
         nature_cat = Category.objects.create(slug='nature', name='Nature', color_accent='#8e5ab1', order=6)
         health_cat = Category.objects.create(slug='health', name='Health', color_accent='#2394ac', order=7)
+        sports_cat = Category.objects.create(slug='sports', name='Sports', color_accent='#2F6DF6', order=8)
+        faith_cat = Category.objects.create(slug='faith', name='Faith', color_accent='#2F6DF6', order=9)
 
         # 3. Create Tags
         self.stdout.write('- Creating tags...')
@@ -290,28 +295,192 @@ class Command(BaseCommand):
             status='approved'
         )
 
-        # 6. Create Ad Slots
+        # Sports Articles
+        art_sports1 = Article.objects.create(
+            slug='rayon-sports-defeat-apr-fc',
+            title='Rayon Sports yatsinze APR FC mu mukino w’amateka w’igikombe cy’intwari',
+            subtitle='Rayon Sports yerekanye umukino ukomeye itsinda APR FC ibitego 2-1 mu mukino wabereye kuri Stade Amahoro imbere y’abafana ibihumbi.',
+            body=(
+                'Umukino w’ishiraniro wahuje amakipe abiri akomeye mu Rwanda, Rayon Sports na APR FC, '
+                'warangiye Rayon Sports yihagazeho yegukana intsinzi. APR FC niyo yafunguye izamu ku munota wa 15 '
+                'ku gitego cyatsinzwe na Mugisha Gilbert, ariko Rayon Sports yishyura binyuze kuri Luvumbu '
+                'ku munota wa 40, mbere y’uko rutahizamu mushya atsinda igitego cy’intsinzi mu gice cya kabiri.'
+            ),
+            cover_image='https://images.unsplash.com/photo-1508098682722-e99c43a406b2?q=80&w=800&auto=format&fit=crop',
+            category=sports_cat,
+            author=journalist1,
+            status='published',
+            is_breaking=True,
+            is_featured=False,
+            is_premium=False,
+            reading_time=4,
+            view_count=2300,
+            published_at=timezone.now() - datetime.timedelta(minutes=30)
+        )
+        art_sports2 = Article.objects.create(
+            slug='kigali-peace-marathon-registration-open',
+            title='Kigali Peace Marathon 2026: Iyandikisha ryamaze gutangira ku mugaragaro',
+            subtitle='Minisiteri ya Siporo yatangaje ko imyiteguro igeze kure kandi ko abasiganwa bashobora kwiyandikisha binyuze ku rubuga rwa interineti.',
+            body=(
+                'Kigali International Peace Marathon igiye kuba ku nshuro ya 21, yiteguye kwakira abasiganwa '
+                'barenga ibihumbi icumi baturutse mu bihugu bitandukanye by’isi. Abashaka kwitabira '
+                'bafite amahirwe yo kwiyandikisha mu cyiciro cya Half Marathon (21km) cyangwa Full Marathon (42km).'
+            ),
+            cover_image='https://images.unsplash.com/photo-1476480862126-209bfaa8edc8?q=80&w=800&auto=format&fit=crop',
+            category=sports_cat,
+            author=journalist2,
+            status='published',
+            is_breaking=False,
+            is_featured=False,
+            is_premium=False,
+            reading_time=3,
+            view_count=980,
+            published_at=timezone.now() - datetime.timedelta(hours=4)
+        )
+
+        # Faith Article
+        art_faith1 = Article.objects.create(
+            slug='isano-y-ukwemera-no-kubana-neza',
+            title='Isano iri hagati y’Ukwemera n’Umubano Mwiza mu Muryango Nyarwanda',
+            subtitle='Abayobozi b’amadini atandukanye bagaragaje ko ukwemera nyakuri kugomba kuranga umuntu mu bikorwa bya buri munsi birimo amahoro n’ubwiyunge.',
+            body=(
+                'Mu nama yahuje abahagarariye amadini n’amatorero mu Rwanda, hagarutswe ku ruhare rw’inyigisho '
+                'z’iyobokamana mu kubaka umuryango utekanye kandi utarangwamo amakimbirane. Hagaragajwe ko '
+                'amasengesho adaherekejwe n’ibikorwa by’urukundo n’ubworoherane nta mumaro bifitiye sosiyete.'
+            ),
+            cover_image='https://images.unsplash.com/photo-1438029071396-1e831a7fa6d8?q=80&w=800&auto=format&fit=crop',
+            category=faith_cat,
+            author=journalist1,
+            status='published',
+            is_breaking=False,
+            is_featured=False,
+            is_premium=False,
+            reading_time=5,
+            view_count=740,
+            published_at=timezone.now() - datetime.timedelta(hours=8)
+        )
+
+        # 5. Create Comments
+        self.stdout.write('- Creating comments...')
+        Comment.objects.create(
+            article=art1,
+            user=reader1,
+            body="This design is beautiful! I love how clear and quiet the workspaces look. Very inspiring.",
+            status='approved'
+        )
+        Comment.objects.create(
+            article=art1,
+            user=editor_user,
+            body="Excellent writing. It is great to highlight how design directly influences everyday productivity.",
+            status='approved'
+        )
+
+        # 6. Create Ad Slots (Wireframe-Accurate Placements)
         self.stdout.write('- Creating ad slots...')
+        ad_slots = [
+            ('header_banner', 'Qatar Airways Leaderboard', 'https://example.com/airline', 'https://images.unsplash.com/photo-1540962351504-03099e0a754b?q=80&w=800&auto=format&fit=crop'),
+            ('hero_sidebar', 'Real Estate Skyscraper', 'https://example.com/property', 'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?q=80&w=800&auto=format&fit=crop'),
+            ('daily_verse_sidebar', 'Christian Book Store Ad', 'https://example.com/books', 'https://images.unsplash.com/photo-1506880018603-83d5b814b5a6?q=80&w=800&auto=format&fit=crop'),
+            ('news_desk_sidebar', 'Modern Business Advisory', 'https://example.com/advisory', 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?q=80&w=800&auto=format&fit=crop'),
+            ('full_width_1', 'MTN Rwanda Data Promotion', 'https://example.com/mtn', 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?q=80&w=800&auto=format&fit=crop'),
+            ('full_width_2', 'BK Bank Cashless Campaign', 'https://example.com/bk', 'https://images.unsplash.com/photo-1559526324-4b87b5e36e44?q=80&w=800&auto=format&fit=crop'),
+            ('full_width_3', 'RwandAir Flight Promo', 'https://example.com/rwandair', 'https://images.unsplash.com/photo-1436491865332-7a61a109cc05?q=80&w=800&auto=format&fit=crop'),
+            ('full_width_4', 'Visit Rwanda Tourism campaign', 'https://example.com/visit-rwanda', 'https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?q=80&w=800&auto=format&fit=crop'),
+            ('sports_sidebar', 'Kigali Arena Events Skyscraper', 'https://example.com/arena', 'https://images.unsplash.com/photo-1519766304817-4f37bda74a27?q=80&w=800&auto=format&fit=crop'),
+        ]
+        for placement, name, target, img in ad_slots:
+            AdSlot.objects.create(
+                name=name,
+                placement=placement,
+                target_url=target,
+                image=img,
+                cta_text='Explore Now',
+                start_date=timezone.now(),
+                end_date=timezone.now() + datetime.timedelta(days=30),
+                priority=1,
+                is_active=True
+            )
+
+        # Rich Sponsored Content
         AdSlot.objects.create(
-            name='Modern Office Furnishings',
-            placement='in-feed-native',
-            target_url='https://example.com/furniture',
-            image='https://images.unsplash.com/photo-1524758631624-e2822e304c36?q=80&w=800&auto=format&fit=crop',
-            cta_text='Shop Now',
+            name='Rwanda Revenue Authority: Tax Compliance E-Service Guidance',
+            placement='sponsored_content',
+            target_url='https://example.com/rra-tax-compliance',
+            image='https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?q=80&w=800&auto=format&fit=crop',
+            cta_text='Access E-Tax portal',
+            sponsored_headline='Taxpayer Information Channel',
+            sponsored_video_url='https://www.youtube.com/watch?v=dQw4w9WgXcQ',
             start_date=timezone.now(),
             end_date=timezone.now() + datetime.timedelta(days=30),
             priority=1,
             is_active=True
         )
-        AdSlot.objects.create(
-            name='Independent Coffee Roasters',
-            placement='sidebar-rail',
-            target_url='https://example.com/coffee',
-            image='https://images.unsplash.com/photo-1447933601403-0c6688de566e?q=80&w=800&auto=format&fit=crop',
-            cta_text='Order Now',
-            start_date=timezone.now(),
-            end_date=timezone.now() + datetime.timedelta(days=30),
-            priority=1,
+
+        # Flyers
+        for i in range(1, 4):
+            AdSlot.objects.create(
+                name=f'Local Business Flyer {i}',
+                placement=f'flyer_{i}',
+                target_url='https://example.com/flyer-promo',
+                image='https://images.unsplash.com/photo-1509281373149-e957c6296406?q=80&w=800&auto=format&fit=crop',
+                cta_text='Get Voucher',
+                start_date=timezone.now(),
+                end_date=timezone.now() + datetime.timedelta(days=30),
+                priority=1,
+                is_active=True
+            )
+
+        # 6.5 Seed Daily Verses
+        self.stdout.write('- Creating Daily Verses...')
+        DailyVerse.objects.create(
+            date=timezone.localdate(),
+            verse_reference='Habakuki 2:3',
+            verse_text_kinyarwanda='Kuko ibyo kwerekwa bifite igihe byabariwe, kandi bizagera ku ndunduro yabyo ntibizabeshya. Nubwo bitinda uze kubitegereza, kuko kuza ko bizaza ntibizatinda.',
+            verse_text_english='For the revelation awaits an appointed time; it speaks of the end and will not prove false. Though it linger, wait for it; it will certainly come and will not delay.'
+        )
+        DailyVerse.objects.create(
+            date=timezone.localdate() - datetime.timedelta(days=1),
+            verse_reference='Yohana 3:16',
+            verse_text_kinyarwanda='Kuko Imana yakunze abari mu isi cyane, byatumye itanga Umwana wayo w’ikinege kugira ngo umwizera wese atarimbuka, ahubwo ahabwe ubugingo buhoraho.',
+            verse_text_english='For God so loved the world that he gave his one and only Son, that whoever believes in him shall not perish but have eternal life.'
+        )
+
+        # 6.6 Seed Announcements
+        self.stdout.write('- Creating Announcements...')
+        Announcement.objects.create(
+            title='ITANGAZO RYA GUPIGANIRWA RY’ISOKO RYO GUHAZA AMATA MU BIGO BY’AMASHURI',
+            body='QATAR CHARITY RWANDA irashaka gupiganisha isoko ryo guhaza amata mu bigo by’amashuri mu karere ka Bugesera. Abapiganwa bemewe bagomba gutanga amabahasha yabo bitarenze tariki 25 Nyakanga 2026 saa kumi z’umugoroba...',
+            announcement_type='amasoko',
+            organization_name='QATAR CHARITY RWANDA',
+            reference_number='QC/RW/ED/044/2026',
+            deadline_date=timezone.localdate() + datetime.timedelta(days=12),
+            is_active=True
+        )
+        Announcement.objects.create(
+            title='GUSHAKA ABASEMUZI B’INDIMI EBYIRI (IKINYARWANDA NA ICYONGEREZA)',
+            body='BPR Bank Rwanda Plc irashaka gutanga akazi ku basemuzi b’indimi (Ikinyarwanda - Icyongereza). Abifuza gupiganwa bagomba kuba bafite Impamyabumenyi y’icyiciro cya kabiri cya Kaminuza mu zose cyangwa bijyanye...',
+            announcement_type='akazi',
+            organization_name='BPR Bank Rwanda Plc',
+            reference_number='BPR/HR/2026/09',
+            deadline_date=timezone.localdate() + datetime.timedelta(days=8),
+            is_active=True
+        )
+        Announcement.objects.create(
+            title='URUBANZA RWA MUKAMANA MARIE LOUISE NA GATERA JEAN BAPTISTE',
+            body='Urukiko Rwisumbuye rwa Nyarugenge ruramenyesha ko urubanza rwa Mukamana Marie Louise na Gatera Jean Baptiste ku mikoreshereze y’umutungo ruzasomwa kuwa 20 Nyakanga 2026 saa tatu z’igitondo...',
+            announcement_type='ibyemezo_by_urukiko',
+            organization_name='Urukiko Rwisumbuye rwa Nyarugenge',
+            reference_number='RAC/0042/19',
+            deadline_date=timezone.localdate() + datetime.timedelta(days=7),
+            is_active=True
+        )
+        Announcement.objects.create(
+            title='GUHINDURA AMAKuru y’Amazina yose mu mategeko',
+            body='Umusezero Jean Claude uramenyesha ko yifuza guhindura amazina akitwa Umusezero Jean d’Amour mu bitabo by’irangamimerere ku mpamvu z’akazi no guhuza impamyabumenyi ze zose...',
+            announcement_type='guhindura_amazina',
+            organization_name='Irangamimerere y’Umujyi wa Kigali',
+            reference_number='CIV/2026/001',
+            deadline_date=timezone.localdate() + datetime.timedelta(days=20),
             is_active=True
         )
 
@@ -326,10 +495,10 @@ class Command(BaseCommand):
         # 8. Site Settings Singleton
         self.stdout.write('- Creating site settings singleton...')
         SiteSetting.objects.create(
-            site_name='PressPoint',
-            primary_color='#df4d38',
+            site_name='Isezerano',
+            primary_color='#2F6DF6',
             maintenance_mode=False,
-            footer_text='PressPoint Daily Gazette. Est. 2026.'
+            footer_text='Isezerano Digital Newspaper. Est. 2026.'
         )
 
         # 9. Subscribers

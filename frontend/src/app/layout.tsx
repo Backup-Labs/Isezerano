@@ -5,7 +5,7 @@ import "./globals.css";
 export const metadata: Metadata = {
   title: {
     default: "Isezerano",
-    template: "%s | PressPoint"
+    template: "%s | Isezerano"
   },
   description: "Modern Digital Newspaper and high-end editorial coverage.",
 };

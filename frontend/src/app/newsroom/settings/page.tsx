@@ -27,7 +27,7 @@ export default function SiteSettingsManager() {
         const res = await fetch('http://127.0.0.1:8000/api/v1/site-settings/');
         if (res.ok) {
           const data = await res.json();
-          setSiteName(data.site_name || 'PressPoint');
+          setSiteName(data.site_name || 'Isezerano');
           setPrimaryColor(data.primary_color || '#1B3B6F');
           setMaintenanceMode(data.maintenance_mode || false);
           setFacebook(data.facebook_url || '');
