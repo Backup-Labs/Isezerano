@@ -1,4 +1,5 @@
 "use client";
+import { API_BASE_URL } from '@/config';
 
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
@@ -37,9 +38,9 @@ export const Footer: React.FC = () => {
     const fetchData = async () => {
       try {
         const [catRes, tagRes, artRes] = await Promise.all([
-          fetch('http://127.0.0.1:8000/api/v1/categories/'),
-          fetch('http://127.0.0.1:8000/api/v1/tags/'),
-          fetch('http://127.0.0.1:8000/api/v1/articles/?limit=3')
+          fetch(API_BASE_URL + '/api/v1/categories/'),
+          fetch(API_BASE_URL + '/api/v1/tags/'),
+          fetch(API_BASE_URL + '/api/v1/articles/?limit=3')
         ]);
         
         if (catRes.ok) setCategories(await catRes.json());
@@ -59,7 +60,7 @@ export const Footer: React.FC = () => {
     e.preventDefault();
     if (!email) return;
     try {
-      const res = await fetch('http://127.0.0.1:8000/api/v1/newsletter/subscribe/', {
+      const res = await fetch(API_BASE_URL + '/api/v1/newsletter/subscribe/', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -80,7 +81,7 @@ export const Footer: React.FC = () => {
 
   const getMediaUrl = (path: string | null) => {
     if (!path) return '';
-    return path.startsWith('http') ? path : `http://127.0.0.1:8000${path}`;
+    return path.startsWith('http') ? path : `${API_BASE_URL}${path}`;
   };
 
   // Translations

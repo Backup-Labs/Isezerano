@@ -1,4 +1,5 @@
 "use client";
+import { API_BASE_URL } from '@/config';
 
 import React, { useEffect, useState } from 'react';
 import { useApp } from '@/context/AppContext';
@@ -24,7 +25,7 @@ export default function HomepageBuilder() {
 
   const fetchLayout = async () => {
     try {
-      const res = await fetch('http://127.0.0.1:8000/api/v1/cms/layout/', {
+      const res = await fetch(API_BASE_URL + '/api/v1/cms/layout/', {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       if (res.ok) {
@@ -76,7 +77,7 @@ export default function HomepageBuilder() {
     try {
       await Promise.all(
         layout.map(block => 
-          fetch(`http://127.0.0.1:8000/api/v1/cms/layout/${block.id}/`, {
+          fetch(`${API_BASE_URL}/api/v1/cms/layout/${block.id}/`, {
             method: 'PATCH',
             headers: {
               'Content-Type': 'application/json',

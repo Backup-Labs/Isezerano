@@ -1,4 +1,5 @@
 "use client";
+import { API_BASE_URL } from '@/config';
 
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
@@ -25,7 +26,7 @@ export default function LoginPage() {
     if (success) {
       setTimeout(async () => {
         try {
-          const res = await fetch('http://127.0.0.1:8000/api/v1/auth/me/', {
+          const res = await fetch(API_BASE_URL + '/api/v1/auth/me/', {
             headers: {
               'Authorization': `Bearer ${localStorage.getItem('token')}`
             }

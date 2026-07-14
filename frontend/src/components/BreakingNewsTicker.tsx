@@ -1,4 +1,5 @@
 "use client";
+import { API_BASE_URL } from '@/config';
 
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
@@ -15,7 +16,7 @@ export const BreakingNewsTicker: React.FC = () => {
   useEffect(() => {
     const fetchBreaking = async () => {
       try {
-        const res = await fetch('http://127.0.0.1:8000/api/v1/articles/?is_breaking=true');
+        const res = await fetch(API_BASE_URL + '/api/v1/articles/?is_breaking=true');
         if (res.ok) {
           const data = await res.json();
           const articles = Array.isArray(data) ? data : (data.results || []);

@@ -1,4 +1,5 @@
 "use client";
+import { API_BASE_URL } from '@/config';
 
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
@@ -29,7 +30,7 @@ export default function BookmarksPage() {
         return;
       }
       try {
-        const res = await fetch('http://127.0.0.1:8000/api/v1/articles/');
+        const res = await fetch(API_BASE_URL + '/api/v1/articles/');
         if (res.ok) {
           const data = await res.json();
           const allArticles = Array.isArray(data) ? data : (data.results || []);
@@ -76,7 +77,7 @@ export default function BookmarksPage() {
               <div className="h-44 relative overflow-hidden">
                 {art.cover_image && (
                   <img 
-                    src={art.cover_image.startsWith('http') ? art.cover_image : `http://127.0.0.1:8000${art.cover_image}`} 
+                    src={art.cover_image.startsWith('http') ? art.cover_image : `${API_BASE_URL}${art.cover_image}`} 
                     alt={art.title}
                     className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                   />

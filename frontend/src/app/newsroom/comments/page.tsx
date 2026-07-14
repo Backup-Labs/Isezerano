@@ -1,4 +1,5 @@
 "use client";
+import { API_BASE_URL } from '@/config';
 
 import React, { useEffect, useState } from 'react';
 import { useApp } from '@/context/AppContext';
@@ -20,7 +21,7 @@ export default function CommentsModerator() {
 
   const fetchComments = async () => {
     try {
-      const res = await fetch('http://127.0.0.1:8000/api/v1/cms/comments/', {
+      const res = await fetch(API_BASE_URL + '/api/v1/cms/comments/', {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       if (res.ok) {
@@ -42,7 +43,7 @@ export default function CommentsModerator() {
 
   const handleApprove = async (id: number) => {
     try {
-      const res = await fetch(`http://127.0.0.1:8000/api/v1/cms/comments/${id}/approve/`, {
+      const res = await fetch(`${API_BASE_URL}/api/v1/cms/comments/${id}/approve/`, {
         method: 'POST',
         headers: { 'Authorization': `Bearer ${token}` }
       });
@@ -56,7 +57,7 @@ export default function CommentsModerator() {
 
   const handleReject = async (id: number) => {
     try {
-      const res = await fetch(`http://127.0.0.1:8000/api/v1/cms/comments/${id}/reject/`, {
+      const res = await fetch(`${API_BASE_URL}/api/v1/cms/comments/${id}/reject/`, {
         method: 'POST',
         headers: { 'Authorization': `Bearer ${token}` }
       });

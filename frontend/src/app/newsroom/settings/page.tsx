@@ -1,4 +1,5 @@
 "use client";
+import { API_BASE_URL } from '@/config';
 
 import React, { useEffect, useState } from 'react';
 import { useApp } from '@/context/AppContext';
@@ -24,7 +25,7 @@ export default function SiteSettingsManager() {
   useEffect(() => {
     const fetchSettingsData = async () => {
       try {
-        const res = await fetch('http://127.0.0.1:8000/api/v1/site-settings/');
+        const res = await fetch(API_BASE_URL + '/api/v1/site-settings/');
         if (res.ok) {
           const data = await res.json();
           setSiteName(data.site_name || 'Isezerano');
@@ -51,7 +52,7 @@ export default function SiteSettingsManager() {
     setSuccess(false);
 
     try {
-      const res = await fetch('http://127.0.0.1:8000/api/v1/cms/settings/1/', {
+      const res = await fetch(API_BASE_URL + '/api/v1/cms/settings/1/', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

@@ -1,4 +1,5 @@
 "use client";
+import { API_BASE_URL } from '@/config';
 
 import React, { useEffect, useState, useRef } from 'react';
 import { useRouter, useParams } from 'next/navigation';
@@ -75,9 +76,9 @@ export default function EditArticle() {
   const loadArticleData = async () => {
     try {
       const [catRes, tagRes, artRes] = await Promise.all([
-        fetch('http://127.0.0.1:8000/api/v1/categories/'),
-        fetch('http://127.0.0.1:8000/api/v1/tags/'),
-        fetch(`http://127.0.0.1:8000/api/v1/cms/articles/${id}/`, {
+        fetch(API_BASE_URL + '/api/v1/categories/'),
+        fetch(API_BASE_URL + '/api/v1/tags/'),
+        fetch(`${API_BASE_URL}/api/v1/cms/articles/${id}/`, {
           headers: { 'Authorization': `Bearer ${token}` }
         })
       ]);
@@ -201,7 +202,7 @@ export default function EditArticle() {
     });
 
     try {
-      const res = await fetch(`http://127.0.0.1:8000/api/v1/cms/articles/${id}/`, {
+      const res = await fetch(`${API_BASE_URL}/api/v1/cms/articles/${id}/`, {
         method: 'PATCH',
         headers: {
           'Authorization': `Bearer ${token}`
@@ -431,7 +432,7 @@ export default function EditArticle() {
                 <label className="text-[10px] font-mono text-theme-gray-400 uppercase font-bold tracking-wider">Cover Image</label>
                 {currentCoverUrl && (
                   <img 
-                    src={currentCoverUrl.startsWith('http') ? currentCoverUrl : `http://127.0.0.1:8000${currentCoverUrl}`}
+                    src={currentCoverUrl.startsWith('http') ? currentCoverUrl : `${API_BASE_URL}${currentCoverUrl}`}
                     alt="cover preview" 
                     className="w-full h-24 object-cover border border-theme-blue-deep mb-2"
                   />

@@ -1,4 +1,5 @@
 "use client";
+import { API_BASE_URL } from '@/config';
 
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
@@ -42,7 +43,7 @@ export const Navbar: React.FC = () => {
     // Fetch categories
     const fetchCategories = async () => {
       try {
-        const res = await fetch('http://127.0.0.1:8000/api/v1/categories/');
+        const res = await fetch(API_BASE_URL + '/api/v1/categories/');
         if (res.ok) {
           const data = await res.json();
           setCategories(data);
@@ -55,7 +56,7 @@ export const Navbar: React.FC = () => {
     // Fetch latest articles for ticker
     const fetchLatestArticles = async () => {
       try {
-        const res = await fetch('http://127.0.0.1:8000/api/v1/articles/?limit=5');
+        const res = await fetch(API_BASE_URL + '/api/v1/articles/?limit=5');
         if (res.ok) {
           const data = await res.json();
           const articles = Array.isArray(data) ? data : (data.results || []);

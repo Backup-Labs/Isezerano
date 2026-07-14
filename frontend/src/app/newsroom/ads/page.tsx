@@ -1,4 +1,5 @@
 "use client";
+import { API_BASE_URL } from '@/config';
 
 import React, { useEffect, useState } from 'react';
 import { useApp } from '@/context/AppContext';
@@ -36,7 +37,7 @@ export default function AdSlotsManager() {
 
   const fetchAds = async () => {
     try {
-      const res = await fetch('http://127.0.0.1:8000/api/v1/cms/ads/', {
+      const res = await fetch(API_BASE_URL + '/api/v1/cms/ads/', {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       if (res.ok) {
@@ -58,7 +59,7 @@ export default function AdSlotsManager() {
 
   const handleToggleActive = async (ad: Ad) => {
     try {
-      const res = await fetch(`http://127.0.0.1:8000/api/v1/cms/ads/${ad.id}/`, {
+      const res = await fetch(`${API_BASE_URL}/api/v1/cms/ads/${ad.id}/`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
@@ -79,7 +80,7 @@ export default function AdSlotsManager() {
     if (!name || !startDate || !endDate) return;
 
     try {
-      const res = await fetch('http://127.0.0.1:8000/api/v1/cms/ads/', {
+      const res = await fetch(API_BASE_URL + '/api/v1/cms/ads/', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

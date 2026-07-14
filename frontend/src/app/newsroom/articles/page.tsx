@@ -1,4 +1,5 @@
 "use client";
+import { API_BASE_URL } from '@/config';
 
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
@@ -24,7 +25,7 @@ export default function ArticlesManager() {
 
   const fetchArticles = async () => {
     try {
-      const res = await fetch('http://127.0.0.1:8000/api/v1/cms/articles/', {
+      const res = await fetch(API_BASE_URL + '/api/v1/cms/articles/', {
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -48,7 +49,7 @@ export default function ArticlesManager() {
 
   const handlePublish = async (id: number) => {
     try {
-      const res = await fetch(`http://127.0.0.1:8000/api/v1/cms/articles/${id}/publish/`, {
+      const res = await fetch(`${API_BASE_URL}/api/v1/cms/articles/${id}/publish/`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`
@@ -64,7 +65,7 @@ export default function ArticlesManager() {
 
   const handleReject = async (id: number) => {
     try {
-      const res = await fetch(`http://127.0.0.1:8000/api/v1/cms/articles/${id}/reject/`, {
+      const res = await fetch(`${API_BASE_URL}/api/v1/cms/articles/${id}/reject/`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`

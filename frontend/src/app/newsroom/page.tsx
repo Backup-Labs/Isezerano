@@ -1,4 +1,5 @@
 "use client";
+import { API_BASE_URL } from '@/config';
 
 import React, { useEffect, useState } from 'react';
 import { useApp } from '@/context/AppContext';
@@ -26,20 +27,20 @@ export default function AnalyticsDashboard() {
         const headers = { 'Authorization': `Bearer ${token}` };
         
         // 1. Fetch Articles for traffic metrics
-        const artRes = await fetch('http://127.0.0.1:8000/api/v1/articles/');
+        const artRes = await fetch(API_BASE_URL + '/api/v1/articles/');
         if (artRes.ok) {
           const data = await artRes.json();
           setArticles(Array.isArray(data) ? data : (data.results || []));
         }
 
         // 2. Fetch Ad campaigns count
-        const adRes = await fetch('http://127.0.0.1:8000/api/v1/ads/header-banner/');
+        const adRes = await fetch(API_BASE_URL + '/api/v1/ads/header-banner/');
         if (adRes.ok) {
           setAdCampaignCount(3); // Mock active campaigns total for display
         }
 
         // 3. Fetch Subscribers count
-        const subRes = await fetch('http://127.0.0.1:8000/api/v1/newsletter/subscribe/');
+        const subRes = await fetch(API_BASE_URL + '/api/v1/newsletter/subscribe/');
         if (subRes.ok) {
           setSubscriberCount(148); // Mock subscribers list size
         }

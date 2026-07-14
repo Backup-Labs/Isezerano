@@ -1,4 +1,5 @@
 "use client";
+import { API_BASE_URL } from '@/config';
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
 
@@ -107,7 +108,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
   const fetchUserProfile = async (authToken: string) => {
     try {
-      const res = await fetch('http://127.0.0.1:8000/api/v1/auth/me/', {
+      const res = await fetch(API_BASE_URL + '/api/v1/auth/me/', {
         headers: {
           'Authorization': `Bearer ${authToken}`
         }
@@ -128,7 +129,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
   const fetchSiteSettings = async () => {
     try {
-      const res = await fetch('http://127.0.0.1:8000/api/v1/site-settings/');
+      const res = await fetch(API_BASE_URL + '/api/v1/site-settings/');
       if (res.ok) {
         const settings = await res.json();
         setSiteSettings(settings);
@@ -145,7 +146,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
   const login = async (username: string, password: string): Promise<boolean> => {
     try {
-      const res = await fetch('http://127.0.0.1:8000/api/v1/auth/token/', {
+      const res = await fetch(API_BASE_URL + '/api/v1/auth/token/', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'

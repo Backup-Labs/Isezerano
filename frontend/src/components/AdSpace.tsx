@@ -1,4 +1,5 @@
 "use client";
+import { API_BASE_URL } from '@/config';
 
 import React, { useEffect, useState, useRef } from 'react';
 
@@ -89,7 +90,7 @@ export const AdSpace: React.FC<AdSpaceProps> = ({ placement, onDismiss }) => {
   useEffect(() => {
     const fetchAd = async () => {
       try {
-        const res = await fetch(`http://127.0.0.1:8000/api/v1/ads/${placement}/`);
+        const res = await fetch(`${API_BASE_URL}/api/v1/ads/${placement}/`);
         if (res.ok) {
           const data = await res.json();
           setAd(data);
@@ -115,7 +116,7 @@ export const AdSpace: React.FC<AdSpaceProps> = ({ placement, onDismiss }) => {
           if (entry.isIntersecting && !trackedImpression.current) {
             trackedImpression.current = true;
             try {
-              await fetch('http://127.0.0.1:8000/api/v1/analytics/track/', {
+              await fetch(API_BASE_URL + '/api/v1/analytics/track/', {
                 method: 'POST',
                 headers: {
                   'Content-Type': 'application/json'
@@ -144,7 +145,7 @@ export const AdSpace: React.FC<AdSpaceProps> = ({ placement, onDismiss }) => {
   const handleAdClick = async () => {
     if (!ad) return;
     try {
-      await fetch('http://127.0.0.1:8000/api/v1/analytics/track/', {
+      await fetch(API_BASE_URL + '/api/v1/analytics/track/', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'

@@ -1,4 +1,5 @@
 "use client";
+import { API_BASE_URL } from '@/config';
 
 import React, { useEffect, useState, useRef } from 'react';
 import Link from 'next/link';
@@ -71,9 +72,9 @@ export default function Homepage() {
     const loadAllData = async () => {
       try {
         const [articlesRes, announcementsRes, verseRes] = await Promise.all([
-          fetch('http://127.0.0.1:8000/api/v1/articles/'),
-          fetch('http://127.0.0.1:8000/api/v1/announcements/'),
-          fetch('http://127.0.0.1:8000/api/v1/daily-verse/today/')
+          fetch(API_BASE_URL + '/api/v1/articles/'),
+          fetch(API_BASE_URL + '/api/v1/announcements/'),
+          fetch(API_BASE_URL + '/api/v1/daily-verse/today/')
         ]);
 
         if (articlesRes.ok) {
@@ -125,7 +126,7 @@ export default function Homepage() {
 
   const getMediaUrl = (path: string | null) => {
     if (!path) return '';
-    return path.startsWith('http') ? path : `http://127.0.0.1:8000${path}`;
+    return path.startsWith('http') ? path : `${API_BASE_URL}${path}`;
   };
 
   const handleScroll = (ref: React.RefObject<HTMLDivElement | null>, direction: 'left' | 'right') => {

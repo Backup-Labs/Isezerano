@@ -1,4 +1,5 @@
 "use client";
+import { API_BASE_URL } from '@/config';
 
 import React, { useEffect, useState, useRef } from 'react';
 import { useRouter } from 'next/navigation';
@@ -44,8 +45,8 @@ export default function CreateArticle() {
     const fetchOptions = async () => {
       try {
         const [catRes, tagRes] = await Promise.all([
-          fetch('http://127.0.0.1:8000/api/v1/categories/'),
-          fetch('http://127.0.0.1:8000/api/v1/tags/')
+          fetch(API_BASE_URL + '/api/v1/categories/'),
+          fetch(API_BASE_URL + '/api/v1/tags/')
         ]);
         if (catRes.ok && tagRes.ok) {
           const catsData = await catRes.json();
@@ -144,7 +145,7 @@ export default function CreateArticle() {
     });
 
     try {
-      const res = await fetch('http://127.0.0.1:8000/api/v1/cms/articles/', {
+      const res = await fetch(API_BASE_URL + '/api/v1/cms/articles/', {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`

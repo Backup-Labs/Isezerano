@@ -1,4 +1,5 @@
 "use client";
+import { API_BASE_URL } from '@/config';
 
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
@@ -68,7 +69,7 @@ export default function ArticleDetail() {
 
   const fetchArticleAndComments = async () => {
     try {
-      const artRes = await fetch(`http://127.0.0.1:8000/api/v1/articles/${slug}/`);
+      const artRes = await fetch(`${API_BASE_URL}/api/v1/articles/${slug}/`);
       if (artRes.status === 404) {
         router.push('/_not-found');
         return;
@@ -78,7 +79,7 @@ export default function ArticleDetail() {
         setArticle(artData);
         
         // Log view event beacon
-        fetch('http://127.0.0.1:8000/api/v1/analytics/track/', {
+        fetch(API_BASE_URL + '/api/v1/analytics/track/', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -88,7 +89,7 @@ export default function ArticleDetail() {
         }).catch(err => console.error(err));
       }
 
-      const commentsRes = await fetch(`http://127.0.0.1:8000/api/v1/articles/${slug}/comments/`);
+      const commentsRes = await fetch(`${API_BASE_URL}/api/v1/articles/${slug}/comments/`);
       if (commentsRes.ok) {
         setComments(await commentsRes.json());
       }
@@ -111,7 +112,7 @@ export default function ArticleDetail() {
     setSubmittingComment(true);
 
     try {
-      const res = await fetch(`http://127.0.0.1:8000/api/v1/articles/${slug}/comments/`, {
+      const res = await fetch(`${API_BASE_URL}/api/v1/articles/${slug}/comments/`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -123,7 +124,7 @@ export default function ArticleDetail() {
       if (res.ok) {
         setCommentBody('');
         // Re-load comments list
-        const commentsRes = await fetch(`http://127.0.0.1:8000/api/v1/articles/${slug}/comments/`);
+        const commentsRes = await fetch(`${API_BASE_URL}/api/v1/articles/${slug}/comments/`);
         if (commentsRes.ok) {
           setComments(await commentsRes.json());
         }
@@ -260,7 +261,7 @@ export default function ArticleDetail() {
       {article.cover_image && (
         <div className="w-full aspect-[21/9] overflow-hidden border border-theme-blue-deep">
           <img 
-            src={article.cover_image.startsWith('http') ? article.cover_image : `http://127.0.0.1:8000${article.cover_image}`} 
+            src={article.cover_image.startsWith('http') ? article.cover_image : `${API_BASE_URL}${article.cover_image}`} 
             alt={article.title}
             className="w-full h-full object-cover"
           />
