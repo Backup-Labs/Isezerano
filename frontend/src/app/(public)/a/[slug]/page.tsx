@@ -123,7 +123,6 @@ export default function ArticleDetail() {
 
       if (res.ok) {
         setCommentBody('');
-        // Re-load comments list
         const commentsRes = await fetch(`${API_BASE_URL}/api/v1/articles/${slug}/comments/`);
         if (commentsRes.ok) {
           setComments(await commentsRes.json());
@@ -151,7 +150,7 @@ export default function ArticleDetail() {
     const paragraphs = bodyContent.split('\n\n');
     if (paragraphs.length <= 3) {
       return (
-        <div className="flex flex-col gap-6 text-theme-light-gray leading-relaxed text-base font-normal">
+        <div className="flex flex-col gap-6 text-theme-black leading-relaxed text-base font-normal">
           {paragraphs.map((p, idx) => (
             <p key={idx} dangerouslySetInnerHTML={{ __html: p.replace(/\n/g, '<br />') }} />
           ))}
@@ -160,13 +159,13 @@ export default function ArticleDetail() {
     }
 
     return (
-      <div className="flex flex-col gap-6 text-theme-light-gray leading-relaxed text-base font-normal">
+      <div className="flex flex-col gap-6 text-theme-black leading-relaxed text-base font-normal">
         {paragraphs.slice(0, 3).map((p, idx) => (
           <p key={idx} dangerouslySetInnerHTML={{ __html: p.replace(/\n/g, '<br />') }} />
         ))}
         
         {/* Inline Advertisement placement */}
-        <div className="my-8 py-6 border-y border-theme-blue-deep bg-theme-charcoal/40">
+        <div className="my-8 py-6 border-y border-theme-gray-100 bg-theme-light-gray">
           <AdSpace placement="in-article-inline" />
         </div>
 
@@ -178,7 +177,7 @@ export default function ArticleDetail() {
   };
 
   return (
-    <article className="max-w-4xl mx-auto px-4 md:px-8 py-8 flex flex-col gap-8 bg-theme-black text-theme-light-gray animate-fade-in">
+    <article className="max-w-4xl mx-auto px-4 md:px-8 py-8 flex flex-col gap-8 bg-theme-white text-theme-black animate-fade-in">
       {/* Dynamic NewsArticle Schema JSON-LD */}
       <script 
         type="application/ld+json"
@@ -213,7 +212,7 @@ export default function ArticleDetail() {
           </span>
         )}
 
-        <h1 className="serif-title text-3xl md:text-6xl font-extrabold uppercase tracking-tight text-theme-light-gray leading-tight">
+        <h1 className="serif-title text-3xl md:text-6xl font-extrabold uppercase tracking-tight text-theme-black leading-tight">
           {article.title}
         </h1>
 
@@ -222,7 +221,7 @@ export default function ArticleDetail() {
         </p>
 
         {/* Byline / Metadata */}
-        <div className="flex flex-wrap items-center justify-between gap-6 pt-4 border-t border-theme-gray-100 text-[10px] font-mono text-theme-light-gray uppercase font-bold tracking-widest">
+        <div className="flex flex-wrap items-center justify-between gap-6 pt-4 border-t border-theme-gray-100 text-[10px] font-mono text-theme-black uppercase font-bold tracking-widest">
           <div className="flex items-center gap-4">
             <span>BY {article.author.first_name || article.author.username} {article.author.last_name}</span>
             <span className="flex items-center gap-1">
@@ -240,7 +239,7 @@ export default function ArticleDetail() {
               onClick={() => toggleBookmark(article.slug)}
               className="flex items-center gap-1 hover:text-theme-blue cursor-pointer"
             >
-              <Bookmark className={`w-3.5 h-3.5 ${isBookmarked(article.slug) ? 'fill-theme-blue text-theme-blue' : 'text-theme-light-gray'}`} />
+              <Bookmark className={`w-3.5 h-3.5 ${isBookmarked(article.slug) ? 'fill-theme-blue text-theme-blue' : 'text-theme-black'}`} />
               <span>{isBookmarked(article.slug) ? 'Bookmarked' : 'Bookmark'}</span>
             </button>
             <button 
@@ -257,9 +256,9 @@ export default function ArticleDetail() {
         </div>
       </div>
 
-      {/* Hero Cover Image (No rounded corners) */}
+      {/* Hero Cover Image */}
       {article.cover_image && (
-        <div className="w-full aspect-[21/9] overflow-hidden border border-theme-blue-deep">
+        <div className="w-full aspect-[21/9] overflow-hidden border border-theme-gray-100">
           <img 
             src={article.cover_image.startsWith('http') ? article.cover_image : `${API_BASE_URL}${article.cover_image}`} 
             alt={article.title}
@@ -269,7 +268,7 @@ export default function ArticleDetail() {
       )}
 
       {/* Main Body content */}
-      <div className="max-w-3xl mx-auto w-full py-4 font-sans text-theme-light-gray">
+      <div className="max-w-3xl mx-auto w-full py-4 font-sans text-theme-black">
         {renderBodyWithAds(article.body)}
       </div>
 
@@ -277,20 +276,20 @@ export default function ArticleDetail() {
       {article.tags.length > 0 && (
         <div className="flex flex-wrap gap-2 py-4 border-b border-theme-gray-100 max-w-3xl mx-auto w-full">
           {article.tags.map((tag) => (
-            <span key={tag.id} className="px-2.5 py-1 border border-theme-blue-deep text-[10px] font-mono uppercase tracking-widest text-theme-light-gray">
+            <span key={tag.id} className="px-2.5 py-1 border border-theme-gray-100 bg-theme-light-gray text-[10px] font-mono uppercase tracking-widest text-theme-black">
               #{tag.slug}
             </span>
           ))}
         </div>
       )}
 
-      {/* Author Bio Card (No rounded corners) */}
-      <div className="max-w-3xl mx-auto w-full border border-theme-blue-deep p-6 flex gap-6 items-start mt-6 bg-theme-charcoal/30">
-        <div className="w-16 h-16 bg-theme-blue-deep text-theme-black flex items-center justify-center shrink-0 font-mono text-xl font-bold uppercase">
+      {/* Author Bio Card */}
+      <div className="max-w-3xl mx-auto w-full border border-theme-gray-100 p-6 flex gap-6 items-start mt-6 bg-theme-light-gray">
+        <div className="w-16 h-16 bg-theme-blue text-white flex items-center justify-center shrink-0 font-mono text-xl font-bold uppercase">
           {article.author.username[0]}
         </div>
         <div className="flex flex-col gap-2">
-          <h4 className="font-mono text-xs font-bold text-theme-light-gray uppercase tracking-widest">
+          <h4 className="font-mono text-xs font-bold text-theme-black uppercase tracking-widest">
             AUTHOR: {article.author.first_name || article.author.username}
           </h4>
           <p className="text-xs text-theme-gray-400 leading-relaxed">
@@ -306,36 +305,36 @@ export default function ArticleDetail() {
 
       {/* Comments Section */}
       <div className="max-w-3xl mx-auto w-full mt-12 flex flex-col gap-6">
-        <h3 className="serif-title text-xl font-bold uppercase tracking-tight text-theme-light-gray border-b border-theme-blue-deep pb-2">
+        <h3 className="serif-title text-xl font-bold uppercase tracking-tight text-theme-black border-b border-theme-gray-100 pb-2">
           Comments ({comments.length})
         </h3>
 
         {/* Comment post form */}
         {user ? (
-          <form onSubmit={handlePostComment} className="flex flex-col gap-4 p-5 border border-theme-blue-deep bg-theme-charcoal/20">
-            <h4 className="text-xs text-theme-light-gray font-mono uppercase tracking-widest font-bold">Post a Comment</h4>
+          <form onSubmit={handlePostComment} className="flex flex-col gap-4 p-5 border border-theme-gray-100 bg-theme-light-gray">
+            <h4 className="text-xs text-theme-black font-mono uppercase tracking-widest font-bold">Post a Comment</h4>
             <textarea 
               rows={4}
               placeholder="Add your thoughts..."
               value={commentBody}
               onChange={(e) => setCommentBody(e.target.value)}
-              className="w-full bg-theme-black border border-theme-blue-deep px-4 py-3 text-xs font-mono text-theme-light-gray placeholder-theme-gray-400 focus:outline-none focus:border-theme-blue"
+              className="w-full bg-white border border-theme-gray-100 px-4 py-3 text-xs font-mono text-theme-black placeholder-theme-gray-400 focus:outline-none focus:border-theme-blue"
               required
             />
             <button 
               type="submit" 
               disabled={submittingComment}
-              className="px-5 py-2.5 bg-theme-blue-deep hover:bg-theme-blue text-theme-black text-xs font-mono font-bold uppercase tracking-widest flex items-center gap-1.5 self-end cursor-pointer"
+              className="px-5 py-2.5 bg-theme-blue hover:bg-theme-blue-glow text-white text-xs font-mono font-bold uppercase tracking-widest flex items-center gap-1.5 self-end cursor-pointer transition-all"
             >
               <Send className="w-3.5 h-3.5" />
               {submittingComment ? 'POSTING...' : 'POST COMMENT'}
             </button>
           </form>
         ) : (
-          <div className="border border-theme-blue-deep p-6 text-center">
-            <h4 className="text-xs font-mono font-bold uppercase tracking-widest text-theme-light-gray mb-2">Authentication required to comment</h4>
+          <div className="border border-theme-gray-100 p-6 text-center bg-theme-light-gray">
+            <h4 className="text-xs font-mono font-bold uppercase tracking-widest text-theme-black mb-2">Authentication required to comment</h4>
             <p className="text-xs text-theme-gray-400 mb-4">Please sign in to your reader account to post comments.</p>
-            <Link href="/login" className="px-4 py-2 bg-theme-blue-deep hover:bg-theme-blue text-theme-black text-xs font-mono font-bold uppercase tracking-widest">
+            <Link href="/login" className="px-4 py-2 bg-theme-blue hover:bg-theme-blue-glow text-white text-xs font-mono font-bold uppercase tracking-widest transition-all">
               Sign In
             </Link>
           </div>
@@ -346,10 +345,10 @@ export default function ArticleDetail() {
           {comments.map((comment) => (
             <div key={comment.id} className="p-5 border border-theme-gray-100 flex flex-col gap-3">
               <div className="flex justify-between items-center text-[10px] font-mono uppercase text-theme-gray-400">
-                <span className="text-theme-light-gray font-bold">@{comment.user.username}</span>
+                <span className="text-theme-black font-bold">@{comment.user.username}</span>
                 <span>{new Date(comment.created_at).toLocaleDateString()}</span>
               </div>
-              <p className="text-sm text-theme-light-gray leading-relaxed font-sans">{comment.body}</p>
+              <p className="text-sm text-theme-black leading-relaxed font-sans">{comment.body}</p>
               
               {/* Nested replies */}
               {comment.replies && comment.replies.map((reply) => (
@@ -358,7 +357,7 @@ export default function ArticleDetail() {
                     <span className="text-theme-blue font-bold">↳ @{reply.user.username}</span>
                     <span>{new Date(reply.created_at).toLocaleDateString()}</span>
                   </div>
-                  <p className="text-xs text-theme-light-gray leading-relaxed font-sans">{reply.body}</p>
+                  <p className="text-xs text-theme-black leading-relaxed font-sans">{reply.body}</p>
                 </div>
               ))}
             </div>

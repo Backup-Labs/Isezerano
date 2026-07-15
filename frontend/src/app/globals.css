@@ -1,18 +1,29 @@
 @import "tailwindcss";
 
 :root {
-  /* Clean Color System: Black, White, White-Gray, Dark Blue, Accent Blue */
-  --color-black: #0A0B0D;            /* Deep black for texts/borders */
-  --color-dark-section: #14161A;     /* Near-black card background */
-  --color-light-gray: #F3F4F6;       /* Clean white-gray for cards/panels */
-  --color-white: #FFFFFF;            /* Pure white background */
-  --color-gray-100: #E5E7EB;         /* Subtle gray divider border */
-  --color-gray-400: #6B7280;         /* Slate gray muted text */
-  --color-blue: #2F6DF6;             /* Accent blue */
-  --color-dark-blue: #1B3B6F;        /* Rich dark blue */
-  --color-blue-glow: #1C51C9;        /* Hover blue */
-  --color-border: #0A0B0D;           /* Bold line borders */
-  
+  /* ===================================================
+     PALETTE: White + Navy Blue (matching brand photo)
+     - White:      #FFFFFF  — primary background
+     - Light gray: #F0F4FF  — subtle secondary panels
+     - Gray-100:   #DDE4F0  — borders / dividers
+     - Gray-400:   #6B7A99  — muted / secondary text
+     - Blue:       #062360  — primary accent (buttons, badges, links)
+     - Blue hover: #0A3490  — hover / pressed state
+     - Black:      #0F1117  — body text
+     =================================================== */
+  --color-black: #0F1117;
+  --color-light-gray: #F0F4FF;
+  --color-white: #FFFFFF;
+  --color-gray-100: #DDE4F0;
+  --color-gray-400: #6B7A99;
+  --color-blue: #062360;
+  --color-blue-glow: #0A3490;
+  /* Map old "dark-section" and "dark-blue" to blue so dark banners become blue */
+  --color-dark-section: #062360;
+  --color-dark-blue: #062360;
+  /* Borders use a soft blue-gray, not black */
+  --color-border: #DDE4F0;
+
   --bg-primary: var(--color-white);
   --bg-secondary: var(--color-light-gray);
   --text-primary: var(--color-black);
@@ -20,9 +31,8 @@
   --border-color: var(--color-border);
   --border-muted: var(--color-gray-100);
 
-  /* Glassmorphic paper panels */
-  --glass-bg: #FAF8F6;
-  --glass-border: var(--border-color);
+  --glass-bg: #F8FAFF;
+  --glass-border: var(--color-gray-100);
   --glass-shadow: none;
 
   /* Font Families */
@@ -101,7 +111,7 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--color-blue-deep);
+  background: var(--color-blue);
 }
 
 ::-webkit-scrollbar-thumb:hover {

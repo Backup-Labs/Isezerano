@@ -108,11 +108,11 @@ export default function ArticlesManager() {
   }
 
   return (
-    <div className="flex flex-col gap-6 text-theme-light-gray">
+    <div className="flex flex-col gap-6 text-theme-black">
       {/* Header bar */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-theme-blue-deep">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-theme-gray-100">
         <div className="flex flex-col gap-1">
-          <h1 className="serif-title text-2xl font-bold uppercase tracking-wider text-theme-light-gray">
+          <h1 className="serif-title text-2xl font-bold uppercase tracking-wider text-theme-black">
             Articles Manager
           </h1>
           <p className="text-xs text-theme-gray-400 font-mono">
@@ -122,7 +122,7 @@ export default function ArticlesManager() {
 
         <Link 
           href="/newsroom/articles/create"
-          className="flex items-center gap-1.5 px-4 py-2.5 bg-theme-blue-deep hover:bg-theme-blue text-theme-black text-xs font-mono font-bold uppercase tracking-wider transition-all self-start sm:self-center cursor-pointer"
+          className="flex items-center gap-1.5 px-4 py-2.5 bg-theme-blue hover:bg-theme-blue-glow text-white text-xs font-mono font-bold uppercase tracking-wider transition-all self-start sm:self-center cursor-pointer"
         >
           <Plus className="w-4 h-4" />
           Write Article
@@ -130,13 +130,13 @@ export default function ArticlesManager() {
       </div>
 
       {/* Filter Tabs */}
-      <div className="flex gap-2 p-1 border border-theme-blue-deep w-max bg-theme-charcoal/20">
+      <div className="flex gap-2 p-1 border border-theme-gray-100 w-max bg-theme-light-gray">
         {['all', 'draft', 'in_review', 'published'].map((status) => (
           <button 
             key={status}
             onClick={() => setStatusFilter(status)}
             className={`px-3 py-1.5 text-xs font-mono font-bold uppercase transition-all cursor-pointer ${
-              statusFilter === status ? 'bg-theme-blue-deep text-theme-black' : 'text-theme-gray-400 hover:text-theme-light-gray'
+              statusFilter === status ? 'bg-theme-blue text-white' : 'text-theme-gray-400 hover:text-theme-black'
             }`}
           >
             {status.replace('_', ' ')}
@@ -145,11 +145,11 @@ export default function ArticlesManager() {
       </div>
 
       {/* Data Table List */}
-      <div className="border border-theme-blue-deep overflow-hidden">
+      <div className="border border-theme-gray-100 overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
-              <tr className="border-b border-theme-blue-deep text-[10px] font-mono text-theme-gray-400 uppercase bg-theme-charcoal/40">
+              <tr className="border-b border-theme-gray-100 text-[10px] font-mono text-theme-gray-400 uppercase bg-theme-light-gray">
                 <th className="p-4 pl-6">Headline Title</th>
                 <th className="p-4">Category</th>
                 <th className="p-4">Author</th>
@@ -158,22 +158,22 @@ export default function ArticlesManager() {
                 <th className="p-4 pr-6 text-right">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-theme-gray-100 text-sm text-theme-gray-400 bg-theme-charcoal/10">
+            <tbody className="divide-y divide-theme-gray-100 text-sm text-theme-gray-400 bg-white">
               {filteredArticles.map((art) => (
-                <tr key={art.id} className="hover:bg-theme-charcoal/30 transition-colors">
-                  <td className="p-4 pl-6 font-bold text-theme-light-gray max-w-sm truncate">
+                <tr key={art.id} className="hover:bg-theme-light-gray transition-colors">
+                  <td className="p-4 pl-6 font-bold text-theme-black max-w-sm truncate">
                     {art.title}
                   </td>
-                  <td className="p-4 text-xs font-mono text-theme-light-gray">
+                  <td className="p-4 text-xs font-mono text-theme-black">
                     {art.category?.name || 'GENERIC'}
                   </td>
-                  <td className="p-4 text-xs font-mono text-theme-light-gray">
+                  <td className="p-4 text-xs font-mono text-theme-black">
                     @{art.author.username}
                   </td>
                   <td className="p-4">
                     {getStatusBadge(art.status)}
                   </td>
-                  <td className="p-4 text-xs font-mono text-theme-light-gray">
+                  <td className="p-4 text-xs font-mono text-theme-black">
                     <span className="flex items-center gap-1">
                       <Eye className="w-3.5 h-3.5 text-theme-blue" />
                       {art.view_count}
@@ -205,7 +205,7 @@ export default function ArticlesManager() {
 
                       <Link 
                         href={`/newsroom/articles/${art.id}/edit`}
-                        className="p-1.5 border border-theme-blue-deep bg-theme-charcoal hover:bg-theme-blue hover:text-theme-black text-theme-light-gray transition-all flex items-center gap-1"
+                        className="p-1.5 border border-theme-gray-100 bg-theme-light-gray hover:bg-theme-blue hover:text-white transition-all flex items-center gap-1 text-theme-black"
                       >
                         <Edit3 className="w-3.5 h-3.5" />
                         <span className="text-[10px] font-mono font-bold uppercase">Edit</span>

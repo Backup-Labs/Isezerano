@@ -267,10 +267,10 @@ export const Navbar: React.FC = () => {
         </div>
       </div>
 
-      {/* ================= ROW 3: Latest Story Ticker (Dark Blue Ribbon) ================= */}
+      {/* ================= ROW 3: Latest Story Ticker (Blue Ribbon) ================= */}
       <div className="w-full bg-theme-dark-blue py-2.5 px-4 md:px-8 text-white shadow-inner select-none">
         <div className="max-w-7xl mx-auto flex items-center gap-4">
-          <div className="px-2.5 py-0.5 bg-theme-blue text-white text-[9px] font-mono font-bold uppercase tracking-widest shrink-0 shadow-sm animate-pulse rounded-sm">
+          <div className="px-2.5 py-0.5 bg-white text-theme-blue text-[9px] font-mono font-bold uppercase tracking-widest shrink-0 shadow-sm animate-pulse rounded-sm">
             {t.latestStory[language]}
           </div>
 
@@ -278,17 +278,17 @@ export const Navbar: React.FC = () => {
             {activeArticle ? (
               <Link 
                 href={`/a/${activeArticle.slug}`}
-                className="font-mono text-xs text-white hover:text-theme-light-gray hover:underline transition-all tracking-wider line-clamp-1 block"
+                className="font-mono text-xs text-white hover:text-white/80 hover:underline transition-all tracking-wider line-clamp-1 block"
                 key={activeArticle.id}
               >
                 {activeArticle.title}
               </Link>
             ) : (
-              <span className="font-mono text-xs text-gray-300">Loading dispatches...</span>
+              <span className="font-mono text-xs text-white/60">Loading dispatches...</span>
             )}
           </div>
 
-          <div className="hidden sm:block text-[10px] font-mono text-gray-300">
+          <div className="hidden sm:block text-[10px] font-mono text-white/60">
             {currentDate}
           </div>
         </div>

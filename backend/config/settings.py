@@ -144,13 +144,19 @@ USE_TZ = True
 STATIC_URL = 'static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
-# Serve static files with compression and caching via whitenoise
+# Serve static files with compression and caching via whitenoise in production.
+# In local development (DEBUG=True), use Django's default storage to avoid
+# needing to run collectstatic before every server start.
 STORAGES = {
     "default": {
         "BACKEND": "django.core.files.storage.FileSystemStorage",
     },
     "staticfiles": {
-        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+        "BACKEND": (
+            "whitenoise.storage.CompressedManifestStaticFilesStorage"
+            if not DEBUG
+            else "django.contrib.staticfiles.storage.StaticFilesStorage"
+        ),
     },
 }
 

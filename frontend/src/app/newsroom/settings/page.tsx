@@ -94,10 +94,10 @@ export default function SiteSettingsManager() {
   }
 
   return (
-    <div className="flex flex-col gap-6 text-theme-light-gray animate-fade-in">
+    <div className="flex flex-col gap-6 text-theme-black animate-fade-in">
       {/* Header bar */}
-      <div className="flex items-center gap-2 pb-4 border-b border-theme-blue-deep">
-        <h1 className="serif-title text-2xl font-bold uppercase tracking-wider text-theme-light-gray">
+      <div className="flex items-center gap-2 pb-4 border-b border-theme-gray-100">
+        <h1 className="serif-title text-2xl font-bold uppercase tracking-wider text-theme-black">
           General Settings
         </h1>
       </div>
@@ -111,7 +111,7 @@ export default function SiteSettingsManager() {
       )}
 
       {/* Settings Form */}
-      <form onSubmit={handleSubmit} className="border border-theme-blue-deep p-8 max-w-3xl flex flex-col gap-6 bg-theme-charcoal/20">
+      <form onSubmit={handleSubmit} className="border border-theme-gray-100 p-8 max-w-3xl flex flex-col gap-6 bg-theme-light-gray">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Site Name */}
           <div className="flex flex-col gap-2">
@@ -120,7 +120,7 @@ export default function SiteSettingsManager() {
               type="text"
               value={siteName}
               onChange={(e) => setSiteName(e.target.value)}
-              className="bg-theme-black border border-theme-blue-deep px-4 py-2 text-sm text-theme-light-gray focus:outline-none focus:border-theme-blue"
+              className="bg-white border border-theme-gray-100 px-4 py-2 text-sm text-theme-black focus:outline-none focus:border-theme-blue w-full"
               required
             />
           </div>
@@ -133,13 +133,13 @@ export default function SiteSettingsManager() {
                 type="color"
                 value={primaryColor}
                 onChange={(e) => setPrimaryColor(e.target.value)}
-                className="w-10 h-10 border border-theme-blue-deep bg-transparent cursor-pointer"
+                className="w-10 h-10 border border-theme-gray-100 bg-white cursor-pointer"
               />
               <input 
                 type="text"
                 value={primaryColor}
                 onChange={(e) => setPrimaryColor(e.target.value)}
-                className="bg-theme-black border border-theme-blue-deep px-4 py-2 text-sm text-theme-light-gray focus:outline-none focus:border-theme-blue font-mono w-32"
+                className="bg-white border border-theme-gray-100 px-4 py-2 text-sm text-theme-black focus:outline-none focus:border-theme-blue font-mono w-32"
                 required
               />
             </div>
@@ -148,12 +148,12 @@ export default function SiteSettingsManager() {
 
         {/* Maintenance Toggle */}
         <div className="flex flex-col gap-2 py-4 border-y border-theme-gray-100">
-          <label className="flex items-center gap-2.5 text-xs text-theme-light-gray font-mono cursor-pointer font-bold uppercase tracking-wider">
+          <label className="flex items-center gap-2.5 text-xs text-theme-black font-mono cursor-pointer font-bold uppercase tracking-wider">
             <input 
               type="checkbox"
               checked={maintenanceMode}
               onChange={(e) => setMaintenanceMode(e.target.checked)}
-              className="rounded border-theme-blue-deep text-theme-blue focus:ring-0 cursor-pointer w-4 h-4"
+              className="rounded border-theme-gray-100 text-theme-blue focus:ring-0 cursor-pointer w-4 h-4"
             />
             <span>Activate Maintenance Mode</span>
           </label>
@@ -164,44 +164,24 @@ export default function SiteSettingsManager() {
 
         {/* Social URL links */}
         <div className="flex flex-col gap-4">
-          <h4 className="text-xs font-mono text-theme-light-gray uppercase tracking-widest font-bold">Social Media Links</h4>
+          <h4 className="text-xs font-mono text-theme-black uppercase tracking-widest font-bold">Social Media Links</h4>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="flex flex-col gap-1.5">
-              <label className="text-[10px] font-mono text-theme-gray-400 uppercase font-semibold">Facebook URL</label>
-              <input 
-                type="url"
-                value={facebook}
-                onChange={(e) => setFacebook(e.target.value)}
-                className="bg-theme-black border border-theme-blue-deep px-4 py-2 text-xs text-theme-light-gray focus:outline-none focus:border-theme-blue"
-              />
-            </div>
-            <div className="flex flex-col gap-1.5">
-              <label className="text-[10px] font-mono text-theme-gray-400 uppercase font-semibold">Twitter/X URL</label>
-              <input 
-                type="url"
-                value={twitter}
-                onChange={(e) => setTwitter(e.target.value)}
-                className="bg-theme-black border border-theme-blue-deep px-4 py-2 text-xs text-theme-light-gray focus:outline-none focus:border-theme-blue"
-              />
-            </div>
-            <div className="flex flex-col gap-1.5">
-              <label className="text-[10px] font-mono text-theme-gray-400 uppercase font-semibold">Instagram URL</label>
-              <input 
-                type="url"
-                value={instagram}
-                onChange={(e) => setInstagram(e.target.value)}
-                className="bg-theme-black border border-theme-blue-deep px-4 py-2 text-xs text-theme-light-gray focus:outline-none focus:border-theme-blue"
-              />
-            </div>
-            <div className="flex flex-col gap-1.5">
-              <label className="text-[10px] font-mono text-theme-gray-400 uppercase font-semibold">Youtube URL</label>
-              <input 
-                type="url"
-                value={youtube}
-                onChange={(e) => setYoutube(e.target.value)}
-                className="bg-theme-black border border-theme-blue-deep px-4 py-2 text-xs text-theme-light-gray focus:outline-none focus:border-theme-blue"
-              />
-            </div>
+            {[
+              { label: 'Facebook URL', value: facebook, set: setFacebook },
+              { label: 'Twitter/X URL', value: twitter, set: setTwitter },
+              { label: 'Instagram URL', value: instagram, set: setInstagram },
+              { label: 'Youtube URL', value: youtube, set: setYoutube },
+            ].map(({ label, value, set }) => (
+              <div key={label} className="flex flex-col gap-1.5">
+                <label className="text-[10px] font-mono text-theme-gray-400 uppercase font-semibold">{label}</label>
+                <input 
+                  type="url"
+                  value={value}
+                  onChange={(e) => set(e.target.value)}
+                  className="bg-white border border-theme-gray-100 px-4 py-2 text-xs text-theme-black focus:outline-none focus:border-theme-blue w-full"
+                />
+              </div>
+            ))}
           </div>
         </div>
 
@@ -212,7 +192,7 @@ export default function SiteSettingsManager() {
             rows={2}
             value={footerText}
             onChange={(e) => setFooterText(e.target.value)}
-            className="bg-theme-black border border-theme-blue-deep px-4 py-2.5 text-sm text-theme-light-gray focus:outline-none focus:border-theme-blue"
+            className="bg-white border border-theme-gray-100 px-4 py-2.5 text-sm text-theme-black focus:outline-none focus:border-theme-blue w-full"
             required
           />
         </div>
@@ -221,7 +201,7 @@ export default function SiteSettingsManager() {
         <button 
           type="submit" 
           disabled={saving}
-          className="px-6 py-3 bg-theme-blue-deep hover:bg-theme-blue text-theme-black font-mono font-bold uppercase tracking-widest text-xs transition-all flex items-center justify-center gap-1.5 cursor-pointer self-start"
+          className="px-6 py-3 bg-theme-blue hover:bg-theme-blue-glow text-white font-mono font-bold uppercase tracking-widest text-xs transition-all flex items-center justify-center gap-1.5 cursor-pointer self-start"
         >
           <Save className="w-4 h-4" />
           {saving ? 'SAVING...' : 'Save Settings'}

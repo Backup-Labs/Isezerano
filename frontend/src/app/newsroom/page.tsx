@@ -85,10 +85,10 @@ export default function AnalyticsDashboard() {
   ];
 
   const statCards = [
-    { name: 'Total Pageviews', value: totalViews.toLocaleString(), icon: <Eye className="w-5 h-5 text-theme-blue" />, desc: 'Total article pageviews' },
-    { name: 'Published Articles', value: publishedArticles, icon: <BookOpen className="w-5 h-5 text-theme-blue" />, desc: 'Total articles live' },
-    { name: 'Active Ads', value: adCampaignCount, icon: <Megaphone className="w-5 h-5 text-theme-blue" />, desc: 'Active ad placements' },
-    { name: 'Newsletter Subscribers', value: subscriberCount, icon: <Users className="w-5 h-5 text-theme-blue" />, desc: 'Registered newsletter emails' },
+    { name: 'Total Pageviews', value: totalViews.toLocaleString(), icon: <Eye className="w-5 h-5" />, desc: 'Total article pageviews' },
+    { name: 'Published Articles', value: publishedArticles, icon: <BookOpen className="w-5 h-5" />, desc: 'Total articles live' },
+    { name: 'Active Ads', value: adCampaignCount, icon: <Megaphone className="w-5 h-5" />, desc: 'Active ad placements' },
+    { name: 'Newsletter Subscribers', value: subscriberCount, icon: <Users className="w-5 h-5" />, desc: 'Registered newsletter emails' },
   ];
 
   return (
@@ -110,7 +110,7 @@ export default function AnalyticsDashboard() {
               <span className="serif-title text-3xl font-black text-theme-black">{card.value}</span>
               <span className="text-[10px] text-theme-gray-400 font-mono mt-1 font-semibold">{card.desc}</span>
             </div>
-            <div className="w-12 h-12 flex items-center justify-center shrink-0 border border-theme-gray-100 bg-theme-light-gray group-hover:bg-theme-blue group-hover:text-white transition-all rounded">
+            <div className="w-12 h-12 flex items-center justify-center shrink-0 border border-theme-gray-100 bg-theme-light-gray group-hover:bg-theme-blue transition-all rounded text-theme-blue group-hover:text-white">
               {card.icon}
             </div>
           </div>
@@ -133,9 +133,9 @@ export default function AnalyticsDashboard() {
                 <Tooltip 
                   contentStyle={{ background: '#F5F6F8', border: '1px solid #e5e7eb' }}
                   labelStyle={{ color: '#000', fontFamily: 'monospace', fontWeight: 'bold' }}
-                  itemStyle={{ color: '#1B3B6F', fontFamily: 'monospace' }}
+                  itemStyle={{ color: '#062360', fontFamily: 'monospace' }}
                 />
-                <Line type="monotone" dataKey="views" stroke="#1B3B6F" strokeWidth={3} dot={{ r: 4, strokeWidth: 2 }} activeDot={{ r: 6 }} />
+                <Line type="monotone" dataKey="views" stroke="#062360" strokeWidth={3} dot={{ r: 4, strokeWidth: 2 }} activeDot={{ r: 6 }} />
               </LineChart>
             </ResponsiveContainer>
           </div>
@@ -155,9 +155,9 @@ export default function AnalyticsDashboard() {
                 <Tooltip 
                   contentStyle={{ background: '#F5F6F8', border: '1px solid #e5e7eb' }}
                   labelStyle={{ color: '#000', fontFamily: 'monospace', fontWeight: 'bold' }}
-                  itemStyle={{ color: '#1B3B6F', fontFamily: 'monospace' }}
+                  itemStyle={{ color: '#062360', fontFamily: 'monospace' }}
                 />
-                <Bar dataKey="views" fill="#1B3B6F" radius={[0, 0, 0, 0]} />
+                <Bar dataKey="views" fill="#062360" radius={[0, 0, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </div>

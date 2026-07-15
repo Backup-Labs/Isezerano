@@ -52,10 +52,10 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="max-w-md mx-auto w-full px-6 py-20 relative flex flex-col gap-6 bg-theme-black text-theme-light-gray animate-fade-in">
+    <div className="max-w-md mx-auto w-full px-6 py-20 relative flex flex-col gap-6 bg-theme-white text-theme-black animate-fade-in">
       {/* Brand */}
       <div className="text-center flex flex-col items-center gap-2 mb-4">
-        <h2 className="serif-title text-3xl font-black uppercase tracking-tight text-theme-light-gray">
+        <h2 className="serif-title text-3xl font-black uppercase tracking-tight text-theme-black">
           Console Portal Sign In
         </h2>
         <p className="text-[10px] text-theme-gray-400 font-mono uppercase tracking-widest font-bold">
@@ -64,30 +64,30 @@ export default function LoginPage() {
       </div>
 
       {/* Form Card */}
-      <div className="border border-theme-blue-deep p-8 flex flex-col gap-6 bg-theme-charcoal/20">
-        <form onSubmit={handleSubmit} className="flex flex-col gap-5 text-xs font-mono text-theme-light-gray">
+      <div className="border border-theme-gray-100 p-8 flex flex-col gap-6 bg-theme-light-gray">
+        <form onSubmit={handleSubmit} className="flex flex-col gap-5 text-xs font-mono text-theme-black">
           {/* Username */}
           <div className="flex flex-col gap-2">
-            <label className="uppercase font-bold tracking-wider">Username</label>
+            <label className="uppercase font-bold tracking-wider text-theme-black">Username</label>
             <input 
               type="text" 
               placeholder="Username"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
-              className="bg-transparent border border-theme-blue-deep px-4 py-2.5 text-xs text-theme-light-gray placeholder-theme-gray-400 focus:outline-none focus:border-theme-blue"
+              className="bg-white border border-theme-gray-100 px-4 py-2.5 text-xs text-theme-black placeholder-theme-gray-400 focus:outline-none focus:border-theme-blue"
               required
             />
           </div>
 
           {/* Password */}
           <div className="flex flex-col gap-2">
-            <label className="uppercase font-bold tracking-wider">Password</label>
+            <label className="uppercase font-bold tracking-wider text-theme-black">Password</label>
             <input 
               type="password" 
               placeholder="Password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="bg-transparent border border-theme-blue-deep px-4 py-2.5 text-xs text-theme-light-gray placeholder-theme-gray-400 focus:outline-none focus:border-theme-blue"
+              className="bg-white border border-theme-gray-100 px-4 py-2.5 text-xs text-theme-black placeholder-theme-gray-400 focus:outline-none focus:border-theme-blue"
               required
             />
           </div>
@@ -104,7 +104,7 @@ export default function LoginPage() {
           <button 
             type="submit" 
             disabled={loading}
-            className="w-full py-3 bg-theme-blue-deep hover:bg-theme-blue text-theme-black font-mono font-bold uppercase tracking-widest text-xs transition-all flex items-center justify-center gap-2 cursor-pointer mt-2"
+            className="w-full py-3 bg-theme-blue hover:bg-theme-blue-glow text-white font-mono font-bold uppercase tracking-widest text-xs transition-all flex items-center justify-center gap-2 cursor-pointer mt-2"
           >
             <Key className="w-4 h-4" />
             {loading ? 'SIGNING IN...' : 'SIGN IN'}
@@ -113,10 +113,10 @@ export default function LoginPage() {
 
         <div className="border-t border-theme-gray-100 pt-4 text-center text-[10px] text-theme-gray-400 font-mono">
           <p>
-            Default Admin credentials: <span className="text-theme-light-gray font-bold">admin</span> / <span className="text-theme-light-gray font-bold">pulse_admin_pass</span>
+            Default Admin credentials: <span className="text-theme-black font-bold">admin</span> / <span className="text-theme-black font-bold">pulse_admin_pass</span>
           </p>
           <p className="mt-1">
-            Default Editor credentials: <span className="text-theme-light-gray font-bold">editor_alex</span> / <span className="text-theme-light-gray font-bold">pulse_editor_pass</span>
+            Default Editor credentials: <span className="text-theme-black font-bold">editor_alex</span> / <span className="text-theme-black font-bold">pulse_editor_pass</span>
           </p>
         </div>
       </div>

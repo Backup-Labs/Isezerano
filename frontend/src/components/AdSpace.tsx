@@ -60,16 +60,17 @@ export const AdSpace: React.FC<AdSpaceProps> = ({ placement, onDismiss }) => {
       case 'header-banner':
         return 'w-full max-w-[970px] min-h-[90px]';
       case 'hero_sidebar':
+        return 'w-full h-full';
       case 'news_desk_sidebar':
       case 'sports_sidebar':
       case 'sidebar-rail':
-        return 'w-full max-w-[300px] min-h-[600px]';
+        return 'w-full min-h-[400px]';
       case 'daily_verse_sidebar':
       case 'grid_sidebar_stack_1':
       case 'grid_sidebar_stack_2':
       case 'grid_sidebar_stack_3':
       case 'in-article-inline':
-        return 'w-full max-w-[300px] min-h-[250px]';
+        return 'w-full min-h-[250px]';
       case 'full_width_1':
       case 'full_width_2':
       case 'full_width_3':
@@ -170,17 +171,22 @@ export const AdSpace: React.FC<AdSpaceProps> = ({ placement, onDismiss }) => {
 
   // Fallback ad placeholder promoting Isezerano
   if (!ad) {
+    const isSidebar = ['hero_sidebar','news_desk_sidebar','sports_sidebar','sidebar-rail'].includes(placement);
     return (
-      <div className={`mx-auto flex flex-col items-center justify-center bg-theme-charcoal border border-theme-blue-deep text-center p-6 relative overflow-hidden transition-all duration-300 hover:border-theme-blue group rounded ${getDimensions()}`}>
-        <span className="text-[8px] text-theme-blue bg-theme-blue/10 px-2 py-0.5 border border-theme-blue/20 font-mono absolute top-3 right-3 font-bold uppercase">Sponsor</span>
-        <h4 className="serif-title text-base font-bold text-theme-light-gray mb-1 uppercase tracking-wider group-hover:text-theme-blue transition-colors">ADVERTISE ON ISEZERANO</h4>
-        <p className="text-[10px] text-theme-gray-400 max-w-[240px] mb-4 font-sans leading-relaxed">Connect with thousands of daily business, design, and faith readers in Rwanda.</p>
-        <a 
-          href="mailto:ads@isezerano.com?subject=Advertise%20with%20Isezerano" 
-          className="px-3.5 py-1.5 border border-theme-blue bg-theme-blue hover:bg-theme-blue-glow text-white text-[9px] font-mono font-bold uppercase tracking-widest transition-all rounded shadow-sm"
-        >
-          Request Ad Kit →
-        </a>
+      <div className={`mx-auto flex flex-col items-center justify-start bg-theme-blue border border-theme-blue text-center p-6 relative overflow-hidden transition-all duration-300 group rounded ${getDimensions()}`}>
+        <span className="text-[8px] text-white/70 bg-white/10 px-2 py-0.5 border border-white/20 font-mono absolute top-3 right-3 font-bold uppercase">Sponsor</span>
+        <div className="flex flex-col items-center justify-center flex-1 w-full gap-4 mt-8">
+          <h4 className="serif-title text-base font-bold text-white mb-1 uppercase tracking-wider">ADVERTISE ON ISEZERANO</h4>
+          <p className="text-[10px] text-white/70 max-w-[240px] font-sans leading-relaxed">
+            Connect with thousands of daily business, design, and faith readers in Rwanda.
+          </p>
+          <a 
+            href="mailto:ads@isezerano.com?subject=Advertise%20with%20Isezerano" 
+            className="px-4 py-2 border border-white bg-white hover:bg-theme-light-gray text-theme-blue text-[9px] font-mono font-bold uppercase tracking-widest transition-all rounded shadow-sm w-max"
+          >
+            Request Ad Kit →
+          </a>
+        </div>
       </div>
     );
   }
@@ -327,17 +333,17 @@ export const AdSpace: React.FC<AdSpaceProps> = ({ placement, onDismiss }) => {
             </div>
 
             {/* Ad Content Deck */}
-            <div className="flex-grow flex flex-col justify-between gap-1 text-left min-w-0">
+            <div className="flex-grow flex flex-col justify-between gap-2 text-left min-w-0 pb-2">
               <div>
                 <span className="text-[8px] font-mono tracking-widest text-theme-blue font-bold uppercase block">Sponsored Partnership</span>
-                <h4 className="serif-title text-sm md:text-base font-bold text-theme-light-gray uppercase leading-tight truncate">
+                <h4 className="serif-title text-sm md:text-base font-bold text-theme-light-gray uppercase leading-tight">
                   {ad.name}
                 </h4>
               </div>
 
               {/* Action Trigger */}
-              <div className="flex items-center justify-between pt-1 border-t border-theme-blue-deep/30 mt-1">
-                <span className="px-3 py-1 bg-theme-blue text-white hover:bg-theme-blue-glow text-[9px] font-mono font-bold uppercase tracking-widest rounded transition-all shadow-sm">
+              <div className="flex items-center justify-between pt-2 border-t border-theme-blue-deep/30 mt-2">
+                <span className="px-3 py-1.5 bg-theme-blue text-white hover:bg-theme-blue-glow text-[9px] font-mono font-bold uppercase tracking-widest rounded transition-all shadow-sm">
                   {ad.cta_text || 'Learn More'}
                 </span>
                 <span className="text-[8px] text-theme-gray-400 font-mono uppercase font-bold tracking-widest">

@@ -7,7 +7,8 @@ from django.shortcuts import get_object_or_404
 from .models import Category, Tag, Article, ArticleRevision, Comment
 from .serializers import (
     CategorySerializer, TagSerializer, ArticleListSerializer, 
-    ArticleDetailSerializer, CommentSerializer, ArticleRevisionSerializer
+    ArticleDetailSerializer, CommentSerializer, ArticleRevisionSerializer,
+    CMSArticleWriteSerializer
 )
 from users.permissions import IsJournalist, IsEditor, IsAdmin
 
@@ -105,6 +106,12 @@ class ArticleCommentListView(generics.ListAPIView):
 class CMSArticleViewSet(viewsets.ModelViewSet):
     serializer_class = ArticleDetailSerializer
     permission_classes = (IsJournalist,)
+
+    def get_serializer_class(self):
+        # Use the write serializer for create/update, detail serializer for reads
+        if self.action in ('create', 'update', 'partial_update'):
+            return CMSArticleWriteSerializer
+        return ArticleDetailSerializer
 
     def get_queryset(self):
         user = self.request.user

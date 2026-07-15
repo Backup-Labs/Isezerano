@@ -229,14 +229,14 @@ export default function Homepage() {
   const youMissedArticles = [...articles].reverse().slice(0, 5);
 
   return (
-    <div className="max-w-7xl mx-auto px-4 md:px-8 py-8 flex flex-col gap-12 bg-theme-white text-theme-black">
+    <div className="max-w-7xl mx-auto px-4 md:px-8 py-8 flex flex-col gap-8 bg-theme-white text-theme-black">
       
       {/* =======================================================================
           SECTION 2: HERO SECTION
           ======================================================================= */}
-      <section className="grid grid-cols-1 lg:grid-cols-12 gap-8 pb-10 border-b border-theme-blue-deep">
+      <section className="grid grid-cols-1 lg:grid-cols-12 gap-6 pb-6 border-b border-theme-blue-deep items-start">
         {/* Left Column (Slideshow - ~55% width -> col-span-7) */}
-        <div className="lg:col-span-7 flex flex-col justify-between border-b lg:border-b-0 lg:border-r border-theme-blue-deep pb-6 lg:pb-0 lg:pr-8">
+        <div className="lg:col-span-7 flex flex-col justify-between border-b lg:border-b-0 lg:border-r border-theme-blue-deep pb-6 lg:pb-0 lg:pr-6">
           {heroArticles.length > 0 && (
             <div className="relative w-full aspect-[16/9] overflow-hidden group rounded-md shadow-sm border border-theme-blue-deep">
               {/* Slideshow image */}
@@ -301,7 +301,7 @@ export default function Homepage() {
         </div>
 
         {/* Middle Column (Breaking News - ~25% width -> col-span-3) */}
-        <div className="lg:col-span-3 flex flex-col gap-4 border-b lg:border-b-0 lg:border-r border-theme-blue-deep pb-6 lg:pb-0 lg:pr-8">
+        <div className="lg:col-span-3 flex flex-col gap-4 border-b lg:border-b-0 lg:border-r border-theme-blue-deep pb-6 lg:pb-0 lg:pr-6">
           <div className="flex items-center justify-between border-b border-theme-blue-deep pb-3">
             <span className="font-mono text-xs font-black uppercase tracking-widest text-theme-blue flex items-center gap-1.5">
               <span className="w-2 h-2 rounded-full bg-red-500 animate-ping" />
@@ -343,8 +343,8 @@ export default function Homepage() {
           </div>
         </div>
 
-        {/* Right Column (Hero Sidebar Ad - ~20% width -> col-span-2) */}
-        <div className="lg:col-span-2 flex justify-center items-start">
+        {/* Right Column (Hero Sidebar Ad - col-span-2) */}
+        <div className="lg:col-span-2 flex justify-center">
           <AdSpace placement="hero_sidebar" />
         </div>
       </section>
