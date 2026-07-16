@@ -14,7 +14,7 @@ class HomepageLayoutSerializer(serializers.ModelSerializer):
 class SiteSettingSerializer(serializers.ModelSerializer):
     class Meta:
         model = SiteSetting
-        fields = ('site_name', 'logo_light', 'logo_dark', 'primary_color', 'maintenance_mode', 'facebook_url', 'twitter_url', 'instagram_url', 'youtube_url', 'footer_text')
+        fields = ('site_name', 'logo_light', 'logo_dark', 'primary_color', 'maintenance_mode', 'facebook_url', 'twitter_url', 'instagram_url', 'youtube_url', 'footer_text', 'footer_recent_limit', 'homepage_limit')
 
 class DailyVerseSerializer(serializers.ModelSerializer):
     class Meta:

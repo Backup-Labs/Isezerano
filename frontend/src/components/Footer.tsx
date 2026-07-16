@@ -1,5 +1,5 @@
 "use client";
-import { API_BASE_URL } from '@/config';
+import { API_BASE_URL, getMediaUrl } from '@/config';
 
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
@@ -37,24 +37,26 @@ export const Footer: React.FC = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
+        const limit = siteSettings?.footer_recent_limit ?? 3;
         const [catRes, tagRes, artRes] = await Promise.all([
           fetch(API_BASE_URL + '/api/v1/categories/'),
           fetch(API_BASE_URL + '/api/v1/tags/'),
-          fetch(API_BASE_URL + '/api/v1/articles/?limit=3')
+          fetch(`${API_BASE_URL}/api/v1/articles/?limit=${limit}`)
         ]);
         
         if (catRes.ok) setCategories(await catRes.json());
         if (tagRes.ok) setTags(await tagRes.json());
         if (artRes.ok) {
           const data = await artRes.json();
-          setRecentPosts(Array.isArray(data) ? data : (data.results || []));
+          const posts = Array.isArray(data) ? data : (data.results || []);
+          setRecentPosts(posts.slice(0, limit));
         }
       } catch (err) {
         console.error("Failed to load footer data", err);
       }
     };
     fetchData();
-  }, []);
+  }, [siteSettings?.footer_recent_limit]);
 
   const handleSubscribe = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -79,10 +81,7 @@ export const Footer: React.FC = () => {
     }
   };
 
-  const getMediaUrl = (path: string | null) => {
-    if (!path) return '';
-    return path.startsWith('http') ? path : `${API_BASE_URL}${path}`;
-  };
+
 
   // Translations
   const t = {

@@ -4,7 +4,7 @@ from rest_framework.decorators import action
 from django.utils import timezone
 from .models import Subscriber, NewsletterCampaign
 from .serializers import SubscriberSerializer, NewsletterCampaignSerializer
-from users.permissions import IsAdmin
+from users.permissions import IsEditor, IsAdmin
 
 class SubscribeView(generics.CreateAPIView):
     queryset = Subscriber.objects.all()
@@ -28,7 +28,7 @@ class SubscribeView(generics.CreateAPIView):
 class CMSSubscriberViewSet(viewsets.ModelViewSet):
     queryset = Subscriber.objects.all()
     serializer_class = SubscriberSerializer
-    permission_classes = (IsAdmin,)
+    permission_classes = (IsEditor,)
 
 class CMSNewsletterCampaignViewSet(viewsets.ModelViewSet):
     queryset = NewsletterCampaign.objects.all()

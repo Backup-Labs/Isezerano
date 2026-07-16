@@ -315,14 +315,14 @@ export const AdSpace: React.FC<AdSpaceProps> = ({ placement, onDismiss }) => {
         >
           <div className={`flex h-full w-full ${
             placement === 'header_banner' || placement === 'header-banner' || placement === 'footer-banner' || placement.startsWith('full_width_')
-              ? 'flex-row items-center p-3 gap-4 justify-between'
+              ? 'flex-col sm:flex-row items-stretch sm:items-center p-3 gap-3 sm:gap-4 justify-between'
               : 'flex-col justify-between p-4 gap-4'
           }`}>
             
             {/* Image Thumbnail */}
             <div className={`overflow-hidden shrink-0 border border-theme-blue-deep rounded ${
               placement === 'header_banner' || placement === 'header-banner' || placement === 'footer-banner' || placement.startsWith('full_width_')
-                ? 'w-20 md:w-32 h-12 md:h-16'
+                ? 'w-full sm:w-32 h-24 sm:h-16'
                 : 'w-full h-36 mb-1'
             }`}>
               <img 

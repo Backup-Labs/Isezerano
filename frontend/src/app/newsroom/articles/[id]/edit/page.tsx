@@ -1,5 +1,5 @@
 "use client";
-import { API_BASE_URL } from '@/config';
+import { API_BASE_URL, getMediaUrl } from '@/config';
 
 import React, { useEffect, useState, useRef } from 'react';
 import { useRouter, useParams } from 'next/navigation';
@@ -244,7 +244,7 @@ export default function EditArticle() {
                 <label className="text-[10px] font-mono text-theme-gray-400 uppercase font-bold tracking-wider">Cover Image</label>
                 {currentCoverUrl && (
                   <img 
-                    src={currentCoverUrl.startsWith('http') ? currentCoverUrl : `${API_BASE_URL}${currentCoverUrl}`}
+                    src={getMediaUrl(currentCoverUrl)}
                     alt="cover preview" 
                     className="w-full h-24 object-cover border border-theme-gray-100 mb-2"
                   />

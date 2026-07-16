@@ -6,7 +6,8 @@ import { useApp } from '@/context/AppContext';
 import Link from 'next/link';
 import { 
   LayoutGrid, BookOpen, Layers, Megaphone, 
-  MessageSquare, Settings, LogOut, Globe, Notebook 
+  MessageSquare, Settings, LogOut, Globe, Notebook,
+  Users 
 } from 'lucide-react';
 
 export default function NewsroomLayout({
@@ -40,7 +41,8 @@ export default function NewsroomLayout({
     { name: 'Homepage Layout', icon: <Layers className="w-4 h-4" />, href: '/newsroom/homepage', roles: ['editor', 'admin'] },
     { name: 'Ad Campaigns', icon: <Megaphone className="w-4 h-4" />, href: '/newsroom/ads', roles: ['admin'] },
     { name: 'Moderate Comments', icon: <MessageSquare className="w-4 h-4" />, href: '/newsroom/comments', roles: ['editor', 'admin'] },
-    { name: 'General Settings', icon: <Settings className="w-4 h-4" />, href: '/newsroom/settings', roles: ['admin'] },
+    { name: 'Newsletter Subscribers', icon: <Users className="w-4 h-4" />, href: '/newsroom/subscribers', roles: ['editor', 'admin'] },
+    { name: 'General Settings', icon: <Settings className="w-4 h-4" />, href: '/newsroom/settings', roles: ['editor', 'admin'] },
   ];
 
   const allowedLinks = sidebarLinks.filter(
@@ -101,7 +103,7 @@ export default function NewsroomLayout({
       </aside>
 
       {/* Main Content frame */}
-      <main className="flex-grow p-6 md:p-10 max-h-screen overflow-y-auto bg-theme-white text-theme-black">
+      <main className="flex-grow p-6 md:p-10 md:max-h-screen overflow-y-auto bg-theme-white text-theme-black">
         <div className="max-w-6xl mx-auto flex flex-col gap-8">
           {children}
         </div>

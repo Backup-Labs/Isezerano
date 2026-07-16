@@ -48,6 +48,8 @@ class SiteSetting(models.Model):
     youtube_url = models.URLField(blank=True)
     
     footer_text = models.TextField(blank=True, default="© 2026 Isezerano. Futuristic Digital Journalism.")
+    footer_recent_limit = models.PositiveIntegerField(default=3)
+    homepage_limit = models.PositiveIntegerField(default=5)
 
     class Meta:
         verbose_name = "Site Settings"

@@ -17,6 +17,8 @@ export default function SiteSettingsManager() {
   const [instagram, setInstagram] = useState('');
   const [youtube, setYoutube] = useState('');
   const [footerText, setFooterText] = useState('');
+  const [footerRecentLimit, setFooterRecentLimit] = useState(3);
+  const [homepageLimit, setHomepageLimit] = useState(5);
 
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -36,6 +38,8 @@ export default function SiteSettingsManager() {
           setInstagram(data.instagram_url || '');
           setYoutube(data.youtube_url || '');
           setFooterText(data.footer_text || '');
+          setFooterRecentLimit(data.footer_recent_limit || 3);
+          setHomepageLimit(data.homepage_limit || 5);
         }
       } catch (err) {
         console.error(err);
@@ -66,7 +70,9 @@ export default function SiteSettingsManager() {
           twitter_url: twitter,
           instagram_url: instagram,
           youtube_url: youtube,
-          footer_text: footerText
+          footer_text: footerText,
+          footer_recent_limit: Number(footerRecentLimit),
+          homepage_limit: Number(homepageLimit)
         })
       });
 
@@ -143,6 +149,35 @@ export default function SiteSettingsManager() {
                 required
               />
             </div>
+          </div>
+        </div>
+
+        {/* Display Limits Section */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4 border-t border-theme-gray-100">
+          {/* Footer Inkuru Nshya Limit */}
+          <div className="flex flex-col gap-2">
+            <label className="text-[10px] font-mono text-theme-gray-400 uppercase font-bold tracking-wider">Footer "Inkuru Nshya" Limit</label>
+            <input 
+              type="number"
+              value={footerRecentLimit}
+              onChange={(e) => setFooterRecentLimit(Number(e.target.value))}
+              className="bg-white border border-theme-gray-100 px-4 py-2 text-sm text-theme-black focus:outline-none focus:border-theme-blue w-full"
+              min="1"
+              required
+            />
+          </div>
+
+          {/* Homepage Sections Limit */}
+          <div className="flex flex-col gap-2">
+            <label className="text-[10px] font-mono text-theme-gray-400 uppercase font-bold tracking-wider">Homepage Sections Limit</label>
+            <input 
+              type="number"
+              value={homepageLimit}
+              onChange={(e) => setHomepageLimit(Number(e.target.value))}
+              className="bg-white border border-theme-gray-100 px-4 py-2 text-sm text-theme-black focus:outline-none focus:border-theme-blue w-full"
+              min="1"
+              required
+            />
           </div>
         </div>
 

@@ -3,7 +3,7 @@ import { API_BASE_URL } from '@/config';
 
 import React, { useEffect, useState } from 'react';
 import { useApp } from '@/context/AppContext';
-import { Plus, Megaphone, Check, X, BarChart3, Save } from 'lucide-react';
+import { Plus, Megaphone, BarChart3, Save } from 'lucide-react';
 
 interface Ad {
   id: number;
@@ -25,7 +25,6 @@ export default function AdSlotsManager() {
   const [loading, setLoading] = useState(true);
   const [showCreateModal, setShowCreateModal] = useState(false);
 
-  // Form states
   const [name, setName] = useState('');
   const [placement, setPlacement] = useState('header-banner');
   const [targetUrl, setTargetUrl] = useState('');
@@ -51,44 +50,28 @@ export default function AdSlotsManager() {
     }
   };
 
-  useEffect(() => {
-    if (token) {
-      fetchAds();
-    }
-  }, [token]);
+  useEffect(() => { if (token) fetchAds(); }, [token]);
 
   const handleToggleActive = async (ad: Ad) => {
     try {
       const res = await fetch(`${API_BASE_URL}/api/v1/cms/ads/${ad.id}/`, {
         method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
         body: JSON.stringify({ is_active: !ad.is_active })
       });
-      if (res.ok) {
-        fetchAds();
-      }
-    } catch (err) {
-      console.error(err);
-    }
+      if (res.ok) fetchAds();
+    } catch (err) { console.error(err); }
   };
 
   const handleCreateAd = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!name || !startDate || !endDate) return;
-
     try {
       const res = await fetch(API_BASE_URL + '/api/v1/cms/ads/', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
         body: JSON.stringify({
-          name,
-          placement,
+          name, placement,
           target_url: targetUrl,
           html_content: htmlContent,
           start_date: new Date(startDate).toISOString(),
@@ -97,24 +80,15 @@ export default function AdSlotsManager() {
           is_active: isActive
         })
       });
-
       if (res.ok) {
         setShowCreateModal(false);
-        // Reset states
-        setName('');
-        setTargetUrl('');
-        setHtmlContent('');
-        setStartDate('');
-        setEndDate('');
-        setPriority(0);
-        setIsActive(true);
+        setName(''); setTargetUrl(''); setHtmlContent('');
+        setStartDate(''); setEndDate(''); setPriority(0); setIsActive(true);
         fetchAds();
       } else {
         alert("Failed to submit campaign data.");
       }
-    } catch (err) {
-      console.error(err);
-    }
+    } catch (err) { console.error(err); }
   };
 
   if (loading) {
@@ -126,12 +100,15 @@ export default function AdSlotsManager() {
     );
   }
 
+  const inputCls = "bg-white border border-theme-gray-100 px-4 py-2 text-xs text-theme-black focus:outline-none focus:border-theme-blue w-full";
+  const labelCls = "text-[10px] font-mono text-theme-gray-400 uppercase font-bold tracking-wider";
+
   return (
-    <div className="flex flex-col gap-6 text-theme-light-gray animate-fade-in">
+    <div className="flex flex-col gap-6 text-theme-black animate-fade-in">
       {/* Header bar */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-theme-blue-deep">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-theme-gray-100">
         <div className="flex flex-col gap-1">
-          <h1 className="serif-title text-2xl font-bold uppercase tracking-wider text-theme-light-gray flex items-center gap-2">
+          <h1 className="serif-title text-2xl font-bold uppercase tracking-wider text-theme-black flex items-center gap-2">
             <Megaphone className="w-6 h-6 text-theme-blue" />
             Ad Campaigns
           </h1>
@@ -140,9 +117,9 @@ export default function AdSlotsManager() {
           </p>
         </div>
 
-        <button 
+        <button
           onClick={() => setShowCreateModal(true)}
-          className="flex items-center gap-1.5 px-4 py-2.5 bg-theme-blue-deep hover:bg-theme-blue text-theme-black text-xs font-mono font-bold uppercase tracking-wider transition-all self-start sm:self-center cursor-pointer"
+          className="flex items-center gap-1.5 px-4 py-2.5 bg-theme-blue hover:bg-theme-blue-glow text-white text-xs font-mono font-bold uppercase tracking-wider transition-all self-start sm:self-center cursor-pointer"
         >
           <Plus className="w-4 h-4" />
           New Campaign
@@ -150,11 +127,11 @@ export default function AdSlotsManager() {
       </div>
 
       {/* Campaigns Table */}
-      <div className="border border-theme-blue-deep overflow-hidden">
+      <div className="border border-theme-gray-100 overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
-              <tr className="border-b border-theme-blue-deep text-[10px] font-mono text-theme-gray-400 uppercase bg-theme-charcoal/40">
+              <tr className="border-b border-theme-gray-100 text-[10px] font-mono text-theme-gray-400 uppercase bg-theme-light-gray">
                 <th className="p-4 pl-6">Campaign Name</th>
                 <th className="p-4">Placement Slot</th>
                 <th className="p-4">Schedule</th>
@@ -164,36 +141,28 @@ export default function AdSlotsManager() {
                 <th className="p-4 pr-6 text-right">Status</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-theme-gray-100 text-sm text-theme-gray-400 font-mono bg-theme-charcoal/10">
+            <tbody className="divide-y divide-theme-gray-100 text-sm text-theme-black font-mono bg-white">
               {ads.map((ad) => (
-                <tr key={ad.id} className="hover:bg-theme-charcoal/30 transition-colors">
-                  <td className="p-4 pl-6 text-theme-light-gray font-bold max-w-xs truncate">
-                    {ad.name}
-                  </td>
-                  <td className="p-4 text-xs font-semibold uppercase text-theme-blue">
-                    {ad.placement}
-                  </td>
-                  <td className="p-4 text-[10px] text-theme-gray-400 whitespace-nowrap">
+                <tr key={ad.id} className="hover:bg-theme-light-gray/40 transition-colors">
+                  <td className="p-4 pl-6 font-bold text-theme-black max-w-xs truncate">{ad.name}</td>
+                  <td className="p-4 text-xs font-semibold uppercase text-theme-black">{ad.placement}</td>
+                  <td className="p-4 text-[10px] text-theme-black whitespace-nowrap">
                     {new Date(ad.start_date).toLocaleDateString()} – {new Date(ad.end_date).toLocaleDateString()}
                   </td>
-                  <td className="p-4 text-xs text-theme-light-gray">
-                    {ad.impressions.toLocaleString()}
-                  </td>
-                  <td className="p-4 text-xs text-theme-light-gray">
-                    {ad.clicks.toLocaleString()}
-                  </td>
-                  <td className="p-4 text-xs text-theme-light-gray font-bold">
+                  <td className="p-4 text-xs text-theme-black">{ad.impressions.toLocaleString()}</td>
+                  <td className="p-4 text-xs text-theme-black">{ad.clicks.toLocaleString()}</td>
+                  <td className="p-4 text-xs text-theme-black font-bold">
                     <span className="flex items-center gap-1">
                       <BarChart3 className="w-3.5 h-3.5 text-theme-blue" />
                       {ad.ctr}%
                     </span>
                   </td>
                   <td className="p-4 pr-6 text-right">
-                    <button 
+                    <button
                       onClick={() => handleToggleActive(ad)}
                       className={`px-3 py-1 text-[10px] font-mono font-bold uppercase transition-all cursor-pointer border ${
-                        ad.is_active 
-                          ? 'border-green-600 bg-green-50 text-green-700 hover:bg-green-100' 
+                        ad.is_active
+                          ? 'border-green-600 bg-green-50 text-green-700 hover:bg-green-100'
                           : 'border-red-600 bg-red-50 text-red-700 hover:bg-red-100'
                       }`}
                     >
@@ -218,30 +187,30 @@ export default function AdSlotsManager() {
       {/* Modal Dialog for Deploying Campaign */}
       {showCreateModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-6">
-          <div className="border border-theme-blue-deep bg-theme-black text-theme-light-gray w-full max-w-xl p-6 flex flex-col gap-5">
+          <div className="border border-theme-gray-100 bg-white text-theme-black w-full max-w-xl p-6 flex flex-col gap-5 shadow-xl">
             <div className="flex justify-between items-center pb-3 border-b border-theme-gray-100">
-              <h3 className="serif-title text-base font-bold text-theme-light-gray uppercase flex items-center gap-1.5">
-                <Megaphone className="w-4.5 h-4.5 text-theme-blue" />
+              <h3 className="serif-title text-base font-bold text-theme-black uppercase flex items-center gap-1.5">
+                <Megaphone className="w-4 h-4 text-theme-blue" />
                 Deploy New Campaign
               </h3>
-              <button 
+              <button
                 onClick={() => setShowCreateModal(false)}
-                className="text-theme-gray-400 hover:text-theme-light-gray cursor-pointer font-bold text-base"
+                className="text-theme-gray-400 hover:text-theme-black cursor-pointer font-bold text-base"
               >
                 ✕
               </button>
             </div>
 
-            <form onSubmit={handleCreateAd} className="flex flex-col gap-4 text-xs font-mono text-theme-gray-400">
+            <form onSubmit={handleCreateAd} className="flex flex-col gap-4">
               {/* Name */}
               <div className="flex flex-col gap-1.5">
-                <label className="uppercase font-bold text-theme-light-gray">Campaign Name</label>
-                <input 
+                <label className={labelCls}>Campaign Name</label>
+                <input
                   type="text"
                   placeholder="e.g. Summer Furniture Launch"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  className="bg-transparent border border-theme-blue-deep px-4 py-2 text-xs text-theme-light-gray focus:outline-none focus:border-theme-blue"
+                  className={inputCls}
                   required
                 />
               </div>
@@ -249,11 +218,11 @@ export default function AdSlotsManager() {
               <div className="grid grid-cols-2 gap-4">
                 {/* Placement */}
                 <div className="flex flex-col gap-1.5">
-                  <label className="uppercase font-bold text-theme-light-gray">Placement Slot</label>
-                  <select 
+                  <label className={labelCls}>Placement Slot</label>
+                  <select
                     value={placement}
                     onChange={(e) => setPlacement(e.target.value)}
-                    className="bg-theme-black border border-theme-blue-deep px-4 py-2 text-xs text-theme-light-gray focus:outline-none focus:border-theme-blue"
+                    className={inputCls}
                   >
                     <option value="header-banner">Header Leaderboard (970x250)</option>
                     <option value="sidebar-rail">Sidebar Rail (300x600)</option>
@@ -265,12 +234,12 @@ export default function AdSlotsManager() {
 
                 {/* Priority */}
                 <div className="flex flex-col gap-1.5">
-                  <label className="uppercase font-bold text-theme-light-gray">Priority Weight</label>
-                  <input 
+                  <label className={labelCls}>Priority Weight</label>
+                  <input
                     type="number"
                     value={priority}
                     onChange={(e) => setPriority(Number(e.target.value))}
-                    className="bg-transparent border border-theme-blue-deep px-4 py-2 text-xs text-theme-light-gray focus:outline-none focus:border-theme-blue"
+                    className={inputCls}
                     min="0"
                     required
                   />
@@ -279,68 +248,70 @@ export default function AdSlotsManager() {
 
               {/* Target URL */}
               <div className="flex flex-col gap-1.5">
-                <label className="uppercase font-bold text-theme-light-gray">Target URL</label>
-                <input 
+                <label className={labelCls}>Target URL</label>
+                <input
                   type="url"
                   placeholder="https://example.com/campaign"
                   value={targetUrl}
                   onChange={(e) => setTargetUrl(e.target.value)}
-                  className="bg-transparent border border-theme-blue-deep px-4 py-2 text-xs text-theme-light-gray focus:outline-none focus:border-theme-blue"
+                  className={inputCls}
                 />
               </div>
 
-              {/* HTML Content (fallback image code) */}
+              {/* HTML Content */}
               <div className="flex flex-col gap-1.5">
-                <label className="uppercase font-bold text-theme-light-gray">Banner HTML</label>
-                <textarea 
+                <label className={labelCls}>Banner HTML</label>
+                <textarea
                   rows={4}
                   placeholder="Insert custom HTML banner code..."
                   value={htmlContent}
                   onChange={(e) => setHtmlContent(e.target.value)}
-                  className="bg-transparent border border-theme-blue-deep px-4 py-2.5 text-xs text-theme-light-gray focus:outline-none focus:border-theme-blue font-mono"
+                  className="bg-white border border-theme-gray-100 px-4 py-2.5 text-xs text-theme-black focus:outline-none focus:border-theme-blue font-mono w-full"
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-4">
                 {/* Start Date */}
                 <div className="flex flex-col gap-1.5">
-                  <label className="uppercase font-bold text-theme-light-gray">Start Date</label>
-                  <input 
+                  <label className={labelCls}>Start Date</label>
+                  <input
                     type="datetime-local"
                     value={startDate}
                     onChange={(e) => setStartDate(e.target.value)}
-                    className="bg-theme-black border border-theme-blue-deep px-4 py-2 text-xs text-theme-light-gray focus:outline-none focus:border-theme-blue"
+                    className={inputCls}
                     required
                   />
                 </div>
 
                 {/* End Date */}
                 <div className="flex flex-col gap-1.5">
-                  <label className="uppercase font-bold text-theme-light-gray">End Date</label>
-                  <input 
+                  <label className={labelCls}>End Date</label>
+                  <input
                     type="datetime-local"
                     value={endDate}
                     onChange={(e) => setEndDate(e.target.value)}
-                    className="bg-theme-black border border-theme-blue-deep px-4 py-2 text-xs text-theme-light-gray focus:outline-none focus:border-theme-blue"
+                    className={inputCls}
                     required
                   />
                 </div>
               </div>
 
               <div className="flex gap-2 items-center py-2 border-y border-theme-gray-100">
-                <input 
+                <input
                   type="checkbox"
                   checked={isActive}
                   onChange={(e) => setIsActive(e.target.checked)}
-                  className="rounded border-theme-blue-deep text-theme-blue w-4 h-4 cursor-pointer"
+                  className="rounded border-theme-gray-100 text-theme-blue w-4 h-4 cursor-pointer"
                   id="modal-active"
                 />
-                <label htmlFor="modal-active" className="uppercase cursor-pointer text-theme-light-gray font-bold">Activate Campaign immediately</label>
+                <label htmlFor="modal-active" className="text-xs font-mono font-bold uppercase cursor-pointer text-theme-black tracking-wider">
+                  Activate Campaign immediately
+                </label>
               </div>
 
-              <button 
+              <button
                 type="submit"
-                className="w-full py-3 bg-theme-blue-deep hover:bg-theme-blue text-theme-black font-mono font-bold uppercase rounded-xl tracking-wider text-xs transition-all flex items-center justify-center gap-1.5 cursor-pointer mt-2"
+                className="w-full py-3 bg-theme-blue hover:bg-theme-blue-glow text-white font-mono font-bold uppercase tracking-wider text-xs transition-all flex items-center justify-center gap-1.5 cursor-pointer mt-2"
               >
                 <Save className="w-4 h-4" />
                 Save Campaign

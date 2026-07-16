@@ -1,5 +1,5 @@
 "use client";
-import { API_BASE_URL } from '@/config';
+import { API_BASE_URL, getMediaUrl } from '@/config';
 
 import React, { useEffect, useState, useRef } from 'react';
 import Link from 'next/link';
@@ -51,7 +51,8 @@ interface DailyVerse {
 }
 
 export default function Homepage() {
-  const { toggleBookmark, isBookmarked, language } = useApp();
+  const { siteSettings, toggleBookmark, isBookmarked, language } = useApp();
+  const homepageLimit = siteSettings?.homepage_limit ?? 5;
   
   // Data State
   const [articles, setArticles] = useState<Article[]>([]);
@@ -106,7 +107,7 @@ export default function Homepage() {
   }, []);
 
   // Hero slideshow auto-advance logic
-  const heroArticles = articles.slice(0, 5); // top 5 stories as hero slides
+  const heroArticles = articles.slice(0, Math.min(5, homepageLimit)); // top 5 stories as hero slides
   useEffect(() => {
     if (heroArticles.length <= 1) return;
     const timer = setInterval(() => {
@@ -124,10 +125,7 @@ export default function Homepage() {
     );
   }
 
-  const getMediaUrl = (path: string | null) => {
-    if (!path) return '';
-    return path.startsWith('http') ? path : `${API_BASE_URL}${path}`;
-  };
+
 
   const handleScroll = (ref: React.RefObject<HTMLDivElement | null>, direction: 'left' | 'right') => {
     if (ref.current) {
@@ -165,25 +163,25 @@ export default function Homepage() {
 
   // 1. Hero filter: slideshow is heroArticles (0-5).
   // 2. Breaking: filter articles with `is_breaking === true` or top news.
-  const breakingArticles = articles.filter(a => a.is_breaking).slice(0, 4);
-  const fallbackBreaking = articles.slice(5, 9);
-  const displayBreaking = breakingArticles.length >= 4 ? breakingArticles : fallbackBreaking;
+  const breakingArticles = articles.filter(a => a.is_breaking).slice(0, homepageLimit);
+  const fallbackBreaking = articles.slice(5, 5 + homepageLimit);
+  const displayBreaking = breakingArticles.length >= Math.min(4, homepageLimit) ? breakingArticles : fallbackBreaking;
 
   // 3. Featured Story Rail articles: fallback to featured articles or next slice
-  const featuredRailArticles = articles.filter(a => a.is_featured).slice(0, 5);
+  const featuredRailArticles = articles.filter(a => a.is_featured).slice(0, homepageLimit);
 
   // 4. Editor's Pick story (1 large + 3 text items)
   const editorsPickLead = articles.find(a => a.is_featured && a.category?.slug !== 'sports') || articles[2];
-  const editorsPickList = articles.filter(a => a.id !== editorsPickLead?.id && a.category?.slug !== 'sports').slice(0, 3);
+  const editorsPickList = articles.filter(a => a.id !== editorsPickLead?.id && a.category?.slug !== 'sports').slice(0, homepageLimit);
 
   // 5. Trending list (exactly 5 items ranked by views)
-  const trendingArticles = [...articles].sort((a, b) => b.view_count - a.view_count).slice(0, 5);
+  const trendingArticles = [...articles].sort((a, b) => b.view_count - a.view_count).slice(0, homepageLimit);
 
   // 6. News Desk Row:
   // Col 1: Latest News (chronological, non-sports, non-announcements)
-  const latestNewsDesk = articles.filter(a => a.category?.slug !== 'sports' && a.category?.slug !== 'faith').slice(0, 5);
+  const latestNewsDesk = articles.filter(a => a.category?.slug !== 'sports' && a.category?.slug !== 'faith').slice(0, homepageLimit);
   // Col 3: Top News (headline only, larger thumbs)
-  const topNewsDesk = articles.filter(a => a.is_featured).slice(0, 4);
+  const topNewsDesk = articles.filter(a => a.is_featured).slice(0, homepageLimit);
 
   // 7. Amatangazo announcements list filtered by tab
   const filteredAnnouncements = announcements.filter(ann => {
@@ -205,28 +203,28 @@ export default function Homepage() {
 
   // 8. Lifestyle block (Category 'culture' or 'fashion')
   const lifestyleLead = articles.find(a => a.category?.slug === 'culture' || a.category?.slug === 'fashion') || articles[3];
-  const lifestyleQuickLinks = articles.filter(a => a.id !== lifestyleLead?.id).slice(0, 5);
+  const lifestyleQuickLinks = articles.filter(a => a.id !== lifestyleLead?.id).slice(0, homepageLimit);
 
   // 9. Popular Posts (numbered list 1-4, long term trending)
-  const popularArticles = [...articles].sort((a, b) => a.id - b.id).slice(0, 4); // alternate view metrics
+  const popularArticles = [...articles].sort((a, b) => a.id - b.id).slice(0, homepageLimit); // alternate view metrics
 
   // 10. Featured Post Grid A & B (Category configured)
   // Grid 1 = Design / Tech
   const grid1Articles = articles.filter(a => a.category?.slug === 'design' || a.category?.slug === 'technology');
   const grid1Lead = grid1Articles[0] || articles[1];
-  const grid1List = grid1Articles.filter(a => a.id !== grid1Lead?.id).slice(0, 4);
+  const grid1List = grid1Articles.filter(a => a.id !== grid1Lead?.id).slice(0, homepageLimit);
 
   // Grid 2 = Business / Nature
   const grid2Articles = articles.filter(a => a.category?.slug === 'business' || a.category?.slug === 'nature');
   const grid2Lead = grid2Articles[0] || articles[0];
-  const grid2List = grid2Articles.filter(a => a.id !== grid2Lead?.id).slice(0, 4);
+  const grid2List = grid2Articles.filter(a => a.id !== grid2Lead?.id).slice(0, homepageLimit);
 
   // 11. Featured Posts Row (second instance)
   const featuredSecLead = articles.find(a => a.category?.slug === 'health') || articles[4];
-  const featuredSecList = articles.filter(a => a.id !== featuredSecLead?.id).slice(0, 5);
+  const featuredSecList = articles.filter(a => a.id !== featuredSecLead?.id).slice(0, homepageLimit);
 
   // 12. You Missed Rail articles
-  const youMissedArticles = [...articles].reverse().slice(0, 5);
+  const youMissedArticles = [...articles].reverse().slice(0, homepageLimit);
 
   return (
     <div className="max-w-7xl mx-auto px-4 md:px-8 py-8 flex flex-col gap-8 bg-theme-white text-theme-black">
@@ -1251,7 +1249,7 @@ export default function Homepage() {
             >
               <div>
                 {art.cover_image && (
-                  <div className="relative aspect-[16/10] overflow-hidden rounded mb-3 border border-theme-gray-100">
+                  <Link href={`/a/${art.slug}`} className="block relative aspect-[16/10] overflow-hidden rounded mb-3 border border-theme-gray-100">
                     <img 
                       src={getMediaUrl(art.cover_image)} 
                       alt={art.title}
@@ -1264,7 +1262,7 @@ export default function Homepage() {
                         </div>
                       </div>
                     )}
-                  </div>
+                  </Link>
                 )}
                 
                 <div className="flex items-center gap-2 mb-1.5">

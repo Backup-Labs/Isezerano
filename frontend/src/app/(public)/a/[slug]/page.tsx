@@ -1,5 +1,5 @@
 "use client";
-import { API_BASE_URL } from '@/config';
+import { API_BASE_URL, getMediaUrl } from '@/config';
 
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
@@ -112,7 +112,7 @@ export default function ArticleDetail() {
     setSubmittingComment(true);
 
     try {
-      const res = await fetch(`${API_BASE_URL}/api/v1/articles/${slug}/comments/`, {
+      const res = await fetch(`${API_BASE_URL}/api/v1/articles/${slug}/comments/create/`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -260,7 +260,7 @@ export default function ArticleDetail() {
       {article.cover_image && (
         <div className="w-full aspect-[21/9] overflow-hidden border border-theme-gray-100">
           <img 
-            src={article.cover_image.startsWith('http') ? article.cover_image : `${API_BASE_URL}${article.cover_image}`} 
+            src={getMediaUrl(article.cover_image)} 
             alt={article.title}
             className="w-full h-full object-cover"
           />

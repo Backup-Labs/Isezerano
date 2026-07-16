@@ -1,5 +1,5 @@
 "use client";
-import { API_BASE_URL } from '@/config';
+import { API_BASE_URL, getMediaUrl } from '@/config';
 
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
@@ -80,26 +80,26 @@ export default function CategoryArchive() {
   });
 
   return (
-    <div className="max-w-7xl mx-auto px-4 md:px-8 py-8 flex flex-col gap-10 bg-theme-black text-theme-light-gray animate-fade-in">
+    <div className="max-w-7xl mx-auto px-4 md:px-8 py-8 flex flex-col gap-10 bg-theme-white text-theme-black animate-fade-in">
       {/* Category Header */}
       {category && (
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-6 border-b border-theme-blue-deep">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-6 border-b border-theme-gray-100">
           <div className="flex flex-col gap-2">
             <span className="text-[10px] font-mono text-theme-blue uppercase font-bold tracking-widest">Category</span>
             <div className="flex items-center gap-3">
               <span className="w-2 h-8" style={{ backgroundColor: category.color_accent }} />
-              <h1 className="serif-title text-3xl md:text-5xl font-black uppercase text-theme-light-gray">
+              <h1 className="serif-title text-3xl md:text-5xl font-black uppercase text-theme-black">
                 {category.name}
               </h1>
             </div>
           </div>
 
           {/* Sort bar */}
-          <div className="flex gap-2 p-1 border border-theme-blue-deep bg-theme-charcoal/20 shrink-0 self-start md:self-end">
+          <div className="flex gap-2 p-1 border border-theme-gray-100 bg-theme-light-gray shrink-0 self-start md:self-end">
             <button 
               onClick={() => setSortBy('latest')}
               className={`px-3 py-1.5 text-xs font-mono font-bold uppercase transition-all cursor-pointer ${
-                sortBy === 'latest' ? 'bg-theme-blue-deep text-theme-black' : 'text-theme-gray-400 hover:text-theme-light-gray'
+                sortBy === 'latest' ? 'bg-theme-blue text-white' : 'text-theme-gray-400 hover:text-theme-black'
               }`}
             >
               Latest Releases
@@ -107,7 +107,7 @@ export default function CategoryArchive() {
             <button 
               onClick={() => setSortBy('views')}
               className={`px-3 py-1.5 text-xs font-mono font-bold uppercase transition-all cursor-pointer ${
-                sortBy === 'views' ? 'bg-theme-blue-deep text-theme-black' : 'text-theme-gray-400 hover:text-theme-light-gray'
+                sortBy === 'views' ? 'bg-theme-blue text-white' : 'text-theme-gray-400 hover:text-theme-black'
               }`}
             >
               Popular Feed
@@ -122,34 +122,36 @@ export default function CategoryArchive() {
         <div className="lg:col-span-2 flex flex-col gap-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {sortedArticles.map((art) => (
-              <article key={art.id} className="border border-theme-blue-deep overflow-hidden flex flex-col group hover:border-theme-blue transition-all duration-300">
+              <article key={art.id} className="border border-theme-gray-100 bg-white overflow-hidden flex flex-col group hover:border-theme-blue transition-all duration-300">
                 <div className="h-44 relative overflow-hidden">
                   {art.cover_image && (
-                    <img 
-                      src={art.cover_image.startsWith('http') ? art.cover_image : `${API_BASE_URL}${art.cover_image}`} 
-                      alt={art.title}
-                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                    />
+                    <Link href={`/a/${art.slug}`}>
+                      <img 
+                        src={getMediaUrl(art.cover_image)} 
+                        alt={art.title}
+                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 cursor-pointer"
+                      />
+                    </Link>
                   )}
                 </div>
                 <div className="p-5 flex flex-col flex-grow gap-3 justify-between">
                   <div>
                     <Link href={`/a/${art.slug}`} className="hover:text-theme-blue transition-colors">
-                      <h3 className="serif-title font-bold text-lg text-theme-light-gray line-clamp-2 leading-snug">
+                      <h3 className="serif-title font-bold text-lg text-theme-black line-clamp-2 leading-snug">
                         {art.title}
                       </h3>
                     </Link>
-                    <p className="text-theme-gray-400 text-xs line-clamp-2 leading-relaxed mt-2">
+                    <p className="text-theme-gray-400 text-xs line-clamp-2 leading-relaxed mt-2 font-sans">
                       {art.subtitle}
                     </p>
                   </div>
                   
-                  <div className="flex items-center justify-between mt-4 pt-4 border-t border-theme-gray-100 text-[9px] font-mono text-theme-light-gray uppercase font-bold tracking-widest">
-                    <span className="flex items-center gap-1">
+                  <div className="flex items-center justify-between mt-4 pt-4 border-t border-theme-gray-100 text-[9px] font-mono text-theme-black uppercase font-bold tracking-widest">
+                    <span className="flex items-center gap-1 text-theme-gray-400">
                       <Clock className="w-3.5 h-3.5 text-theme-blue" />
                       {art.reading_time} MIN READ
                     </span>
-                    <span className="flex items-center gap-1">
+                    <span className="flex items-center gap-1 text-theme-gray-400">
                       <Eye className="w-3.5 h-3.5 text-theme-blue" />
                       {art.view_count} VIEWS
                     </span>
@@ -157,7 +159,7 @@ export default function CategoryArchive() {
                       onClick={() => toggleBookmark(art.slug)}
                       className="hover:text-theme-blue cursor-pointer"
                     >
-                      <Bookmark className={`w-3.5 h-3.5 ${isBookmarked(art.slug) ? 'fill-theme-blue text-theme-blue' : 'text-theme-light-gray'}`} />
+                      <Bookmark className={`w-3.5 h-3.5 ${isBookmarked(art.slug) ? 'fill-theme-blue text-theme-blue' : 'text-theme-gray-400'}`} />
                     </button>
                   </div>
                 </div>
@@ -166,7 +168,7 @@ export default function CategoryArchive() {
           </div>
 
           {sortedArticles.length === 0 && (
-            <div className="text-center py-20 border border-theme-blue-deep font-mono text-xs uppercase tracking-widest text-theme-gray-400">
+            <div className="text-center py-20 border border-theme-gray-100 font-mono text-xs uppercase tracking-widest text-theme-gray-400 bg-theme-light-gray/40">
               No articles registered in this channel.
             </div>
           )}

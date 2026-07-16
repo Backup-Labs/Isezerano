@@ -37,7 +37,7 @@ class CMSHomepageLayoutViewSet(viewsets.ModelViewSet):
 class CMSSiteSettingViewSet(viewsets.ModelViewSet):
     queryset = SiteSetting.objects.all()
     serializer_class = SiteSettingSerializer
-    permission_classes = (IsAdmin,)
+    permission_classes = (IsEditor,)
 
     def get_object(self):
         # Always operate on the singleton instance

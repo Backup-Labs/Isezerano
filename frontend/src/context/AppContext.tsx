@@ -28,6 +28,8 @@ export interface SiteSettings {
   instagram_url: string;
   youtube_url: string;
   footer_text: string;
+  footer_recent_limit: number;
+  homepage_limit: number;
 }
 
 interface AppContextType {
