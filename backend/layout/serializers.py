@@ -9,7 +9,7 @@ class HomepageLayoutSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = HomepageLayout
-        fields = ('id', 'section_type', 'order', 'category', 'ad_slot', 'is_visible', 'category_details', 'ad_slot_details')
+        fields = ('id', 'section_type', 'order', 'category', 'ad_slot', 'is_visible', 'article_limit', 'category_details', 'ad_slot_details')
 
 class SiteSettingSerializer(serializers.ModelSerializer):
     class Meta:

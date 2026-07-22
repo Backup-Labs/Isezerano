@@ -486,11 +486,18 @@ class Command(BaseCommand):
 
         # 7. Homepage Layouts
         self.stdout.write('- Creating homepage layout configuration...')
-        HomepageLayout.objects.create(section_type='hero', order=0)
-        HomepageLayout.objects.create(section_type='featured-grid', order=1)
-        HomepageLayout.objects.create(section_type='category-rail', order=2, category=design_cat)
-        HomepageLayout.objects.create(section_type='ad-slot', order=3)
-        HomepageLayout.objects.create(section_type='trending-widget', order=4)
+        HomepageLayout.objects.create(section_type='hero', order=0, article_limit=5)
+        HomepageLayout.objects.create(section_type='featured-grid', order=1, article_limit=5)
+        HomepageLayout.objects.create(section_type='trending-widget', order=2, article_limit=5)
+        HomepageLayout.objects.create(section_type='news-desk', order=3, article_limit=5)
+        HomepageLayout.objects.create(section_type='announcements', order=4, article_limit=4)
+        HomepageLayout.objects.create(section_type='lifestyle', order=5, article_limit=5)
+        HomepageLayout.objects.create(section_type='sports-grid', order=6, article_limit=4)
+        HomepageLayout.objects.create(section_type='featured-secondary', order=7, article_limit=5)
+        HomepageLayout.objects.create(section_type='category-rail', order=8, category=design_cat, article_limit=5)
+        HomepageLayout.objects.create(section_type='flyers', order=9)
+        HomepageLayout.objects.create(section_type='you-missed', order=10, article_limit=5)
+        HomepageLayout.objects.create(section_type='ad-slot', order=11)
 
         # 8. Site Settings Singleton
         self.stdout.write('- Creating site settings singleton...')
@@ -507,3 +514,8 @@ class Command(BaseCommand):
         Subscriber.objects.create(email='writer.marcus@gmail.com')
 
         self.stdout.write('Database successfully seeded!')
+
+
+
+
+        #https://unsplash.com/photos/man-in-blue-and-orange-jersey-shirt-running-on-green-grass-field-during-daytime-i8XiabUW3mw

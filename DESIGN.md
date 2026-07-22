@@ -1,3 +1,4 @@
+
 # "Isezerano" Design System Guide
 
 This document defines the visual layout tokens, typography patterns, motion standards, and component interfaces established for "Isezerano" Digital Newspaper Platform.
@@ -8,16 +9,16 @@ This document defines the visual layout tokens, typography patterns, motion stan
 
 The application uses custom CSS custom properties in `globals.css` that map color states. Dark Mode is the default "hero" theme.
 
-| Color Variable | Hex Code | Usage |
-|---|---|---|
-| `--color-black` | `#0A0B0D` | Primary deep black background (Dark Mode) / Text color (Light Mode) |
-| `--color-charcoal` | `#14161A` | Elevated cards and widgets surfaces (Dark Mode) |
-| `--color-light-gray` | `#F2F3F5` | Primary light background (Light Mode) |
-| `--color-gray-100` | `#E7E9EC` | Card borders, separators, and background grids (Light Mode) |
-| `--color-gray-400` | `#9AA0A8` | Secondary sub-headlines, timestamps, view logs, and meta labels |
-| `--color-blue` | `#2F6DF6` | Primary brand accent, hyperlinks, active states, and focus grids |
-| `--color-blue-glow` | `#5B8CFF` | Hover states, glowing tags, and interactive button overlays |
-| `--color-blue-deep` | `#123B99` | Pressed buttons, mesh gradient sources, and dark background highlights |
+| Color Variable         | Hex Code    | Usage                                                                  |
+| ---------------------- | ----------- | ---------------------------------------------------------------------- |
+| `--color-black`      | `#0A0B0D` | Primary deep black background (Dark Mode) / Text color (Light Mode)    |
+| `--color-charcoal`   | `#14161A` | Elevated cards and widgets surfaces (Dark Mode)                        |
+| `--color-light-gray` | `#F2F3F5` | Primary light background (Light Mode)                                  |
+| `--color-gray-100`   | `#E7E9EC` | Card borders, separators, and background grids (Light Mode)            |
+| `--color-gray-400`   | `#9AA0A8` | Secondary sub-headlines, timestamps, view logs, and meta labels        |
+| `--color-blue`       | `#2F6DF6` | Primary brand accent, hyperlinks, active states, and focus grids       |
+| `--color-blue-glow`  | `#5B8CFF` | Hover states, glowing tags, and interactive button overlays            |
+| `--color-blue-deep`  | `#123B99` | Pressed buttons, mesh gradient sources, and dark background highlights |
 
 ---
 
@@ -26,6 +27,7 @@ The application uses custom CSS custom properties in `globals.css` that map colo
 Frosted glass panels are reserved for chrome components (Header, breaking news ticker, pills, floating details, modals, and sidebar rails). They must not sit directly under large reading body text to maintain WCAG AA contrast standards.
 
 ### Dark Mode Glass Panel
+
 ```css
 .glass-panel {
   background: rgba(20, 22, 26, 0.6);
@@ -36,6 +38,7 @@ Frosted glass panels are reserved for chrome components (Header, breaking news t
 ```
 
 ### Light Mode Glass Panel
+
 ```css
 .light .glass-panel {
   background: rgba(255, 255, 255, 0.65);

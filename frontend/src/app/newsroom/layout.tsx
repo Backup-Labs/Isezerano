@@ -39,7 +39,7 @@ export default function NewsroomLayout({
     { name: 'Dashboard Analytics', icon: <LayoutGrid className="w-4 h-4" />, href: '/newsroom' },
     { name: 'Manage Articles', icon: <BookOpen className="w-4 h-4" />, href: '/newsroom/articles' },
     { name: 'Homepage Layout', icon: <Layers className="w-4 h-4" />, href: '/newsroom/homepage', roles: ['editor', 'admin'] },
-    { name: 'Ad Campaigns', icon: <Megaphone className="w-4 h-4" />, href: '/newsroom/ads', roles: ['admin'] },
+    { name: 'Ad Campaigns', icon: <Megaphone className="w-4 h-4" />, href: '/newsroom/ads', roles: ['editor', 'admin'] },
     { name: 'Moderate Comments', icon: <MessageSquare className="w-4 h-4" />, href: '/newsroom/comments', roles: ['editor', 'admin'] },
     { name: 'Newsletter Subscribers', icon: <Users className="w-4 h-4" />, href: '/newsroom/subscribers', roles: ['editor', 'admin'] },
     { name: 'General Settings', icon: <Settings className="w-4 h-4" />, href: '/newsroom/settings', roles: ['editor', 'admin'] },

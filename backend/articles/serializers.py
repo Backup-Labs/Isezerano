@@ -54,18 +54,34 @@ class ArticleRevisionSerializer(serializers.ModelSerializer):
         fields = ('id', 'article', 'author', 'title', 'subtitle', 'body', 'created_at')
 
 class CommentSerializer(serializers.ModelSerializer):
-    user = UserSerializer(read_only=True)
+    user = serializers.SerializerMethodField()
     replies = serializers.SerializerMethodField()
 
     class Meta:
         model = Comment
         fields = ('id', 'article', 'user', 'parent', 'body', 'status', 'created_at', 'replies')
-        read_only_fields = ('id', 'user', 'status', 'created_at')
+        read_only_fields = ('id', 'article', 'user', 'status', 'created_at')
+
+    def get_user(self, obj):
+        return {
+            'username': obj.anonymous_identifier or "Anonymous",
+            'first_name': '',
+            'last_name': '',
+            'avatar': None
+        }
 
     def get_replies(self, obj):
         # Only return approved replies to nested depth
         approved_replies = obj.replies.filter(status='approved')
         return CommentSerializer(approved_replies, many=True).data
+
+class CMSCommentSerializer(serializers.ModelSerializer):
+    user = UserSerializer(read_only=True)
+
+    class Meta:
+        model = Comment
+        fields = ('id', 'article', 'user', 'parent', 'body', 'status', 'created_at')
+        read_only_fields = ('id', 'user', 'status', 'created_at')
 
 class ArticleDetailSerializer(serializers.ModelSerializer):
     author = UserSerializer(read_only=True)

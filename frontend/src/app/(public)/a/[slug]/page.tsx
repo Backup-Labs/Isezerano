@@ -345,7 +345,7 @@ export default function ArticleDetail() {
           {comments.map((comment) => (
             <div key={comment.id} className="p-5 border border-theme-gray-100 flex flex-col gap-3">
               <div className="flex justify-between items-center text-[10px] font-mono uppercase text-theme-gray-400">
-                <span className="text-theme-black font-bold">@{comment.user.username}</span>
+                <span className="text-theme-black font-bold">{comment.user.username}</span>
                 <span>{new Date(comment.created_at).toLocaleDateString()}</span>
               </div>
               <p className="text-sm text-theme-black leading-relaxed font-sans">{comment.body}</p>
@@ -354,7 +354,7 @@ export default function ArticleDetail() {
               {comment.replies && comment.replies.map((reply) => (
                 <div key={reply.id} className="ml-8 mt-3 pt-3 border-t border-theme-gray-100 flex flex-col gap-2">
                   <div className="flex justify-between items-center text-[9px] font-mono uppercase text-theme-gray-400">
-                    <span className="text-theme-blue font-bold">↳ @{reply.user.username}</span>
+                    <span className="text-theme-blue font-bold">↳ {reply.user.username}</span>
                     <span>{new Date(reply.created_at).toLocaleDateString()}</span>
                   </div>
                   <p className="text-xs text-theme-black leading-relaxed font-sans">{reply.body}</p>

@@ -26,13 +26,20 @@ export default function AdSlotsManager() {
   const [showCreateModal, setShowCreateModal] = useState(false);
 
   const [name, setName] = useState('');
-  const [placement, setPlacement] = useState('header-banner');
+  const [placement, setPlacement] = useState('header_banner');
   const [targetUrl, setTargetUrl] = useState('');
   const [htmlContent, setHtmlContent] = useState('');
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
   const [priority, setPriority] = useState(0);
   const [isActive, setIsActive] = useState(true);
+
+  // New fields
+  const [image, setImage] = useState<File | null>(null);
+  const [sponsoredLogo, setSponsoredLogo] = useState<File | null>(null);
+  const [ctaText, setCtaText] = useState('Learn More');
+  const [sponsoredHeadline, setSponsoredHeadline] = useState('');
+  const [sponsoredVideoUrl, setSponsoredVideoUrl] = useState('');
 
   const fetchAds = async () => {
     try {
@@ -66,24 +73,39 @@ export default function AdSlotsManager() {
   const handleCreateAd = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!name || !startDate || !endDate) return;
+    
+    const formData = new FormData();
+    formData.append('name', name);
+    formData.append('placement', placement);
+    formData.append('target_url', targetUrl);
+    formData.append('html_content', htmlContent);
+    formData.append('start_date', new Date(startDate).toISOString());
+    formData.append('end_date', new Date(endDate).toISOString());
+    formData.append('priority', String(priority));
+    formData.append('is_active', String(isActive));
+    formData.append('cta_text', ctaText);
+    formData.append('sponsored_headline', sponsoredHeadline);
+    formData.append('sponsored_video_url', sponsoredVideoUrl);
+
+    if (image) {
+      formData.append('image', image);
+    }
+    if (sponsoredLogo) {
+      formData.append('sponsored_logo', sponsoredLogo);
+    }
+
     try {
       const res = await fetch(API_BASE_URL + '/api/v1/cms/ads/', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
-        body: JSON.stringify({
-          name, placement,
-          target_url: targetUrl,
-          html_content: htmlContent,
-          start_date: new Date(startDate).toISOString(),
-          end_date: new Date(endDate).toISOString(),
-          priority: Number(priority),
-          is_active: isActive
-        })
+        headers: { 'Authorization': `Bearer ${token}` },
+        body: formData
       });
       if (res.ok) {
         setShowCreateModal(false);
-        setName(''); setTargetUrl(''); setHtmlContent('');
+        setName(''); setPlacement('header_banner'); setTargetUrl(''); setHtmlContent('');
         setStartDate(''); setEndDate(''); setPriority(0); setIsActive(true);
+        setImage(null); setSponsoredLogo(null); setCtaText('Learn More');
+        setSponsoredHeadline(''); setSponsoredVideoUrl('');
         fetchAds();
       } else {
         alert("Failed to submit campaign data.");
@@ -187,7 +209,7 @@ export default function AdSlotsManager() {
       {/* Modal Dialog for Deploying Campaign */}
       {showCreateModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-6">
-          <div className="border border-theme-gray-100 bg-white text-theme-black w-full max-w-xl p-6 flex flex-col gap-5 shadow-xl">
+          <div className="border border-theme-gray-100 bg-white text-theme-black w-full max-w-xl p-6 flex flex-col gap-5 shadow-xl max-h-[90vh] overflow-y-auto">
             <div className="flex justify-between items-center pb-3 border-b border-theme-gray-100">
               <h3 className="serif-title text-base font-bold text-theme-black uppercase flex items-center gap-1.5">
                 <Megaphone className="w-4 h-4 text-theme-blue" />
@@ -224,9 +246,22 @@ export default function AdSlotsManager() {
                     onChange={(e) => setPlacement(e.target.value)}
                     className={inputCls}
                   >
-                    <option value="header-banner">Header Leaderboard (970x250)</option>
-                    <option value="sidebar-rail">Sidebar Rail (300x600)</option>
-                    <option value="in-feed-native">In-Feed Native Card</option>
+                    <option value="header_banner">Header Banner (970x90 Leaderboard)</option>
+                    <option value="hero_sidebar">Hero Sidebar (300x600 Skyscraper)</option>
+                    <option value="daily_verse_sidebar">Daily Verse Sidebar (300x250)</option>
+                    <option value="news_desk_sidebar">News Desk Sidebar (300x600)</option>
+                    <option value="sports_sidebar">Sports Sidebar (300x600)</option>
+                    <option value="sponsored_content">Sponsored Content Block (Tax Corner)</option>
+                    <option value="grid_sidebar_stack_1">Grid Sidebar Stack Ad 1 (300x250)</option>
+                    <option value="grid_sidebar_stack_2">Grid Sidebar Stack Ad 2 (300x250)</option>
+                    <option value="grid_sidebar_stack_3">Grid Sidebar Stack Ad 3 (300x250)</option>
+                    <option value="flyer_1">Flyer Ad 1 (Square/Portrait)</option>
+                    <option value="flyer_2">Flyer Ad 2 (Square/Portrait)</option>
+                    <option value="flyer_3">Flyer Ad 3 (Square/Portrait)</option>
+                    <option value="full_width_1">Full Width Banner 1 (728x90)</option>
+                    <option value="full_width_2">Full Width Banner 2 (728x90)</option>
+                    <option value="full_width_3">Full Width Banner 3 (728x90)</option>
+                    <option value="full_width_4">Full Width Banner 4 (728x90)</option>
                     <option value="in-article-inline">In-Article Inline (336x280)</option>
                     <option value="footer-banner">Footer Leaderboard (728x90)</option>
                   </select>
@@ -246,23 +281,86 @@ export default function AdSlotsManager() {
                 </div>
               </div>
 
-              {/* Target URL */}
-              <div className="flex flex-col gap-1.5">
-                <label className={labelCls}>Target URL</label>
-                <input
-                  type="url"
-                  placeholder="https://example.com/campaign"
-                  value={targetUrl}
-                  onChange={(e) => setTargetUrl(e.target.value)}
-                  className={inputCls}
-                />
+              {/* Target URL & CTA Text */}
+              <div className="grid grid-cols-2 gap-4">
+                <div className="flex flex-col gap-1.5">
+                  <label className={labelCls}>Target URL</label>
+                  <input
+                    type="url"
+                    placeholder="https://example.com/campaign"
+                    value={targetUrl}
+                    onChange={(e) => setTargetUrl(e.target.value)}
+                    className={inputCls}
+                  />
+                </div>
+                <div className="flex flex-col gap-1.5">
+                  <label className={labelCls}>CTA Text</label>
+                  <input
+                    type="text"
+                    placeholder="Learn More"
+                    value={ctaText}
+                    onChange={(e) => setCtaText(e.target.value)}
+                    className={inputCls}
+                  />
+                </div>
+              </div>
+
+              {/* Uploads (Image Banner & Brand Logo) */}
+              <div className="grid grid-cols-2 gap-4 border border-theme-gray-100 p-3 bg-theme-light-gray/50">
+                <div className="flex flex-col gap-1.5">
+                  <label className={labelCls}>Campaign Banner Image</label>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => setImage(e.target.files?.[0] || null)}
+                    className="text-xs file:mr-2 file:py-1 file:px-2 file:border-0 file:text-xs file:font-mono file:bg-theme-blue file:text-white cursor-pointer"
+                  />
+                  {image && <span className="text-[9px] text-theme-gray-400 truncate">{image.name}</span>}
+                </div>
+                <div className="flex flex-col gap-1.5">
+                  <label className={labelCls}>Sponsored Brand Logo (Optional)</label>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => setSponsoredLogo(e.target.files?.[0] || null)}
+                    className="text-xs file:mr-2 file:py-1 file:px-2 file:border-0 file:text-xs file:font-mono file:bg-theme-blue file:text-white cursor-pointer"
+                  />
+                  {sponsoredLogo && <span className="text-[9px] text-theme-gray-400 truncate">{sponsoredLogo.name}</span>}
+                </div>
+              </div>
+
+              {/* Sponsored Rich Block Specifics */}
+              <div className="border border-theme-gray-100 p-3 flex flex-col gap-3">
+                <span className="text-[9px] font-mono font-bold text-theme-blue uppercase tracking-widest">Sponsored Content Fields (Only for Tax Corner / Rich Content slots)</span>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="flex flex-col gap-1.5">
+                    <label className={labelCls}>Sponsored Headline</label>
+                    <input
+                      type="text"
+                      placeholder="e.g. Taxpayer Channel"
+                      value={sponsoredHeadline}
+                      onChange={(e) => setSponsoredHeadline(e.target.value)}
+                      className={inputCls}
+                    />
+                  </div>
+                  <div className="flex flex-col gap-1.5">
+                    <label className={labelCls}>Sponsored Video Embed URL</label>
+                    <input
+                      type="url"
+                      placeholder="e.g. https://www.youtube.com/watch?v=..."
+                      value={sponsoredVideoUrl}
+                      onChange={(e) => setSponsoredVideoUrl(e.target.value)}
+                      className={inputCls}
+                    />
+                  </div>
+                </div>
               </div>
 
               {/* HTML Content */}
               <div className="flex flex-col gap-1.5">
-                <label className={labelCls}>Banner HTML</label>
+                <label className={labelCls}>Banner HTML / AdSense Code</label>
                 <textarea
-                  rows={4}
+                  rows={3}
                   placeholder="Insert custom HTML banner code..."
                   value={htmlContent}
                   onChange={(e) => setHtmlContent(e.target.value)}

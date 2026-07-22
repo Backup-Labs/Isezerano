@@ -10,10 +10,18 @@ class HomepageLayout(models.Model):
         ('category-rail', 'Category Scroll Rail'),
         ('ad-slot', 'Advertisement Banner Block'),
         ('trending-widget', 'Trending & Popular List Sidebar'),
+        ('news-desk', 'News Desk Section'),
+        ('announcements', 'Amatangazo Classifieds Section'),
+        ('lifestyle', 'Lifestyle & Culture Section'),
+        ('sports-grid', 'Sports Vertical Grid Section'),
+        ('featured-secondary', 'Second Featured Posts Row'),
+        ('flyers', 'Local Partner Flyers Row'),
+        ('you-missed', 'You Missed Scroll Rail'),
     )
 
     section_type = models.CharField(max_length=30, choices=SECTION_CHOICES)
     order = models.PositiveIntegerField(default=0)
+    article_limit = models.PositiveIntegerField(default=5, help_text="Number of articles to fetch for this section")
     
     # Specific fields for conditional sections
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, blank=True, help_text="Required for Category Scroll Rail sections")

@@ -2,8 +2,8 @@ from rest_framework import serializers
 from .models import AdSlot, AnalyticsEvent
 
 class AdSlotSerializer(serializers.ModelSerializer):
-    image = serializers.SerializerMethodField()
-    sponsored_logo = serializers.SerializerMethodField()
+    image = serializers.ImageField(required=False, allow_null=True)
+    sponsored_logo = serializers.ImageField(required=False, allow_null=True)
 
     class Meta:
         model = AdSlot
@@ -14,27 +14,20 @@ class AdSlotSerializer(serializers.ModelSerializer):
         )
         read_only_fields = ('id', 'impressions', 'clicks', 'ctr')
 
-    def get_image(self, obj):
-        if not obj.image:
-            return None
-        name = obj.image.name
-        if name.startswith('http://') or name.startswith('https://'):
-            return name
+    def to_representation(self, instance):
+        ret = super().to_representation(instance)
         request = self.context.get('request')
-        if request:
-            return request.build_absolute_uri(obj.image.url)
-        return obj.image.url
-
-    def get_sponsored_logo(self, obj):
-        if not obj.sponsored_logo:
-            return None
-        name = obj.sponsored_logo.name
-        if name.startswith('http://') or name.startswith('https://'):
-            return name
-        request = self.context.get('request')
-        if request:
-            return request.build_absolute_uri(obj.sponsored_logo.url)
-        return obj.sponsored_logo.url
+        for field in ('image', 'sponsored_logo'):
+            file_field = getattr(instance, field)
+            if file_field:
+                name = file_field.name
+                if name.startswith('http://') or name.startswith('https://'):
+                    ret[field] = name
+                elif request:
+                    ret[field] = request.build_absolute_uri(file_field.url)
+                else:
+                    ret[field] = file_field.url
+        return ret
 
 class AnalyticsEventSerializer(serializers.ModelSerializer):
     class Meta:

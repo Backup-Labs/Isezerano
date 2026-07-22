@@ -10,6 +10,7 @@ interface LayoutBlock {
   section_type: string;
   order: number;
   is_visible: boolean;
+  article_limit: number | null;
   category: number | null;
   ad_slot: number | null;
   category_details?: { name: string };
@@ -67,7 +68,11 @@ export default function HomepageBuilder() {
           fetch(`${API_BASE_URL}/api/v1/cms/layout/${block.id}/`, {
             method: 'PATCH',
             headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
-            body: JSON.stringify({ order: block.order, is_visible: block.is_visible })
+            body: JSON.stringify({ 
+              order: block.order, 
+              is_visible: block.is_visible,
+              article_limit: block.article_limit
+            })
           })
         )
       );
@@ -87,7 +92,15 @@ export default function HomepageBuilder() {
       case 'featured-grid': return 'Featured Stories Grid';
       case 'category-rail': return 'Category Grid Rail';
       case 'ad-slot': return 'Advertisement Banner';
-      default: return 'Trending Stories Widget';
+      case 'trending-widget': return 'Trending Stories Widget';
+      case 'news-desk': return 'News Desk Section';
+      case 'announcements': return 'Amatangazo Classifieds';
+      case 'lifestyle': return 'Lifestyle & Culture';
+      case 'sports-grid': return 'Sports Vertical Grid';
+      case 'featured-secondary': return 'Second Featured Posts';
+      case 'flyers': return 'Local Partner Flyers';
+      case 'you-missed': return 'You Missed Rail';
+      default: return type;
     }
   };
 
@@ -164,6 +177,26 @@ export default function HomepageBuilder() {
                 </span>
               </div>
             </div>
+
+            {/* Dynamic article limits for article/content sections */}
+            {!['ad-slot', 'flyers'].includes(block.section_type) && (
+              <div className="flex items-center gap-2 font-mono text-xs text-theme-black shrink-0 bg-theme-light-gray px-3 py-1 border border-theme-gray-100">
+                <span className="text-[10px] text-theme-gray-400 font-bold uppercase tracking-wider">Item Limit:</span>
+                <input
+                  type="number"
+                  min={1}
+                  max={30}
+                  value={block.article_limit || 5}
+                  onChange={(e) => {
+                    const val = parseInt(e.target.value, 10) || 5;
+                    const nextLayout = [...layout];
+                    nextLayout[idx] = { ...block, article_limit: val };
+                    setLayout(nextLayout);
+                  }}
+                  className="w-12 bg-white border border-theme-gray-100 text-center py-0.5 text-xs text-theme-black focus:outline-none focus:border-theme-blue font-bold font-mono"
+                />
+              </div>
+            )}
 
             {/* Actions */}
             <div className="flex items-center gap-2 shrink-0">

@@ -162,7 +162,9 @@ export default function ArticlesManager() {
               {filteredArticles.map((art) => (
                 <tr key={art.id} className="hover:bg-theme-light-gray transition-colors">
                   <td className="p-4 pl-6 font-bold text-theme-black max-w-sm truncate">
-                    {art.title}
+                    <Link href={`/a/${art.slug}`} target="_blank" className="hover:text-theme-blue transition-colors hover:underline">
+                      {art.title}
+                    </Link>
                   </td>
                   <td className="p-4 text-xs font-mono text-theme-black">
                     {art.category?.name || 'GENERIC'}

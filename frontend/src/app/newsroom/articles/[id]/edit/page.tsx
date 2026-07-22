@@ -242,18 +242,31 @@ export default function EditArticle() {
               {/* Image upload */}
               <div className="flex flex-col gap-2">
                 <label className="text-[10px] font-mono text-theme-gray-400 uppercase font-bold tracking-wider">Cover Image</label>
-                {currentCoverUrl && (
+                {coverImage ? (
                   <img 
-                    src={getMediaUrl(currentCoverUrl)}
-                    alt="cover preview" 
+                    src={URL.createObjectURL(coverImage)}
+                    alt="new cover preview" 
                     className="w-full h-24 object-cover border border-theme-gray-100 mb-2"
                   />
-                )}
-                <label className="flex items-center gap-1.5 px-3 py-2 bg-white border border-theme-gray-100 text-xs font-mono cursor-pointer hover:bg-theme-blue hover:text-white transition-all text-theme-black font-bold uppercase w-max">
-                  <ImageIcon className="w-4 h-4" />
-                  Load New File
-                  <input type="file" accept="image/*" onChange={(e) => setCoverImage(e.target.files?.[0] || null)} className="hidden" />
-                </label>
+                ) : currentCoverUrl ? (
+                  <img 
+                    src={getMediaUrl(currentCoverUrl)}
+                    alt="current cover preview" 
+                    className="w-full h-24 object-cover border border-theme-gray-100 mb-2"
+                  />
+                ) : null}
+                <div className="flex items-center gap-2">
+                  <label className="flex items-center gap-1.5 px-3 py-2 bg-white border border-theme-gray-100 text-xs font-mono cursor-pointer hover:bg-theme-blue hover:text-white transition-all text-theme-black font-bold uppercase w-max">
+                    <ImageIcon className="w-4 h-4" />
+                    Load New File
+                    <input type="file" accept="image/*" onChange={(e) => setCoverImage(e.target.files?.[0] || null)} className="hidden" />
+                  </label>
+                  {coverImage && (
+                    <span className="text-[10px] text-theme-gray-400 font-mono truncate max-w-[150px] font-semibold">
+                      {coverImage.name}
+                    </span>
+                  )}
+                </div>
               </div>
 
               {/* Tags Select */}

@@ -265,6 +265,13 @@ export default function CreateArticle() {
             {/* Image upload */}
             <div className="flex flex-col gap-2">
               <label className="text-[10px] font-mono text-theme-gray-400 uppercase font-bold tracking-wider">Cover Image</label>
+              {coverImage && (
+                <img 
+                  src={URL.createObjectURL(coverImage)} 
+                  alt="cover preview" 
+                  className="w-full h-24 object-cover border border-theme-gray-100 mb-2"
+                />
+              )}
               <div className="flex items-center gap-2">
                 <label className="flex items-center gap-1.5 px-3 py-2 bg-white border border-theme-gray-100 text-xs font-mono cursor-pointer hover:bg-theme-blue hover:text-white transition-all text-theme-black font-bold uppercase">
                   <ImageIcon className="w-4 h-4" />

@@ -8,7 +8,7 @@ from .models import Category, Tag, Article, ArticleRevision, Comment
 from .serializers import (
     CategorySerializer, TagSerializer, ArticleListSerializer, 
     ArticleDetailSerializer, CommentSerializer, ArticleRevisionSerializer,
-    CMSArticleWriteSerializer
+    CMSArticleWriteSerializer, CMSCommentSerializer
 )
 from users.permissions import IsJournalist, IsEditor, IsAdmin
 
@@ -172,7 +172,7 @@ class CMSTagViewSet(viewsets.ModelViewSet):
 
 class CMSCommentViewSet(viewsets.ModelViewSet):
     queryset = Comment.objects.all()
-    serializer_class = CommentSerializer
+    serializer_class = CMSCommentSerializer
     permission_classes = (IsEditor,)
 
     @action(detail=True, methods=['post'])

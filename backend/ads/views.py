@@ -5,7 +5,7 @@ from django.utils import timezone
 from django.db.models import F
 from .models import AdSlot, AnalyticsEvent
 from .serializers import AdSlotSerializer, AnalyticsEventSerializer
-from users.permissions import IsAdmin
+from users.permissions import IsAdmin, IsEditor
 
 class ActiveAdView(APIView):
     permission_classes = (permissions.AllowAny,)
@@ -60,4 +60,4 @@ class TrackAnalyticsView(APIView):
 class CMSAdSlotViewSet(viewsets.ModelViewSet):
     queryset = AdSlot.objects.all()
     serializer_class = AdSlotSerializer
-    permission_classes = (IsAdmin,)
+    permission_classes = (IsEditor,)

@@ -112,6 +112,7 @@ class Comment(models.Model):
     parent = models.ForeignKey('self', on_delete=models.CASCADE, null=True, blank=True, related_name='replies')
     body = models.TextField()
     status = models.CharField(max_length=20, choices=MODERATION_CHOICES, default='approved')  # Default to approved to make it interactive, or change to pending based on site setting
+    anonymous_identifier = models.CharField(max_length=20, blank=True, null=True, unique=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
@@ -119,3 +120,17 @@ class Comment(models.Model):
 
     def __str__(self):
         return f"Comment by {self.user.username} on {self.article.title}"
+
+    def save(self, *args, **kwargs):
+        if not self.anonymous_identifier:
+            import random
+            from django.utils import timezone
+            year = timezone.now().year
+            while True:
+                rand_num = random.randint(1000, 9999)
+                identifier = f"COM{year}{rand_num}"
+                if not Comment.objects.filter(anonymous_identifier=identifier).exists():
+                    self.anonymous_identifier = identifier
+                    break
+        super().save(*args, **kwargs)
+
