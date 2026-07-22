@@ -3,7 +3,7 @@ import { API_BASE_URL } from '@/config';
 
 import React, { useEffect, useState } from 'react';
 import { useApp } from '@/context/AppContext';
-import { Check, X, MessageSquare } from 'lucide-react';
+import { Check, X, MessageSquare, ChevronLeft, ChevronRight } from 'lucide-react';
 
 interface Comment {
   id: number;
@@ -18,6 +18,8 @@ export default function CommentsModerator() {
   const { token } = useApp();
   const [comments, setComments] = useState<Comment[]>([]);
   const [loading, setLoading] = useState(true);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
 
   const fetchComments = async () => {
     try {
@@ -70,6 +72,18 @@ export default function CommentsModerator() {
     }
   };
 
+  // Pagination Logic
+  const totalItems = comments.length;
+  const totalPages = Math.ceil(totalItems / pageSize) || 1;
+  const paginatedComments = comments.slice(
+    (currentPage - 1) * pageSize,
+    currentPage * pageSize
+  );
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [pageSize]);
+
   if (loading) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[30vh]">
@@ -80,7 +94,7 @@ export default function CommentsModerator() {
   }
 
   return (
-    <div className="flex flex-col gap-6 text-theme-black">
+    <div className="flex flex-col gap-6 text-theme-black animate-fade-in">
       {/* Header bar */}
       <div className="flex flex-col gap-1 pb-4 border-b border-theme-gray-100">
         <h1 className="serif-title text-2xl font-bold uppercase tracking-wider text-theme-black flex items-center gap-2">
@@ -106,13 +120,13 @@ export default function CommentsModerator() {
               </tr>
             </thead>
             <tbody className="divide-y divide-theme-gray-100 text-sm text-theme-black font-mono bg-white">
-              {comments.map((comment) => (
+              {paginatedComments.map((comment) => (
                 <tr key={comment.id} className="hover:bg-theme-light-gray/40 transition-colors">
                   <td className="p-4 pl-6 text-[10px] font-mono whitespace-nowrap text-theme-black">
                     {new Date(comment.created_at).toLocaleDateString()}
                   </td>
-                  <td className="p-4 text-xs font-mono text-theme-black font-bold">
-                    @{comment.user.username}
+                  <td className="p-4 text-xs font-mono text-theme-black font-bold font-bold">
+                    {comment.user.username}
                   </td>
                   <td className="p-4 max-w-md">
                     <p className="text-xs leading-relaxed line-clamp-3 text-theme-black font-sans">
@@ -149,7 +163,7 @@ export default function CommentsModerator() {
                 </tr>
               ))}
 
-              {comments.length === 0 && (
+              {paginatedComments.length === 0 && (
                 <tr>
                   <td colSpan={5} className="text-center py-12 font-mono text-xs uppercase tracking-wider text-theme-gray-400">
                     No comments found.
@@ -160,6 +174,88 @@ export default function CommentsModerator() {
           </table>
         </div>
       </div>
+
+      {/* Pagination Footer */}
+      {totalItems > 0 && (
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-4 border-t border-theme-gray-100 font-mono text-xs text-theme-gray-400">
+          <div className="flex items-center gap-2">
+            <span>Show</span>
+            <select
+              value={pageSize}
+              onChange={(e) => setPageSize(Number(e.target.value))}
+              className="bg-white border border-theme-gray-100 text-theme-black px-2 py-1 focus:outline-none focus:border-theme-blue font-bold"
+            >
+              {[10, 25, 50, 100].map((size) => (
+                <option key={size} value={size}>
+                  {size}
+                </option>
+              ))}
+            </select>
+            <span>entries</span>
+            <span className="text-theme-gray-300">|</span>
+            <span>
+              Showing {(currentPage - 1) * pageSize + 1} to {Math.min(currentPage * pageSize, totalItems)} of {totalItems} entries
+            </span>
+          </div>
+
+          <div className="flex items-center gap-1.5 font-bold">
+            <button
+              onClick={() => setCurrentPage(1)}
+              disabled={currentPage === 1}
+              className="px-2 py-1 border border-theme-gray-100 hover:bg-theme-light-gray disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer transition-colors"
+            >
+              First
+            </button>
+            <button
+              onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+              disabled={currentPage === 1}
+              className="px-2 py-1 border border-theme-gray-100 hover:bg-theme-light-gray disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer transition-colors flex items-center gap-0.5"
+            >
+              <ChevronLeft className="w-3.5 h-3.5" />
+              Prev
+            </button>
+            
+            {/* Page number buttons */}
+            {Array.from({ length: totalPages }, (_, i) => i + 1)
+              .filter((page) => page === 1 || page === totalPages || Math.abs(page - currentPage) <= 1)
+              .map((page, idx, arr) => {
+                const prev = arr[idx - 1];
+                const showEllipsis = prev && page - prev > 1;
+                return (
+                  <React.Fragment key={page}>
+                    {showEllipsis && <span className="px-1">...</span>}
+                    <button
+                      onClick={() => setCurrentPage(page)}
+                      className={`px-2.5 py-1 border cursor-pointer transition-colors ${
+                        currentPage === page
+                          ? 'bg-theme-blue text-white border-theme-blue'
+                          : 'border-theme-gray-100 hover:bg-theme-light-gray text-theme-black'
+                      }`}
+                    >
+                      {page}
+                    </button>
+                  </React.Fragment>
+                );
+              })}
+
+            <button
+              onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+              disabled={currentPage === totalPages}
+              className="px-2 py-1 border border-theme-gray-100 hover:bg-theme-light-gray disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer transition-colors flex items-center gap-0.5"
+            >
+              Next
+              <ChevronRight className="w-3.5 h-3.5" />
+            </button>
+            <button
+              onClick={() => setCurrentPage(totalPages)}
+              disabled={currentPage === totalPages}
+              className="px-2 py-1 border border-theme-gray-100 hover:bg-theme-light-gray disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer transition-colors"
+            >
+              Last
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

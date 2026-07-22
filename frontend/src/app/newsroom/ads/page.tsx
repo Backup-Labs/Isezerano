@@ -3,7 +3,7 @@ import { API_BASE_URL } from '@/config';
 
 import React, { useEffect, useState } from 'react';
 import { useApp } from '@/context/AppContext';
-import { Plus, Megaphone, BarChart3, Save } from 'lucide-react';
+import { Plus, Megaphone, BarChart3, Save, ChevronLeft, ChevronRight } from 'lucide-react';
 
 interface Ad {
   id: number;
@@ -24,6 +24,8 @@ export default function AdSlotsManager() {
   const [ads, setAds] = useState<Ad[]>([]);
   const [loading, setLoading] = useState(true);
   const [showCreateModal, setShowCreateModal] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
 
   const [name, setName] = useState('');
   const [placement, setPlacement] = useState('header_banner');
@@ -113,6 +115,18 @@ export default function AdSlotsManager() {
     } catch (err) { console.error(err); }
   };
 
+  // Pagination Logic
+  const totalItems = ads.length;
+  const totalPages = Math.ceil(totalItems / pageSize) || 1;
+  const paginatedAds = ads.slice(
+    (currentPage - 1) * pageSize,
+    currentPage * pageSize
+  );
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [pageSize]);
+
   if (loading) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[30vh]">
@@ -164,7 +178,7 @@ export default function AdSlotsManager() {
               </tr>
             </thead>
             <tbody className="divide-y divide-theme-gray-100 text-sm text-theme-black font-mono bg-white">
-              {ads.map((ad) => (
+              {paginatedAds.map((ad) => (
                 <tr key={ad.id} className="hover:bg-theme-light-gray/40 transition-colors">
                   <td className="p-4 pl-6 font-bold text-theme-black max-w-xs truncate">{ad.name}</td>
                   <td className="p-4 text-xs font-semibold uppercase text-theme-black">{ad.placement}</td>
@@ -194,7 +208,7 @@ export default function AdSlotsManager() {
                 </tr>
               ))}
 
-              {ads.length === 0 && (
+              {paginatedAds.length === 0 && (
                 <tr>
                   <td colSpan={7} className="text-center py-12 text-xs uppercase tracking-wider text-theme-gray-400">
                     No campaigns deployed.
@@ -205,6 +219,88 @@ export default function AdSlotsManager() {
           </table>
         </div>
       </div>
+
+      {/* Pagination Footer */}
+      {totalItems > 0 && (
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-4 border-t border-theme-gray-100 font-mono text-xs text-theme-gray-400">
+          <div className="flex items-center gap-2">
+            <span>Show</span>
+            <select
+              value={pageSize}
+              onChange={(e) => setPageSize(Number(e.target.value))}
+              className="bg-white border border-theme-gray-100 text-theme-black px-2 py-1 focus:outline-none focus:border-theme-blue font-bold"
+            >
+              {[10, 25, 50, 100].map((size) => (
+                <option key={size} value={size}>
+                  {size}
+                </option>
+              ))}
+            </select>
+            <span>entries</span>
+            <span className="text-theme-gray-300">|</span>
+            <span>
+              Showing {(currentPage - 1) * pageSize + 1} to {Math.min(currentPage * pageSize, totalItems)} of {totalItems} entries
+            </span>
+          </div>
+
+          <div className="flex items-center gap-1.5 font-bold">
+            <button
+              onClick={() => setCurrentPage(1)}
+              disabled={currentPage === 1}
+              className="px-2 py-1 border border-theme-gray-100 hover:bg-theme-light-gray disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer transition-colors"
+            >
+              First
+            </button>
+            <button
+              onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+              disabled={currentPage === 1}
+              className="px-2 py-1 border border-theme-gray-100 hover:bg-theme-light-gray disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer transition-colors flex items-center gap-0.5"
+            >
+              <ChevronLeft className="w-3.5 h-3.5" />
+              Prev
+            </button>
+            
+            {/* Page number buttons */}
+            {Array.from({ length: totalPages }, (_, i) => i + 1)
+              .filter((page) => page === 1 || page === totalPages || Math.abs(page - currentPage) <= 1)
+              .map((page, idx, arr) => {
+                const prev = arr[idx - 1];
+                const showEllipsis = prev && page - prev > 1;
+                return (
+                  <React.Fragment key={page}>
+                    {showEllipsis && <span className="px-1">...</span>}
+                    <button
+                      onClick={() => setCurrentPage(page)}
+                      className={`px-2.5 py-1 border cursor-pointer transition-colors ${
+                        currentPage === page
+                          ? 'bg-theme-blue text-white border-theme-blue'
+                          : 'border-theme-gray-100 hover:bg-theme-light-gray text-theme-black'
+                      }`}
+                    >
+                      {page}
+                    </button>
+                  </React.Fragment>
+                );
+              })}
+
+            <button
+              onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+              disabled={currentPage === totalPages}
+              className="px-2 py-1 border border-theme-gray-100 hover:bg-theme-light-gray disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer transition-colors flex items-center gap-0.5"
+            >
+              Next
+              <ChevronRight className="w-3.5 h-3.5" />
+            </button>
+            <button
+              onClick={() => setCurrentPage(totalPages)}
+              disabled={currentPage === totalPages}
+              className="px-2 py-1 border border-theme-gray-100 hover:bg-theme-light-gray disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer transition-colors"
+            >
+              Last
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* Modal Dialog for Deploying Campaign */}
       {showCreateModal && (

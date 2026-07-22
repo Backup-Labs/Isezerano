@@ -128,9 +128,53 @@ export default function Homepage() {
 
   if (loading) {
     return (
-      <div className="max-w-7xl mx-auto px-6 py-20 flex flex-col items-center justify-center min-h-[50vh] bg-theme-light-gray text-theme-black">
-        <div className="w-12 h-12 border-t-2 border-r-2 border-theme-blue rounded-full animate-spin mb-4" />
-        <span className="font-mono text-xs tracking-widest uppercase font-bold text-theme-gray-400">LOADING DISPATCHES...</span>
+      <div className="max-w-7xl mx-auto px-4 md:px-8 py-8 flex flex-col gap-8 bg-theme-white text-theme-black animate-fade-in">
+        {/* Skeleton Top Leaderboard Ad */}
+        <div className="w-full h-24 bg-theme-light-gray animate-pulse border border-theme-gray-100 rounded-md" />
+
+        {/* Skeleton Hero Section */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 pb-6 border-b border-theme-blue-deep items-start">
+          {/* Slideshow Skeleton */}
+          <div className="lg:col-span-7 aspect-[16/9] bg-theme-light-gray animate-pulse rounded-md border border-theme-gray-100 flex flex-col justify-end p-6 gap-3">
+            <div className="w-24 h-4 bg-gray-300 rounded animate-pulse" />
+            <div className="w-3/4 h-8 bg-gray-300 rounded animate-pulse" />
+            <div className="w-1/2 h-4 bg-gray-300 rounded animate-pulse" />
+          </div>
+
+          {/* Breaking News Skeleton */}
+          <div className="lg:col-span-3 flex flex-col gap-4 border-b lg:border-b-0 lg:border-r border-theme-blue-deep pb-6 lg:pb-0 lg:pr-6">
+            <div className="w-32 h-5 bg-theme-light-gray animate-pulse border border-theme-gray-100 rounded" />
+            <div className="flex flex-col gap-4 divide-y divide-theme-gray-100">
+              {[1, 2, 3, 4].map((i) => (
+                <div key={i} className="pt-3.5 first:pt-0 flex gap-3 items-start animate-pulse">
+                  <div className="flex-grow flex flex-col gap-2 min-w-0">
+                    <div className="w-16 h-3 bg-theme-light-gray rounded" />
+                    <div className="w-full h-4 bg-theme-light-gray rounded" />
+                  </div>
+                  <div className="w-14 h-14 bg-theme-light-gray rounded border border-theme-gray-100 shrink-0" />
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Sidebar Ad Skeleton */}
+          <div className="lg:col-span-2 w-full h-[300px] bg-theme-light-gray animate-pulse border border-theme-gray-100 rounded-md" />
+        </div>
+
+        {/* Skeleton Featured Rail */}
+        <div className="bg-theme-light-gray/40 border border-theme-gray-100 rounded-md p-6 flex flex-col gap-4">
+          <div className="w-40 h-6 bg-theme-light-gray animate-pulse border border-theme-gray-100 rounded" />
+          <div className="flex gap-6 overflow-hidden">
+            {[1, 2, 3, 4].map((i) => (
+              <div key={i} className="flex-shrink-0 w-72 bg-white border border-theme-gray-100 rounded-md p-3.5 flex flex-col gap-4 animate-pulse">
+                <div className="aspect-[16/10] bg-theme-light-gray rounded" />
+                <div className="w-20 h-3 bg-theme-light-gray rounded" />
+                <div className="w-full h-4 bg-theme-light-gray rounded" />
+                <div className="w-1/2 h-3 bg-theme-light-gray rounded mt-auto" />
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
     );
   }

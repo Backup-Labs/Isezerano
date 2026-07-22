@@ -4,7 +4,7 @@ import { API_BASE_URL } from '@/config';
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useApp } from '@/context/AppContext';
-import { Plus, Eye, Check, X, Edit3 } from 'lucide-react';
+import { Plus, Eye, Check, X, Edit3, ChevronLeft, ChevronRight } from 'lucide-react';
 
 interface Article {
   id: number;
@@ -22,6 +22,8 @@ export default function ArticlesManager() {
   const [articles, setArticles] = useState<Article[]>([]);
   const [loading, setLoading] = useState(true);
   const [statusFilter, setStatusFilter] = useState<string>('all');
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
 
   const fetchArticles = async () => {
     try {
@@ -98,6 +100,18 @@ export default function ArticlesManager() {
     ? articles 
     : articles.filter(a => a.status === statusFilter);
 
+  // Pagination Logic
+  const totalItems = filteredArticles.length;
+  const totalPages = Math.ceil(totalItems / pageSize) || 1;
+  const paginatedArticles = filteredArticles.slice(
+    (currentPage - 1) * pageSize,
+    currentPage * pageSize
+  );
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [statusFilter, pageSize]);
+
   if (loading) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[30vh]">
@@ -108,7 +122,7 @@ export default function ArticlesManager() {
   }
 
   return (
-    <div className="flex flex-col gap-6 text-theme-black">
+    <div className="flex flex-col gap-6 text-theme-black animate-fade-in">
       {/* Header bar */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-theme-gray-100">
         <div className="flex flex-col gap-1">
@@ -159,7 +173,7 @@ export default function ArticlesManager() {
               </tr>
             </thead>
             <tbody className="divide-y divide-theme-gray-100 text-sm text-theme-gray-400 bg-white">
-              {filteredArticles.map((art) => (
+              {paginatedArticles.map((art) => (
                 <tr key={art.id} className="hover:bg-theme-light-gray transition-colors">
                   <td className="p-4 pl-6 font-bold text-theme-black max-w-sm truncate">
                     <Link href={`/a/${art.slug}`} target="_blank" className="hover:text-theme-blue transition-colors hover:underline">
@@ -217,7 +231,7 @@ export default function ArticlesManager() {
                 </tr>
               ))}
 
-              {filteredArticles.length === 0 && (
+              {paginatedArticles.length === 0 && (
                 <tr>
                   <td colSpan={6} className="text-center py-12 font-mono text-xs uppercase tracking-wider text-theme-gray-400">
                     No articles found.
@@ -228,6 +242,88 @@ export default function ArticlesManager() {
           </table>
         </div>
       </div>
+
+      {/* Pagination Footer */}
+      {totalItems > 0 && (
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-4 border-t border-theme-gray-100 font-mono text-xs text-theme-gray-400">
+          <div className="flex items-center gap-2">
+            <span>Show</span>
+            <select
+              value={pageSize}
+              onChange={(e) => setPageSize(Number(e.target.value))}
+              className="bg-white border border-theme-gray-100 text-theme-black px-2 py-1 focus:outline-none focus:border-theme-blue font-bold"
+            >
+              {[10, 25, 50, 100].map((size) => (
+                <option key={size} value={size}>
+                  {size}
+                </option>
+              ))}
+            </select>
+            <span>entries</span>
+            <span className="text-theme-gray-300">|</span>
+            <span>
+              Showing {(currentPage - 1) * pageSize + 1} to {Math.min(currentPage * pageSize, totalItems)} of {totalItems} entries
+            </span>
+          </div>
+
+          <div className="flex items-center gap-1.5 font-bold">
+            <button
+              onClick={() => setCurrentPage(1)}
+              disabled={currentPage === 1}
+              className="px-2 py-1 border border-theme-gray-100 hover:bg-theme-light-gray disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer transition-colors"
+            >
+              First
+            </button>
+            <button
+              onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+              disabled={currentPage === 1}
+              className="px-2 py-1 border border-theme-gray-100 hover:bg-theme-light-gray disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer transition-colors flex items-center gap-0.5"
+            >
+              <ChevronLeft className="w-3.5 h-3.5" />
+              Prev
+            </button>
+            
+            {/* Page number buttons */}
+            {Array.from({ length: totalPages }, (_, i) => i + 1)
+              .filter((page) => page === 1 || page === totalPages || Math.abs(page - currentPage) <= 1)
+              .map((page, idx, arr) => {
+                const prev = arr[idx - 1];
+                const showEllipsis = prev && page - prev > 1;
+                return (
+                  <React.Fragment key={page}>
+                    {showEllipsis && <span className="px-1">...</span>}
+                    <button
+                      onClick={() => setCurrentPage(page)}
+                      className={`px-2.5 py-1 border cursor-pointer transition-colors ${
+                        currentPage === page
+                          ? 'bg-theme-blue text-white border-theme-blue'
+                          : 'border-theme-gray-100 hover:bg-theme-light-gray text-theme-black'
+                      }`}
+                    >
+                      {page}
+                    </button>
+                  </React.Fragment>
+                );
+              })}
+
+            <button
+              onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+              disabled={currentPage === totalPages}
+              className="px-2 py-1 border border-theme-gray-100 hover:bg-theme-light-gray disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer transition-colors flex items-center gap-0.5"
+            >
+              Next
+              <ChevronRight className="w-3.5 h-3.5" />
+            </button>
+            <button
+              onClick={() => setCurrentPage(totalPages)}
+              disabled={currentPage === totalPages}
+              className="px-2 py-1 border border-theme-gray-100 hover:bg-theme-light-gray disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer transition-colors"
+            >
+              Last
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
