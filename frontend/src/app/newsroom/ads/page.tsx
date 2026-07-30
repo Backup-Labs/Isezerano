@@ -3,7 +3,7 @@ import { API_BASE_URL } from '@/config';
 
 import React, { useEffect, useState } from 'react';
 import { useApp } from '@/context/AppContext';
-import { Plus, Megaphone, BarChart3, Save, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Plus, Megaphone, BarChart3, Save, ChevronLeft, ChevronRight, Trash2 } from 'lucide-react';
 
 interface Ad {
   id: number;
@@ -70,6 +70,25 @@ export default function AdSlotsManager() {
       });
       if (res.ok) fetchAds();
     } catch (err) { console.error(err); }
+  };
+
+  const handleDeleteAd = async (ad: Ad) => {
+    if (!confirm(`Permanently delete campaign "${ad.name}"? This cannot be undone.`)) return;
+    try {
+      const res = await fetch(`${API_BASE_URL}/api/v1/cms/ads/${ad.id}/`, {
+        method: 'DELETE',
+        headers: { 'Authorization': `Bearer ${token}` },
+      });
+      if (res.ok || res.status === 204) {
+        setAds((prev) => prev.filter((item) => item.id !== ad.id));
+        fetchAds();
+      } else {
+        alert('Failed to delete campaign.');
+      }
+    } catch (err) {
+      console.error(err);
+      alert('Failed to delete campaign.');
+    }
   };
 
   const handleCreateAd = async (e: React.FormEvent) => {
@@ -174,7 +193,7 @@ export default function AdSlotsManager() {
                 <th className="p-4">Impressions</th>
                 <th className="p-4">Clicks</th>
                 <th className="p-4">CTR</th>
-                <th className="p-4 pr-6 text-right">Status</th>
+                <th className="p-4 pr-6 text-right">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-theme-gray-100 text-sm text-theme-black font-mono bg-white">
@@ -194,16 +213,26 @@ export default function AdSlotsManager() {
                     </span>
                   </td>
                   <td className="p-4 pr-6 text-right">
-                    <button
-                      onClick={() => handleToggleActive(ad)}
-                      className={`px-3 py-1 text-[10px] font-mono font-bold uppercase transition-all cursor-pointer border ${
-                        ad.is_active
-                          ? 'border-green-600 bg-green-50 text-green-700 hover:bg-green-100'
-                          : 'border-red-600 bg-red-50 text-red-700 hover:bg-red-100'
-                      }`}
-                    >
-                      {ad.is_active ? 'ACTIVE' : 'PAUSED'}
-                    </button>
+                    <div className="flex items-center justify-end gap-2">
+                      <button
+                        onClick={() => handleToggleActive(ad)}
+                        className={`px-3 py-1 text-[10px] font-mono font-bold uppercase transition-all cursor-pointer border ${
+                          ad.is_active
+                            ? 'border-green-600 bg-green-50 text-green-700 hover:bg-green-100'
+                            : 'border-red-600 bg-red-50 text-red-700 hover:bg-red-100'
+                        }`}
+                      >
+                        {ad.is_active ? 'ACTIVE' : 'PAUSED'}
+                      </button>
+                      <button
+                        onClick={() => handleDeleteAd(ad)}
+                        className="p-1.5 bg-theme-light-gray border border-theme-gray-100 hover:bg-red-600 hover:text-white text-theme-black transition-all cursor-pointer flex items-center gap-0.5"
+                        title="Delete campaign"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                        <span className="text-[10px] font-mono font-bold uppercase">Delete</span>
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ))}

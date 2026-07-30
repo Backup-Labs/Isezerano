@@ -33,6 +33,12 @@ export const Footer: React.FC = () => {
   const [recentPosts, setRecentPosts] = useState<Article[]>([]);
   const [email, setEmail] = useState('');
   const [subStatus, setSubStatus] = useState<'idle' | 'success' | 'error'>('idle');
+  const [showQuoteForm, setShowQuoteForm] = useState(false);
+  const [quoteName, setQuoteName] = useState('');
+  const [quoteEmail, setQuoteEmail] = useState('');
+  const [quoteCompany, setQuoteCompany] = useState('');
+  const [quoteMessage, setQuoteMessage] = useState('');
+  const [quoteStatus, setQuoteStatus] = useState<'idle' | 'sending' | 'success' | 'error'>('idle');
 
   useEffect(() => {
     const fetchData = async () => {
@@ -81,6 +87,35 @@ export const Footer: React.FC = () => {
     }
   };
 
+  const handleQuoteSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!quoteName || !quoteEmail) return;
+    setQuoteStatus('sending');
+    try {
+      const res = await fetch(`${API_BASE_URL}/api/v1/ads/request-kit/`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: quoteName,
+          email: quoteEmail,
+          company: quoteCompany,
+          message: quoteMessage || 'Ad packages / web services inquiry from footer',
+        }),
+      });
+      if (res.ok) {
+        setQuoteStatus('success');
+        setQuoteName('');
+        setQuoteEmail('');
+        setQuoteCompany('');
+        setQuoteMessage('');
+      } else {
+        setQuoteStatus('error');
+      }
+    } catch {
+      setQuoteStatus('error');
+    }
+  };
+
 
 
   // Translations
@@ -115,6 +150,27 @@ export const Footer: React.FC = () => {
       EN: 'Get a Quote',
       FR: 'Demander un devis'
     },
+    quoteName: { RW: 'Izina', EN: 'Name', FR: 'Nom' },
+    quoteEmail: { RW: 'Imeyili', EN: 'Email', FR: 'E-mail' },
+    quoteCompany: { RW: 'Ikigo', EN: 'Company', FR: 'Entreprise' },
+    quoteMessage: { RW: 'Ubutumwa', EN: 'Message', FR: 'Message' },
+    quoteSend: { RW: 'Ohereza', EN: 'Send', FR: 'Envoyer' },
+    quoteCancel: { RW: 'Hagarika', EN: 'Cancel', FR: 'Annuler' },
+    quoteSuccess: {
+      RW: 'Ubusabe bwawe bwoherejwe.',
+      EN: 'Your request was sent.',
+      FR: 'Votre demande a été envoyée.',
+    },
+    quoteError: {
+      RW: 'Ntibyakunze. Ongera ugerageze.',
+      EN: 'Something went wrong. Please try again.',
+      FR: 'Une erreur est survenue. Réessayez.',
+    },
+    emailPlaceholder: {
+      RW: 'ANDIKA IMERI YAWE...',
+      EN: 'ENTER YOUR EMAIL...',
+      FR: 'ENTREZ VOTRE E-MAIL...',
+    },
     linksTitle: {
       RW: 'Imirongo Ifite Akamaro',
       EN: 'Useful Links',
@@ -148,7 +204,7 @@ export const Footer: React.FC = () => {
         <form onSubmit={handleSubscribe} className="w-full md:w-auto flex items-center gap-2 max-w-md shrink-0">
           <input 
             type="email"
-            placeholder="ENTER YOUR EMAIL..."
+            placeholder={t.emailPlaceholder[language]}
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             className="w-full md:w-64 bg-white border border-theme-gray-100 px-4 py-2.5 text-xs font-mono placeholder-theme-gray-400 focus:outline-none focus:border-theme-blue text-theme-black"
@@ -174,12 +230,87 @@ export const Footer: React.FC = () => {
           <p className="text-xs leading-relaxed text-theme-gray-400 font-sans">
             {t.aboutDesc[language]}
           </p>
-          <a 
-            href="mailto:ads@isezerano.com?subject=Ad%20Packages%20/%20Web%20Services%20Inquiry"
-            className="px-4 py-2.5 mt-2 bg-theme-blue hover:bg-theme-blue-glow text-white text-xs font-mono font-bold uppercase tracking-widest transition-all text-center self-start shadow-sm"
-          >
-            {t.getQuote[language]} →
-          </a>
+          {!showQuoteForm ? (
+            <button
+              type="button"
+              onClick={() => {
+                setShowQuoteForm(true);
+                setQuoteStatus('idle');
+              }}
+              className="px-4 py-2.5 mt-2 bg-theme-blue hover:bg-theme-blue-glow text-white text-xs font-mono font-bold uppercase tracking-widest transition-all text-center self-start shadow-sm cursor-pointer"
+            >
+              {t.getQuote[language]} →
+            </button>
+          ) : quoteStatus === 'success' ? (
+            <div className="mt-2 flex flex-col gap-2">
+              <p className="text-xs text-theme-blue font-sans">{t.quoteSuccess[language]}</p>
+              <button
+                type="button"
+                onClick={() => {
+                  setShowQuoteForm(false);
+                  setQuoteStatus('idle');
+                }}
+                className="text-[10px] font-mono uppercase tracking-widest text-theme-gray-400 underline self-start cursor-pointer"
+              >
+                {t.quoteCancel[language]}
+              </button>
+            </div>
+          ) : (
+            <form onSubmit={handleQuoteSubmit} className="mt-2 flex flex-col gap-2 w-full">
+              <input
+                type="text"
+                required
+                value={quoteName}
+                onChange={(e) => setQuoteName(e.target.value)}
+                placeholder={t.quoteName[language]}
+                className="w-full px-3 py-2 text-xs bg-white border border-theme-gray-100 text-theme-black outline-none focus:border-theme-blue"
+              />
+              <input
+                type="email"
+                required
+                value={quoteEmail}
+                onChange={(e) => setQuoteEmail(e.target.value)}
+                placeholder={t.quoteEmail[language]}
+                className="w-full px-3 py-2 text-xs bg-white border border-theme-gray-100 text-theme-black outline-none focus:border-theme-blue"
+              />
+              <input
+                type="text"
+                value={quoteCompany}
+                onChange={(e) => setQuoteCompany(e.target.value)}
+                placeholder={t.quoteCompany[language]}
+                className="w-full px-3 py-2 text-xs bg-white border border-theme-gray-100 text-theme-black outline-none focus:border-theme-blue"
+              />
+              <textarea
+                value={quoteMessage}
+                onChange={(e) => setQuoteMessage(e.target.value)}
+                placeholder={t.quoteMessage[language]}
+                rows={2}
+                className="w-full px-3 py-2 text-xs bg-white border border-theme-gray-100 text-theme-black outline-none focus:border-theme-blue resize-none"
+              />
+              {quoteStatus === 'error' && (
+                <p className="text-[10px] text-red-600 font-sans">{t.quoteError[language]}</p>
+              )}
+              <div className="flex gap-2">
+                <button
+                  type="submit"
+                  disabled={quoteStatus === 'sending'}
+                  className="px-4 py-2 bg-theme-blue hover:bg-theme-blue-glow text-white text-[10px] font-mono font-bold uppercase tracking-widest disabled:opacity-60 cursor-pointer"
+                >
+                  {quoteStatus === 'sending' ? '...' : t.quoteSend[language]}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShowQuoteForm(false);
+                    setQuoteStatus('idle');
+                  }}
+                  className="px-3 py-2 border border-theme-gray-100 text-[10px] font-mono font-bold uppercase tracking-widest text-theme-gray-400 cursor-pointer"
+                >
+                  {t.quoteCancel[language]}
+                </button>
+              </div>
+            </form>
+          )}
         </div>
 
         {/* Column 2: Useful Links (Categories) */}

@@ -58,7 +58,8 @@ class DailyVerseTodayView(APIView):
             return Response({
                 'verse_reference': 'Habakuki 2:3',
                 'verse_text_kinyarwanda': 'Kuko ibyo kwerekwa bifite igihe byabariwe...',
-                'verse_text_english': 'For the revelation awaits an appointed time...'
+                'verse_text_english': 'For the revelation awaits an appointed time...',
+                'verse_text_french': 'Car la vision est encore pour un temps fixé...',
             })
         serializer = DailyVerseSerializer(verse)
         return Response(serializer.data)

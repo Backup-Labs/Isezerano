@@ -48,6 +48,7 @@ interface DailyVerse {
   verse_reference: string;
   verse_text_kinyarwanda: string;
   verse_text_english: string;
+  verse_text_french?: string;
 }
 
 export default function Homepage() {
@@ -204,13 +205,16 @@ export default function Homepage() {
     tabCourt: { RW: "IBYEMEZO BY'URUKIKO", EN: 'COURT DECISIONS', FR: 'JUSTICE' },
     tabJobs: { RW: 'AKAZI', EN: 'AKAZI', FR: 'EMPLOIS' },
     tabNameChange: { RW: 'GUHINDURA AMAZINA', EN: 'NAME CHANGES', FR: 'REPT. NOMS' },
-    popularPosts: { RW: 'Inkuru Zikunzwe', EN: 'Inkuru Zikunzwe', FR: 'Populaires' },
+    popularPosts: { RW: 'Inkuru Zikunzwe', EN: 'Popular Posts', FR: 'Populaires' },
     sportsVertical: { RW: 'Imikino n’Imyidagaduro', EN: 'Sports Vertical', FR: 'Sports' },
     featuredPostsSec: { RW: 'Ibyatoranyijwe Gukundwa', EN: 'Featured Posts', FR: 'Articles Recommandés' },
     youMissed: { RW: 'Izo Waba Waracikanwe', EN: 'You Missed', FR: 'Vous avez manqué' },
     readMore: { RW: 'Komeza usome →', EN: 'Continue reading →', FR: 'Lire la suite →' },
     deadline: { RW: 'Itariki ntarengwa:', EN: 'Deadline:', FR: 'Date limite:' },
-    attachment: { RW: 'Gukuramo PDF', EN: 'Download PDF', FR: 'Télécharger PDF' }
+    attachment: { RW: 'Gukuramo PDF', EN: 'Download PDF', FR: 'Télécharger PDF' },
+    designSection: { RW: 'Ubushushanyuze', EN: 'Design & Architecture', FR: 'Design & Architecture' },
+    businessSection: { RW: 'Ubucuruzi n’Ivugurura', EN: 'Business & Innovation', FR: 'Business & Innovation' },
+    officialCampaigns: { RW: 'Kampanye Zemewe', EN: 'Official Campaigns', FR: 'Campagnes Officielles' },
   };
 
   const breakingArticles = articles.filter(a => a.is_breaking).slice(0, getLimitFor('hero', 5));
@@ -590,7 +594,11 @@ export default function Homepage() {
                       <div className="absolute top-0 right-0 w-24 h-24 bg-theme-blue/5 rounded-full translate-x-8 -translate-y-8" />
                       <div className="flex flex-col gap-4 z-10">
                         <p className="serif-title text-base italic leading-relaxed text-theme-black">
-                          "{language === 'RW' ? dailyVerse.verse_text_kinyarwanda : dailyVerse.verse_text_english}"
+                          "{language === 'RW'
+                            ? dailyVerse.verse_text_kinyarwanda
+                            : language === 'FR'
+                              ? (dailyVerse.verse_text_french || dailyVerse.verse_text_english)
+                              : dailyVerse.verse_text_english}"
                         </p>
                         <span className="font-mono text-xs font-bold text-theme-blue uppercase tracking-wider block border-t border-theme-blue-deep/20 pt-2 w-max">
                           — {dailyVerse.verse_reference}
@@ -929,11 +937,11 @@ export default function Homepage() {
           case 'category-rail':
             return (
               <section key={`category-rail-${block.id || blockIdx}`} className="grid grid-cols-1 lg:grid-cols-12 gap-8 py-8 border-b border-theme-blue-deep animate-fade-in">
-                {/* Grid Col A: Left (lg:col-span-5) */}
+                {/* Left: Design rail (lg:col-span-5) */}
                 <div className="lg:col-span-5 border-b lg:border-b-0 lg:border-r border-theme-gray-100 pb-6 lg:pb-0 lg:pr-8">
                   <div className="flex items-center border-b border-theme-gray-100 pb-3 mb-6">
                     <span className="font-mono text-xs font-black uppercase tracking-widest text-theme-black">
-                      {block.category_details?.name || 'Design & Architecture'}
+                      {block.category_details?.name || t.designSection[language]}
                     </span>
                   </div>
 
@@ -980,23 +988,11 @@ export default function Homepage() {
                   </div>
                 </div>
 
-                {/* Grid Col B: Ad Space Stack (lg:col-span-2) */}
-                <div className="lg:col-span-2 flex flex-col gap-4 border-b lg:border-b-0 lg:border-r border-theme-gray-100 pb-6 lg:pb-0 lg:px-4 items-center">
-                  <h3 className="font-mono text-xs font-black uppercase tracking-widest text-theme-blue pb-2.5 border-b border-theme-blue-deep w-full text-center lg:text-left">
-                    OFFICIAL CAMPAIGNS
-                  </h3>
-                  <div className="flex flex-col gap-4 w-full justify-center">
-                    <AdSpace placement="grid_sidebar_stack_1" />
-                    <AdSpace placement="grid_sidebar_stack_2" />
-                    <AdSpace placement="grid_sidebar_stack_3" />
-                  </div>
-                </div>
-
-                {/* Grid Col C: Right (lg:col-span-5) */}
-                <div className="lg:col-span-5 lg:pl-8">
+                {/* Center: Business & Innovation (lg:col-span-5) */}
+                <div className="lg:col-span-5 border-b lg:border-b-0 lg:border-r border-theme-gray-100 pb-6 lg:pb-0 lg:px-8">
                   <div className="flex items-center border-b border-theme-gray-100 pb-3 mb-6">
                     <span className="font-mono text-xs font-black uppercase tracking-widest text-theme-black">
-                      Business & Innovation
+                      {t.businessSection[language]}
                     </span>
                   </div>
 
@@ -1040,6 +1036,18 @@ export default function Homepage() {
                         </span>
                       </div>
                     ))}
+                  </div>
+                </div>
+
+                {/* Right: Official Campaigns (lg:col-span-2) */}
+                <div className="lg:col-span-2 flex flex-col gap-4 pb-6 lg:pb-0 lg:pl-4 items-center">
+                  <h3 className="font-mono text-xs font-black uppercase tracking-widest text-theme-blue pb-2.5 border-b border-theme-blue-deep w-full text-center lg:text-left">
+                    {t.officialCampaigns[language]}
+                  </h3>
+                  <div className="flex flex-col gap-4 w-full justify-center">
+                    <AdSpace placement="grid_sidebar_stack_1" />
+                    <AdSpace placement="grid_sidebar_stack_2" />
+                    <AdSpace placement="grid_sidebar_stack_3" />
                   </div>
                 </div>
               </section>

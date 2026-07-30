@@ -15,7 +15,7 @@ from articles.views import (
     CommentCreateView, ArticleCommentListView,
     CMSArticleViewSet, CMSCategoryViewSet, CMSTagViewSet, CMSCommentViewSet
 )
-from ads.views import ActiveAdView, TrackAnalyticsView, CMSAdSlotViewSet
+from ads.views import ActiveAdView, TrackAnalyticsView, CMSAdSlotViewSet, RequestAdKitView
 from newsletter.views import SubscribeView, CMSSubscriberViewSet, CMSNewsletterCampaignViewSet
 from layout.views import (
     PublicHomepageLayoutView, PublicSiteSettingView, CMSHomepageLayoutViewSet,
@@ -62,6 +62,7 @@ urlpatterns = [
     path('api/v1/announcements/<int:pk>/', PublicAnnouncementDetailView.as_view(), name='public-announcement-detail'),
     
     # Ads & Analytics endpoints
+    path('api/v1/ads/request-kit/', RequestAdKitView.as_view(), name='request-ad-kit'),
     path('api/v1/ads/<str:placement>/', ActiveAdView.as_view(), name='active-ad'),
     path('api/v1/analytics/track/', TrackAnalyticsView.as_view(), name='track-analytics'),
     

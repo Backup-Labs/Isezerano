@@ -4,7 +4,12 @@ from rest_framework.decorators import action
 from django.utils import timezone
 from .models import Subscriber, NewsletterCampaign
 from .serializers import SubscriberSerializer, NewsletterCampaignSerializer
+from .tasks import (
+    send_newsletter_campaign_task,
+    send_subscription_confirmation,
+)
 from users.permissions import IsEditor, IsAdmin
+
 
 class SubscribeView(generics.CreateAPIView):
     queryset = Subscriber.objects.all()
@@ -19,9 +24,15 @@ class SubscribeView(generics.CreateAPIView):
             if not created:
                 subscriber.is_active = True
                 subscriber.save()
+            try:
+                send_subscription_confirmation(email)
+            except Exception as exc:
+                # Subscription still succeeds even if confirmation mail fails
+                print(f'Newsletter confirmation email failed: {exc}')
             serializer = self.get_serializer(subscriber)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response({'email': 'This field is required.'}, status=status.HTTP_400_BAD_REQUEST)
+
 
 # ================= CMS API VIEWS =================
 
@@ -29,6 +40,7 @@ class CMSSubscriberViewSet(viewsets.ModelViewSet):
     queryset = Subscriber.objects.all()
     serializer_class = SubscriberSerializer
     permission_classes = (IsEditor,)
+
 
 class CMSNewsletterCampaignViewSet(viewsets.ModelViewSet):
     queryset = NewsletterCampaign.objects.all()
@@ -40,11 +52,11 @@ class CMSNewsletterCampaignViewSet(viewsets.ModelViewSet):
         campaign = self.get_object()
         if campaign.status == 'sent':
             return Response({'detail': 'Campaign was already sent.'}, status=status.HTTP_400_BAD_REQUEST)
-        
-        # Simulate sending campaign
-        campaign.status = 'sent'
-        campaign.sent_at = timezone.now()
-        campaign.save()
 
-        # In production, Celery background tasks would send mail out
-        return Response({'status': 'Campaign sending completed'}, status=status.HTTP_200_OK)
+        # Prefer async Celery; fall back to synchronous send if broker is unavailable
+        try:
+            send_newsletter_campaign_task.delay(campaign.id)
+            return Response({'status': 'Campaign queued for sending'}, status=status.HTTP_200_OK)
+        except Exception:
+            result = send_newsletter_campaign_task(campaign.id)
+            return Response({'status': result}, status=status.HTTP_200_OK)

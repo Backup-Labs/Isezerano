@@ -27,22 +27,26 @@ export default function AnalyticsDashboard() {
         const headers = { 'Authorization': `Bearer ${token}` };
         
         // 1. Fetch Articles for traffic metrics
-        const artRes = await fetch(API_BASE_URL + '/api/v1/articles/');
+        const artRes = await fetch(API_BASE_URL + '/api/v1/cms/articles/', { headers });
         if (artRes.ok) {
           const data = await artRes.json();
           setArticles(Array.isArray(data) ? data : (data.results || []));
         }
 
-        // 2. Fetch Ad campaigns count
-        const adRes = await fetch(API_BASE_URL + '/api/v1/ads/header-banner/');
+        // 2. Fetch Ad campaigns count from CMS
+        const adRes = await fetch(API_BASE_URL + '/api/v1/cms/ads/', { headers });
         if (adRes.ok) {
-          setAdCampaignCount(3); // Mock active campaigns total for display
+          const data = await adRes.json();
+          const ads = Array.isArray(data) ? data : (data.results || []);
+          setAdCampaignCount(ads.filter((ad: { is_active?: boolean }) => ad.is_active !== false).length);
         }
 
-        // 3. Fetch Subscribers count
-        const subRes = await fetch(API_BASE_URL + '/api/v1/newsletter/subscribe/');
+        // 3. Fetch Subscribers count from CMS
+        const subRes = await fetch(API_BASE_URL + '/api/v1/cms/subscribers/', { headers });
         if (subRes.ok) {
-          setSubscriberCount(148); // Mock subscribers list size
+          const data = await subRes.json();
+          const subs = Array.isArray(data) ? data : (data.results || []);
+          setSubscriberCount(subs.length);
         }
       } catch (err) {
         console.error(err);
@@ -50,7 +54,7 @@ export default function AnalyticsDashboard() {
         setLoading(false);
       }
     };
-    fetchStats();
+    if (token) fetchStats();
   }, [token]);
 
   if (loading) {

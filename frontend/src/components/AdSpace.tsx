@@ -1,7 +1,8 @@
 "use client";
-import { API_BASE_URL } from '@/config';
+import { API_BASE_URL, getMediaUrl } from '@/config';
 
 import React, { useEffect, useState, useRef } from 'react';
+import { useApp } from '@/context/AppContext';
 
 interface Ad {
   id: number;
@@ -27,10 +28,49 @@ interface AdSpaceProps {
 }
 
 export const AdSpace: React.FC<AdSpaceProps> = ({ placement, onDismiss }) => {
+  const { language } = useApp();
   const [ad, setAd] = useState<Ad | null>(null);
   const [loading, setLoading] = useState(true);
+  const [showKitForm, setShowKitForm] = useState(false);
+  const [kitName, setKitName] = useState('');
+  const [kitEmail, setKitEmail] = useState('');
+  const [kitCompany, setKitCompany] = useState('');
+  const [kitMessage, setKitMessage] = useState('');
+  const [kitStatus, setKitStatus] = useState<'idle' | 'sending' | 'success' | 'error'>('idle');
   const adRef = useRef<HTMLDivElement>(null);
   const trackedImpression = useRef(false);
+
+  const t = {
+    sponsor: { RW: 'Umushyitsi', EN: 'Sponsor', FR: 'Sponsor' },
+    advertise: {
+      RW: 'TANGAZA KURI ISEZERANO',
+      EN: 'ADVERTISE ON ISEZERANO',
+      FR: 'ANNONCEZ SUR ISEZERANO',
+    },
+    advertiseDesc: {
+      RW: 'Huza n’abasomyi benshi ba buri munsi mu bucuruzi, ubushushanyuze n’iyobokamana mu Rwanda.',
+      EN: 'Connect with thousands of daily business, design, and faith readers in Rwanda.',
+      FR: 'Touchez des milliers de lecteurs quotidiens business, design et foi au Rwanda.',
+    },
+    requestKit: { RW: 'Saba Ad Kit →', EN: 'Request Ad Kit →', FR: 'Demander le kit pub →' },
+    loadingAd: { RW: 'Gutunganya...', EN: 'Loading Ad Partner...', FR: 'Chargement partenaire...' },
+    name: { RW: 'Izina', EN: 'Name', FR: 'Nom' },
+    email: { RW: 'Imeyili', EN: 'Email', FR: 'E-mail' },
+    company: { RW: 'Ikigo', EN: 'Company', FR: 'Entreprise' },
+    message: { RW: 'Ubutumwa', EN: 'Message', FR: 'Message' },
+    send: { RW: 'Ohereza', EN: 'Send Request', FR: 'Envoyer' },
+    cancel: { RW: 'Hagarika', EN: 'Cancel', FR: 'Annuler' },
+    success: {
+      RW: 'Ubusabe bwawe bwoherejwe. Tuzakuvugisha vuba.',
+      EN: 'Your request was sent. We will contact you shortly.',
+      FR: 'Votre demande a été envoyée. Nous vous contacterons bientôt.',
+    },
+    error: {
+      RW: 'Ntibyakunze. Ongera ugerageze.',
+      EN: 'Something went wrong. Please try again.',
+      FR: 'Une erreur est survenue. Réessayez.',
+    },
+  };
 
   // Parse YouTube/Vimeo URLs to embed URLs
   const getEmbedUrl = (url?: string) => {
@@ -161,31 +201,136 @@ export const AdSpace: React.FC<AdSpaceProps> = ({ placement, onDismiss }) => {
     }
   };
 
+  const handleKitSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!kitName || !kitEmail) return;
+    setKitStatus('sending');
+    try {
+      const res = await fetch(`${API_BASE_URL}/api/v1/ads/request-kit/`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: kitName,
+          email: kitEmail,
+          company: kitCompany,
+          message: kitMessage,
+        }),
+      });
+      if (res.ok) {
+        setKitStatus('success');
+        setKitName('');
+        setKitEmail('');
+        setKitCompany('');
+        setKitMessage('');
+      } else {
+        setKitStatus('error');
+      }
+    } catch {
+      setKitStatus('error');
+    }
+  };
+
   if (loading) {
     return (
       <div className={`mx-auto flex items-center justify-center bg-theme-charcoal border border-theme-blue-deep/30 animate-pulse rounded ${getDimensions()}`}>
-        <span className="text-[10px] text-theme-gray-400 font-mono uppercase tracking-wider">Loading Ad Partner...</span>
+        <span className="text-[10px] text-theme-gray-400 font-mono uppercase tracking-wider">{t.loadingAd[language]}</span>
       </div>
     );
   }
 
   // Fallback ad placeholder promoting Isezerano
   if (!ad) {
-    const isSidebar = ['hero_sidebar','news_desk_sidebar','sports_sidebar','sidebar-rail'].includes(placement);
     return (
       <div className={`mx-auto flex flex-col items-center justify-start bg-theme-blue border border-theme-blue text-center p-6 relative overflow-hidden transition-all duration-300 group rounded ${getDimensions()}`}>
-        <span className="text-[8px] text-white/70 bg-white/10 px-2 py-0.5 border border-white/20 font-mono absolute top-3 right-3 font-bold uppercase">Sponsor</span>
+        <span className="text-[8px] text-white/70 bg-white/10 px-2 py-0.5 border border-white/20 font-mono absolute top-3 right-3 font-bold uppercase">{t.sponsor[language]}</span>
         <div className="flex flex-col items-center justify-center flex-1 w-full gap-4 mt-8">
-          <h4 className="serif-title text-base font-bold text-white mb-1 uppercase tracking-wider">ADVERTISE ON ISEZERANO</h4>
-          <p className="text-[10px] text-white/70 max-w-[240px] font-sans leading-relaxed">
-            Connect with thousands of daily business, design, and faith readers in Rwanda.
-          </p>
-          <a 
-            href="mailto:ads@isezerano.com?subject=Advertise%20with%20Isezerano" 
-            className="px-4 py-2 border border-white bg-white hover:bg-theme-light-gray text-theme-blue text-[9px] font-mono font-bold uppercase tracking-widest transition-all rounded shadow-sm w-max"
-          >
-            Request Ad Kit →
-          </a>
+          {!showKitForm ? (
+            <>
+              <h4 className="serif-title text-base font-bold text-white mb-1 uppercase tracking-wider">{t.advertise[language]}</h4>
+              <p className="text-[10px] text-white/70 max-w-[240px] font-sans leading-relaxed">
+                {t.advertiseDesc[language]}
+              </p>
+              <button
+                type="button"
+                onClick={() => {
+                  setShowKitForm(true);
+                  setKitStatus('idle');
+                }}
+                className="px-4 py-2 border border-white bg-white hover:bg-theme-light-gray text-theme-blue text-[9px] font-mono font-bold uppercase tracking-widest transition-all rounded shadow-sm w-max cursor-pointer"
+              >
+                {t.requestKit[language]}
+              </button>
+            </>
+          ) : kitStatus === 'success' ? (
+            <div className="flex flex-col gap-3 items-center">
+              <p className="text-[11px] text-white font-sans leading-relaxed">{t.success[language]}</p>
+              <button
+                type="button"
+                onClick={() => {
+                  setShowKitForm(false);
+                  setKitStatus('idle');
+                }}
+                className="text-[9px] font-mono uppercase tracking-widest text-white/80 underline cursor-pointer"
+              >
+                {t.cancel[language]}
+              </button>
+            </div>
+          ) : (
+            <form onSubmit={handleKitSubmit} className="flex flex-col gap-2 w-full text-left">
+              <input
+                type="text"
+                required
+                value={kitName}
+                onChange={(e) => setKitName(e.target.value)}
+                placeholder={t.name[language]}
+                className="w-full px-2 py-1.5 text-[10px] bg-white/10 border border-white/30 text-white placeholder:text-white/50 rounded outline-none focus:border-white"
+              />
+              <input
+                type="email"
+                required
+                value={kitEmail}
+                onChange={(e) => setKitEmail(e.target.value)}
+                placeholder={t.email[language]}
+                className="w-full px-2 py-1.5 text-[10px] bg-white/10 border border-white/30 text-white placeholder:text-white/50 rounded outline-none focus:border-white"
+              />
+              <input
+                type="text"
+                value={kitCompany}
+                onChange={(e) => setKitCompany(e.target.value)}
+                placeholder={t.company[language]}
+                className="w-full px-2 py-1.5 text-[10px] bg-white/10 border border-white/30 text-white placeholder:text-white/50 rounded outline-none focus:border-white"
+              />
+              <textarea
+                value={kitMessage}
+                onChange={(e) => setKitMessage(e.target.value)}
+                placeholder={t.message[language]}
+                rows={2}
+                className="w-full px-2 py-1.5 text-[10px] bg-white/10 border border-white/30 text-white placeholder:text-white/50 rounded outline-none focus:border-white resize-none"
+              />
+              {kitStatus === 'error' && (
+                <p className="text-[9px] text-red-200 font-sans">{t.error[language]}</p>
+              )}
+              <div className="flex gap-2 mt-1">
+                <button
+                  type="submit"
+                  disabled={kitStatus === 'sending'}
+                  className="flex-1 px-3 py-2 bg-white text-theme-blue text-[9px] font-mono font-bold uppercase tracking-widest rounded disabled:opacity-60 cursor-pointer"
+                >
+                  {kitStatus === 'sending' ? '...' : t.send[language]}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShowKitForm(false);
+                    setKitStatus('idle');
+                  }}
+                  className="px-3 py-2 border border-white/40 text-white text-[9px] font-mono font-bold uppercase tracking-widest rounded cursor-pointer"
+                >
+                  {t.cancel[language]}
+                </button>
+              </div>
+            </form>
+          )}
         </div>
       </div>
     );
@@ -200,7 +345,7 @@ export const AdSpace: React.FC<AdSpaceProps> = ({ placement, onDismiss }) => {
           <div className="flex items-center gap-3">
             {ad.sponsored_logo && (
               <img 
-                src={ad.sponsored_logo} 
+                src={getMediaUrl(ad.sponsored_logo)} 
                 alt="Brand logo" 
                 className="h-7 object-contain"
               />
@@ -227,7 +372,7 @@ export const AdSpace: React.FC<AdSpaceProps> = ({ placement, onDismiss }) => {
         ) : ad.image ? (
           <a href={ad.target_url} target="_blank" rel="noopener noreferrer" onClick={handleAdClick} className="block w-full overflow-hidden border border-theme-blue-deep rounded">
             <img 
-              src={ad.image} 
+              src={getMediaUrl(ad.image)} 
               alt={ad.name} 
               className="w-full aspect-video object-cover hover:scale-101 transition-transform duration-300"
             />
@@ -268,7 +413,7 @@ export const AdSpace: React.FC<AdSpaceProps> = ({ placement, onDismiss }) => {
             className="block w-full h-full"
           >
             <img 
-              src={ad.image} 
+              src={getMediaUrl(ad.image)} 
               alt={ad.name} 
               className="w-full h-full object-cover group-hover:scale-101 transition-transform duration-500"
             />
@@ -326,7 +471,7 @@ export const AdSpace: React.FC<AdSpaceProps> = ({ placement, onDismiss }) => {
                 : 'w-full h-36 mb-1'
             }`}>
               <img 
-                src={ad.image} 
+                src={getMediaUrl(ad.image)} 
                 alt={ad.name} 
                 className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-102"
               />

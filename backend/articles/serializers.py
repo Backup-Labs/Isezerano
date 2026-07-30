@@ -158,15 +158,25 @@ class CMSArticleWriteSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         tags = validated_data.pop('tags', [])
-        article = Article.objects.create(**validated_data)
+        try:
+            article = Article.objects.create(**validated_data)
+        except Exception as exc:
+            raise serializers.ValidationError({
+                'cover_image': f'Media upload failed: {exc}'
+            }) from exc
         article.tags.set(tags)
         return article
 
     def update(self, instance, validated_data):
         tags = validated_data.pop('tags', None)
-        for attr, value in validated_data.items():
-            setattr(instance, attr, value)
-        instance.save()
+        try:
+            for attr, value in validated_data.items():
+                setattr(instance, attr, value)
+            instance.save()
+        except Exception as exc:
+            raise serializers.ValidationError({
+                'cover_image': f'Media upload failed: {exc}'
+            }) from exc
         if tags is not None:
             instance.tags.set(tags)
         return instance

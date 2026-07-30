@@ -76,6 +76,7 @@ class DailyVerse(models.Model):
     verse_reference = models.CharField(max_length=255, help_text="e.g., Yohana 3:16 / John 3:16")
     verse_text_kinyarwanda = models.TextField(help_text="Verse text in Kinyarwanda")
     verse_text_english = models.TextField(help_text="Verse text in English")
+    verse_text_french = models.TextField(blank=True, default='', help_text="Verse text in French")
 
     class Meta:
         ordering = ['-date']

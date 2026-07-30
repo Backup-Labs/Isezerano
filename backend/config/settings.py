@@ -44,6 +44,8 @@ INSTALLED_APPS = [
     'django_filters',
     'simple_history',
     'imagekit',
+    'cloudinary',
+    'cloudinary_storage',
     
     # Custom project apps
     'users',
@@ -144,12 +146,36 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
+# Cloudinary media storage (falls back to local filesystem when unset)
+CLOUDINARY_CLOUD_NAME = os.environ.get('CLOUDINARY_CLOUD_NAME', '').strip()
+CLOUDINARY_API_KEY = os.environ.get('CLOUDINARY_API_KEY', '').strip()
+CLOUDINARY_API_SECRET = os.environ.get('CLOUDINARY_API_SECRET', '').strip()
+USE_CLOUDINARY = bool(CLOUDINARY_CLOUD_NAME and CLOUDINARY_API_KEY and CLOUDINARY_API_SECRET)
+
+if USE_CLOUDINARY:
+    import cloudinary
+    cloudinary.config(
+        cloud_name=CLOUDINARY_CLOUD_NAME,
+        api_key=CLOUDINARY_API_KEY,
+        api_secret=CLOUDINARY_API_SECRET,
+        secure=True,
+    )
+    CLOUDINARY_STORAGE = {
+        'CLOUD_NAME': CLOUDINARY_CLOUD_NAME,
+        'API_KEY': CLOUDINARY_API_KEY,
+        'API_SECRET': CLOUDINARY_API_SECRET,
+    }
+
 # Serve static files with compression and caching via whitenoise in production.
 # In local development (DEBUG=True), use Django's default storage to avoid
 # needing to run collectstatic before every server start.
 STORAGES = {
     "default": {
-        "BACKEND": "django.core.files.storage.FileSystemStorage",
+        "BACKEND": (
+            "config.storage.ResilientCloudinaryStorage"
+            if USE_CLOUDINARY
+            else "django.core.files.storage.FileSystemStorage"
+        ),
     },
     "staticfiles": {
         "BACKEND": (
@@ -162,6 +188,17 @@ STORAGES = {
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
+
+# SMTP email (credentials from .env)
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = os.environ.get('MAIL_HOST', 'smtp.gmail.com')
+EMAIL_PORT = int(os.environ.get('MAIL_PORT', '587'))
+EMAIL_HOST_USER = os.environ.get('SMTP_USERNAME', '')
+EMAIL_HOST_PASSWORD = os.environ.get('SMTP_PASSWORD', '')
+EMAIL_USE_TLS = os.environ.get('EMAIL_USE_TLS', 'True').lower() == 'true'
+EMAIL_USE_SSL = os.environ.get('EMAIL_USE_SSL', 'False').lower() == 'true'
+DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL', EMAIL_HOST_USER or 'noreply@isezerano.com')
+ADS_INQUIRY_EMAIL = os.environ.get('ADS_INQUIRY_EMAIL', DEFAULT_FROM_EMAIL)
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 

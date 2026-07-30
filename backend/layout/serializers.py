@@ -19,4 +19,4 @@ class SiteSettingSerializer(serializers.ModelSerializer):
 class DailyVerseSerializer(serializers.ModelSerializer):
     class Meta:
         model = DailyVerse
-        fields = ('id', 'date', 'verse_reference', 'verse_text_kinyarwanda', 'verse_text_english')
+        fields = ('id', 'date', 'verse_reference', 'verse_text_kinyarwanda', 'verse_text_english', 'verse_text_french')
