@@ -5,6 +5,7 @@ import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useApp } from '@/context/AppContext';
 import { Send } from 'lucide-react';
+import { AdSpace } from './AdSpace';
 
 interface Category {
   id: number;
@@ -376,6 +377,11 @@ export const Footer: React.FC = () => {
             ))}
           </div>
         </div>
+      </div>
+
+      {/* Footer Banner */}
+      <div className="w-full max-w-7xl mx-auto px-4 md:px-8 py-6 flex justify-center border-b border-theme-gray-100">
+        <AdSpace placement="footer-banner" />
       </div>
 
       {/* 3. Bottom bar */}
