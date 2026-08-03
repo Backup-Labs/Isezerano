@@ -17,11 +17,17 @@ class HomepageLayout(models.Model):
         ('featured-secondary', 'Second Featured Posts Row'),
         ('flyers', 'Local Partner Flyers Row'),
         ('you-missed', 'You Missed Scroll Rail'),
+        ('rich-text', 'Custom Rich Text Block'),
+        ('contact-form', 'Contact Inquiry Form'),
     )
 
+    page = models.CharField(max_length=50, default='home', db_index=True)
     section_type = models.CharField(max_length=30, choices=SECTION_CHOICES)
     order = models.PositiveIntegerField(default=0)
     article_limit = models.PositiveIntegerField(default=5, help_text="Number of articles to fetch for this section")
+    
+    title = models.CharField(max_length=200, blank=True)
+    content = models.TextField(blank=True, help_text="HTML/markdown content for text sections")
     
     # Specific fields for conditional sections
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, blank=True, help_text="Required for Category Scroll Rail sections")
@@ -31,8 +37,8 @@ class HomepageLayout(models.Model):
 
     class Meta:
         ordering = ['order']
-        verbose_name = "Homepage Layout Section"
-        verbose_name_plural = "Homepage Layout Sections"
+        verbose_name = "Page Section"
+        verbose_name_plural = "Page Sections"
 
     def __str__(self):
         desc = self.get_section_type_display()
@@ -40,14 +46,31 @@ class HomepageLayout(models.Model):
             desc += f" ({self.category.name})"
         elif self.section_type == 'ad-slot' and self.ad_slot:
             desc += f" ({self.ad_slot.name})"
-        return f"{self.order}. {desc}"
+        return f"{self.page} - {self.order}. {desc}"
 
 class SiteSetting(models.Model):
     site_name = models.CharField(max_length=100, default='Isezerano')
     logo_light = models.ImageField(upload_to='settings/', null=True, blank=True)
     logo_dark = models.ImageField(upload_to='settings/', null=True, blank=True)
     
+    # Color overrides
     primary_color = models.CharField(max_length=7, default='#2F6DF6')
+    secondary_color = models.CharField(max_length=7, default='#F0F4FF')
+    font_color = models.CharField(max_length=7, default='#0F1117')
+    bg_color = models.CharField(max_length=7, default='#FFFFFF')
+    btn_bg_color = models.CharField(max_length=7, default='#062360')
+    btn_text_color = models.CharField(max_length=7, default='#FFFFFF')
+    link_color = models.CharField(max_length=7, default='#062360')
+    hover_color = models.CharField(max_length=7, default='#0A3490')
+
+    # Typography
+    font_family_body = models.CharField(max_length=100, default='Inter')
+    font_family_headings = models.CharField(max_length=100, default='Playfair Display')
+
+    # Theme
+    active_theme = models.CharField(max_length=50, default='theme-classic')
+    custom_css = models.TextField(blank=True, default='')
+
     maintenance_mode = models.BooleanField(default=False)
     
     facebook_url = models.URLField(blank=True)
@@ -70,6 +93,30 @@ class SiteSetting(models.Model):
 
     def __str__(self):
         return f"{self.site_name} Settings"
+
+class SocialLink(models.Model):
+    PLATFORM_CHOICES = (
+        ('facebook', 'Facebook'),
+        ('instagram', 'Instagram'),
+        ('twitter', 'Twitter/X'),
+        ('youtube', 'YouTube'),
+        ('tiktok', 'TikTok'),
+        ('linkedin', 'LinkedIn'),
+        ('custom', 'Custom Platform'),
+    )
+    platform = models.CharField(max_length=20, choices=PLATFORM_CHOICES, default='custom')
+    custom_name = models.CharField(max_length=50, blank=True, help_text="Required for custom platform")
+    url = models.URLField()
+    icon_name = models.CharField(max_length=30, default='link', help_text="Lucide icon name (e.g. facebook, twitter, instagram, link)")
+    order = models.PositiveIntegerField(default=0)
+
+    class Meta:
+        ordering = ['order']
+
+    def __str__(self):
+        if self.platform == 'custom':
+            return f"{self.custom_name}: {self.url}"
+        return f"{self.platform}: {self.url}"
 
 class DailyVerse(models.Model):
     date = models.DateField(unique=True, help_text="Date for which this verse is shown")

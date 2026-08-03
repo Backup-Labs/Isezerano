@@ -7,7 +7,7 @@ import Link from 'next/link';
 import { 
   LayoutGrid, BookOpen, Layers, Megaphone, 
   MessageSquare, Settings, LogOut, Globe, Notebook,
-  Users 
+  Users, FolderHeart
 } from 'lucide-react';
 
 export default function NewsroomLayout({
@@ -38,7 +38,8 @@ export default function NewsroomLayout({
   const sidebarLinks = [
     { name: 'Dashboard Analytics', icon: <LayoutGrid className="w-4 h-4" />, href: '/newsroom' },
     { name: 'Manage Articles', icon: <BookOpen className="w-4 h-4" />, href: '/newsroom/articles' },
-    { name: 'Homepage Layout', icon: <Layers className="w-4 h-4" />, href: '/newsroom/homepage', roles: ['editor', 'admin'] },
+    { name: 'Manage Categories', icon: <FolderHeart className="w-4 h-4" />, href: '/newsroom/categories', roles: ['editor', 'admin'] },
+    { name: 'Manage Sections', icon: <Layers className="w-4 h-4" />, href: '/newsroom/sections', roles: ['editor', 'admin'] },
     { name: 'Ad Campaigns', icon: <Megaphone className="w-4 h-4" />, href: '/newsroom/ads', roles: ['editor', 'admin'] },
     { name: 'Moderate Comments', icon: <MessageSquare className="w-4 h-4" />, href: '/newsroom/comments', roles: ['editor', 'admin'] },
     { name: 'Newsletter Subscribers', icon: <Users className="w-4 h-4" />, href: '/newsroom/subscribers', roles: ['editor', 'admin'] },

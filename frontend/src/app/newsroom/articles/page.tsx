@@ -134,13 +134,23 @@ export default function ArticlesManager() {
           </p>
         </div>
 
-        <Link 
-          href="/newsroom/articles/create"
-          className="flex items-center gap-1.5 px-4 py-2.5 bg-theme-blue hover:bg-theme-blue-glow text-white text-xs font-mono font-bold uppercase tracking-wider transition-all self-start sm:self-center cursor-pointer"
-        >
-          <Plus className="w-4 h-4" />
-          Write Article
-        </Link>
+        <div className="flex gap-2 self-start sm:self-center">
+          {isEditorOrAdmin && (
+            <Link 
+              href="/newsroom/categories"
+              className="flex items-center gap-1.5 px-4 py-2.5 border border-theme-gray-100 hover:border-theme-blue hover:bg-theme-light-gray text-theme-black text-xs font-mono font-bold uppercase tracking-wider transition-all cursor-pointer"
+            >
+              Manage Categories
+            </Link>
+          )}
+          <Link 
+            href="/newsroom/articles/create"
+            className="flex items-center gap-1.5 px-4 py-2.5 bg-theme-blue hover:bg-theme-blue-glow text-white text-xs font-mono font-bold uppercase tracking-wider transition-all cursor-pointer"
+          >
+            <Plus className="w-4 h-4" />
+            Write Article
+          </Link>
+        </div>
       </div>
 
       {/* Filter Tabs */}

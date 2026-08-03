@@ -5,7 +5,7 @@ from django.utils import timezone
 from django.utils.text import slugify
 from articles.models import Category, Tag, Article, Comment
 from ads.models import AdSlot
-from layout.models import HomepageLayout, SiteSetting, DailyVerse
+from layout.models import HomepageLayout, SiteSetting, DailyVerse, SocialLink
 from newsletter.models import Subscriber
 from announcements.models import Announcement
 
@@ -25,6 +25,7 @@ class Command(BaseCommand):
         Subscriber.objects.all().delete()
         DailyVerse.objects.all().delete()
         Announcement.objects.all().delete()
+        SocialLink.objects.all().delete()
 
         self.stdout.write('Seeding database with realistic content...')
 
@@ -512,6 +513,13 @@ class Command(BaseCommand):
         self.stdout.write('- Subscribing default emails...')
         Subscriber.objects.create(email='reader.jane@gmail.com')
         Subscriber.objects.create(email='writer.marcus@gmail.com')
+
+        # 10. Social Links
+        self.stdout.write('- Seeding default social links...')
+        SocialLink.objects.create(platform='facebook', url='https://facebook.com/isezerano', icon_name='facebook', order=0)
+        SocialLink.objects.create(platform='twitter', url='https://twitter.com/isezerano', icon_name='twitter', order=1)
+        SocialLink.objects.create(platform='instagram', url='https://instagram.com/isezerano', icon_name='instagram', order=2)
+        SocialLink.objects.create(platform='youtube', url='https://youtube.com/isezerano', icon_name='youtube', order=3)
 
         self.stdout.write('Database successfully seeded!')
 

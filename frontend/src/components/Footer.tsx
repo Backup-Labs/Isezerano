@@ -5,7 +5,17 @@ import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useApp } from '@/context/AppContext';
 import { Send } from 'lucide-react';
+import * as Lucide from 'lucide-react';
 import { AdSpace } from './AdSpace';
+
+interface SocialLink {
+  id: number;
+  platform: string;
+  custom_name: string;
+  url: string;
+  icon_name: string;
+  order: number;
+}
 
 interface Category {
   id: number;
@@ -32,6 +42,7 @@ export const Footer: React.FC = () => {
   const [categories, setCategories] = useState<Category[]>([]);
   const [tags, setTags] = useState<Tag[]>([]);
   const [recentPosts, setRecentPosts] = useState<Article[]>([]);
+  const [socialLinks, setSocialLinks] = useState<SocialLink[]>([]);
   const [email, setEmail] = useState('');
   const [subStatus, setSubStatus] = useState<'idle' | 'success' | 'error'>('idle');
   const [showQuoteForm, setShowQuoteForm] = useState(false);
@@ -45,14 +56,16 @@ export const Footer: React.FC = () => {
     const fetchData = async () => {
       try {
         const limit = siteSettings?.footer_recent_limit ?? 3;
-        const [catRes, tagRes, artRes] = await Promise.all([
+        const [catRes, tagRes, artRes, socRes] = await Promise.all([
           fetch(API_BASE_URL + '/api/v1/categories/'),
           fetch(API_BASE_URL + '/api/v1/tags/'),
-          fetch(`${API_BASE_URL}/api/v1/articles/?limit=${limit}`)
+          fetch(`${API_BASE_URL}/api/v1/articles/?limit=${limit}`),
+          fetch(API_BASE_URL + '/api/v1/social-links/')
         ]);
         
         if (catRes.ok) setCategories(await catRes.json());
         if (tagRes.ok) setTags(await tagRes.json());
+        if (socRes.ok) setSocialLinks(await socRes.json());
         if (artRes.ok) {
           const data = await artRes.json();
           const posts = Array.isArray(data) ? data : (data.results || []);
@@ -64,6 +77,14 @@ export const Footer: React.FC = () => {
     };
     fetchData();
   }, [siteSettings?.footer_recent_limit]);
+
+  const renderSocialIcon = (iconName: string) => {
+    const IconComponent = (Lucide as any)[iconName];
+    if (IconComponent) {
+      return <IconComponent className="w-4 h-4" />;
+    }
+    return <Lucide.Globe className="w-4 h-4" />;
+  };
 
   const handleSubscribe = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -386,38 +407,24 @@ export const Footer: React.FC = () => {
 
       {/* 3. Bottom bar */}
       <div className="max-w-7xl mx-auto px-4 md:px-8 py-6 flex flex-col sm:flex-row items-center justify-between text-[10px] font-mono text-theme-gray-400 tracking-widest uppercase gap-4">
-        <span>© {new Date().getFullYear()} Isezerano.com. All Rights Reserved.</span>
+        <span>{siteSettings?.footer_text || `© ${new Date().getFullYear()} Isezerano. All Rights Reserved.`}</span>
         
         {/* Social Icons row */}
         <div className="flex items-center gap-4 text-theme-gray-400">
-          <a href="#" className="hover:text-theme-blue transition-colors" title="Facebook">
-            <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
-              <path d="M22 12c0-5.52-4.48-10-10-10S2 6.48 2 12c0 4.84 3.44 8.87 8 9.8V15H8v-3h2V9.5C10 7.57 11.57 6 13.5 6H16v3h-2c-.55 0-1 .45-1 1v2h3v3h-3v6.95c4.56-.93 8-4.96 8-9.75z" />
-            </svg>
-          </a>
-          <a href="#" className="hover:text-theme-blue transition-colors" title="Instagram">
-            <svg className="w-4 h-4 stroke-current fill-none" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
-              <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
-              <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/>
-              <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/>
-            </svg>
-          </a>
-          <a href="#" className="hover:text-theme-blue transition-colors" title="Twitter/X">
-            <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
-              <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
-            </svg>
-          </a>
-          <a href="#" className="hover:text-theme-blue transition-colors" title="TikTok">
-            <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
-              <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .77.1v-3.5a6.39 6.39 0 0 0-3.08.77 6.4 6.4 0 0 0-3.32 5.59 6.4 6.4 0 0 0 10.9 4.54 6.4 6.4 0 0 0 4.63-6.27V9a8.27 8.27 0 0 0 4.14 1.2V6.69z"/>
-            </svg>
-          </a>
-          <a href="/api/v1/articles/?format=rss" className="hover:text-theme-blue transition-colors" title="RSS Feed">
-            <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
-              <circle cx="5" cy="19" r="1"/>
-              <path d="M4 4a16 16 0 0 1 16 16h-4a12 12 0 0 0-12-12V4z"/>
-              <path d="M4 11a9 9 0 0 1 9 9h-4a5 5 0 0 0-5-5v-4z"/>
-            </svg>
+          {socialLinks.map((link) => (
+            <a 
+              key={link.id} 
+              href={link.url} 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              className="hover:text-theme-blue transition-colors flex items-center justify-center" 
+              title={link.custom_name}
+            >
+              {renderSocialIcon(link.icon_name)}
+            </a>
+          ))}
+          <a href="/api/v1/articles/?format=rss" className="hover:text-theme-blue transition-colors flex items-center justify-center" title="RSS Feed">
+            <Lucide.Rss className="w-4 h-4" />
           </a>
         </div>
       </div>

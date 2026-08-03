@@ -1,15 +1,21 @@
 from rest_framework import viewsets, generics, permissions, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from .models import HomepageLayout, SiteSetting, DailyVerse
-from .serializers import HomepageLayoutSerializer, SiteSettingSerializer, DailyVerseSerializer
+from .models import HomepageLayout, SiteSetting, DailyVerse, SocialLink
+from .serializers import (
+    HomepageLayoutSerializer, SiteSettingSerializer, DailyVerseSerializer, 
+    SocialLinkSerializer
+)
 from users.permissions import IsEditor, IsAdmin
 from django.utils import timezone
 
 class PublicHomepageLayoutView(generics.ListAPIView):
-    queryset = HomepageLayout.objects.filter(is_visible=True)
     serializer_class = HomepageLayoutSerializer
     permission_classes = (permissions.AllowAny,)
+
+    def get_queryset(self):
+        page = self.request.query_params.get('page', 'home')
+        return HomepageLayout.objects.filter(is_visible=True, page=page).order_by('order')
 
 class PublicSiteSettingView(APIView):
     permission_classes = (permissions.AllowAny,)
@@ -30,9 +36,15 @@ class PublicSiteSettingView(APIView):
 # ================= CMS API VIEWS =================
 
 class CMSHomepageLayoutViewSet(viewsets.ModelViewSet):
-    queryset = HomepageLayout.objects.all()
     serializer_class = HomepageLayoutSerializer
     permission_classes = (IsEditor,)
+
+    def get_queryset(self):
+        queryset = HomepageLayout.objects.all()
+        page = self.request.query_params.get('page')
+        if page:
+            queryset = queryset.filter(page=page)
+        return queryset.order_by('order')
 
 class CMSSiteSettingViewSet(viewsets.ModelViewSet):
     queryset = SiteSetting.objects.all()
@@ -68,3 +80,13 @@ class CMSDailyVerseViewSet(viewsets.ModelViewSet):
     queryset = DailyVerse.objects.all()
     serializer_class = DailyVerseSerializer
     permission_classes = (IsEditor,)
+
+class CMSSocialLinkViewSet(viewsets.ModelViewSet):
+    queryset = SocialLink.objects.all()
+    serializer_class = SocialLinkSerializer
+    permission_classes = (IsEditor,)
+
+class PublicSocialLinkListView(generics.ListAPIView):
+    queryset = SocialLink.objects.all().order_by('order')
+    serializer_class = SocialLinkSerializer
+    permission_classes = (permissions.AllowAny,)

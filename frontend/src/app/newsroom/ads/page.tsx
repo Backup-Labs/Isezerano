@@ -3,7 +3,7 @@ import { API_BASE_URL } from '@/config';
 
 import React, { useEffect, useState } from 'react';
 import { useApp } from '@/context/AppContext';
-import { Plus, Megaphone, BarChart3, Save, ChevronLeft, ChevronRight, Trash2 } from 'lucide-react';
+import { Plus, Megaphone, BarChart3, Save, ChevronLeft, ChevronRight, Trash2, Edit3, Eye } from 'lucide-react';
 
 interface Ad {
   id: number;
@@ -42,6 +42,28 @@ export default function AdSlotsManager() {
   const [ctaText, setCtaText] = useState('Learn More');
   const [sponsoredHeadline, setSponsoredHeadline] = useState('');
   const [sponsoredVideoUrl, setSponsoredVideoUrl] = useState('');
+
+  // Edit/Preview modal states
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [showPreviewModal, setShowPreviewModal] = useState(false);
+  const [editingAd, setEditingAd] = useState<Ad | null>(null);
+  const [previewAd, setPreviewAd] = useState<any | null>(null);
+
+  const [editName, setEditName] = useState('');
+  const [editPlacement, setEditPlacement] = useState('header_banner');
+  const [editTargetUrl, setEditTargetUrl] = useState('');
+  const [editHtmlContent, setEditHtmlContent] = useState('');
+  const [editStartDate, setEditStartDate] = useState('');
+  const [editEndDate, setEditEndDate] = useState('');
+  const [editPriority, setEditPriority] = useState(0);
+  const [editIsActive, setEditIsActive] = useState(true);
+  const [editCtaText, setEditCtaText] = useState('Learn More');
+  const [editSponsoredHeadline, setEditSponsoredHeadline] = useState('');
+  const [editSponsoredVideoUrl, setEditSponsoredVideoUrl] = useState('');
+  const [editImage, setEditImage] = useState<File | null>(null);
+  const [editSponsoredLogo, setEditSponsoredLogo] = useState<File | null>(null);
+  const [editExistingImage, setEditExistingImage] = useState<string | null>(null);
+  const [editExistingLogo, setEditExistingLogo] = useState<string | null>(null);
 
   const fetchAds = async () => {
     try {
@@ -134,6 +156,51 @@ export default function AdSlotsManager() {
     } catch (err) { console.error(err); }
   };
 
+  const handleEditAd = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editingAd || !editName || !editStartDate || !editEndDate) return;
+
+    const formData = new FormData();
+    formData.append('name', editName);
+    formData.append('placement', editPlacement);
+    formData.append('target_url', editTargetUrl);
+    formData.append('html_content', editHtmlContent);
+    formData.append('start_date', new Date(editStartDate).toISOString());
+    formData.append('end_date', new Date(editEndDate).toISOString());
+    formData.append('priority', String(editPriority));
+    formData.append('is_active', String(editIsActive));
+    formData.append('cta_text', editCtaText);
+    formData.append('sponsored_headline', editSponsoredHeadline);
+    formData.append('sponsored_video_url', editSponsoredVideoUrl);
+
+    if (editImage) {
+      formData.append('image', editImage);
+    }
+    if (editSponsoredLogo) {
+      formData.append('sponsored_logo', editSponsoredLogo);
+    }
+
+    try {
+      const res = await fetch(`${API_BASE_URL}/api/v1/cms/ads/${editingAd.id}/`, {
+        method: 'PATCH',
+        headers: { 'Authorization': `Bearer ${token}` },
+        body: formData
+      });
+      if (res.ok) {
+        setShowEditModal(false);
+        setEditingAd(null);
+        setEditImage(null);
+        setEditSponsoredLogo(null);
+        fetchAds();
+      } else {
+        alert("Failed to update campaign data.");
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Error updating campaign data.");
+    }
+  };
+
   // Pagination Logic
   const totalItems = ads.length;
   const totalPages = Math.ceil(totalItems / pageSize) || 1;
@@ -215,8 +282,47 @@ export default function AdSlotsManager() {
                   <td className="p-4 pr-6 text-right">
                     <div className="flex items-center justify-end gap-2">
                       <button
+                        onClick={() => {
+                          setPreviewAd(ad);
+                          setShowPreviewModal(true);
+                        }}
+                        className="p-1.5 bg-theme-light-gray border border-theme-gray-100 hover:bg-theme-blue hover:text-white text-theme-black transition-all cursor-pointer flex items-center gap-0.5 rounded"
+                        title="Preview campaign"
+                      >
+                        <Eye className="w-3.5 h-3.5" />
+                        <span className="text-[10px] font-mono font-bold uppercase">Preview</span>
+                      </button>
+                      <button
+                        onClick={() => {
+                          setEditingAd(ad);
+                          setEditName(ad.name);
+                          setEditPlacement(ad.placement);
+                          setEditTargetUrl(ad.target_url || '');
+                          setEditHtmlContent((ad as any).html_content || '');
+                          const startISO = ad.start_date ? new Date(ad.start_date).toISOString().slice(0, 16) : '';
+                          const endISO = ad.end_date ? new Date(ad.end_date).toISOString().slice(0, 16) : '';
+                          setEditStartDate(startISO);
+                          setEditEndDate(endISO);
+                          setEditPriority(ad.priority);
+                          setEditIsActive(ad.is_active);
+                          setEditCtaText((ad as any).cta_text || 'Learn More');
+                          setEditSponsoredHeadline((ad as any).sponsored_headline || '');
+                          setEditSponsoredVideoUrl((ad as any).sponsored_video_url || '');
+                          setEditExistingImage((ad as any).image || null);
+                          setEditExistingLogo((ad as any).sponsored_logo || null);
+                          setEditImage(null);
+                          setEditSponsoredLogo(null);
+                          setShowEditModal(true);
+                        }}
+                        className="p-1.5 bg-theme-light-gray border border-theme-gray-100 hover:bg-theme-blue hover:text-white text-theme-black transition-all cursor-pointer flex items-center gap-0.5 rounded"
+                        title="Edit campaign"
+                      >
+                        <Edit3 className="w-3.5 h-3.5" />
+                        <span className="text-[10px] font-mono font-bold uppercase">Edit</span>
+                      </button>
+                      <button
                         onClick={() => handleToggleActive(ad)}
-                        className={`px-3 py-1 text-[10px] font-mono font-bold uppercase transition-all cursor-pointer border ${
+                        className={`px-3 py-1 text-[10px] font-mono font-bold uppercase transition-all cursor-pointer border rounded ${
                           ad.is_active
                             ? 'border-green-600 bg-green-50 text-green-700 hover:bg-green-100'
                             : 'border-red-600 bg-red-50 text-red-700 hover:bg-red-100'
@@ -226,7 +332,7 @@ export default function AdSlotsManager() {
                       </button>
                       <button
                         onClick={() => handleDeleteAd(ad)}
-                        className="p-1.5 bg-theme-light-gray border border-theme-gray-100 hover:bg-red-600 hover:text-white text-theme-black transition-all cursor-pointer flex items-center gap-0.5"
+                        className="p-1.5 bg-theme-light-gray border border-theme-gray-100 hover:bg-red-600 hover:text-white text-theme-black transition-all cursor-pointer flex items-center gap-0.5 rounded"
                         title="Delete campaign"
                       >
                         <Trash2 className="w-3.5 h-3.5" />
@@ -540,6 +646,329 @@ export default function AdSlotsManager() {
                 Save Campaign
               </button>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* EDIT CAMPAIGN MODAL */}
+      {showEditModal && editingAd && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-6 animate-fade-in">
+          <div className="border border-theme-gray-100 bg-white text-theme-black w-full max-w-xl p-6 flex flex-col gap-5 shadow-xl max-h-[90vh] overflow-y-auto rounded animate-fade-in">
+            <div className="flex justify-between items-center pb-3 border-b border-theme-gray-100">
+              <h3 className="serif-title text-base font-bold text-theme-black uppercase flex items-center gap-1.5">
+                <Edit3 className="w-4 h-4 text-theme-blue" />
+                Configure Campaign details
+              </h3>
+              <button
+                onClick={() => {
+                  setShowEditModal(false);
+                  setEditingAd(null);
+                }}
+                className="text-theme-gray-400 hover:text-theme-black cursor-pointer font-bold text-base"
+              >
+                ✕
+              </button>
+            </div>
+
+            <form onSubmit={handleEditAd} className="flex flex-col gap-4">
+              {/* Name */}
+              <div className="flex flex-col gap-1.5">
+                <label className={labelCls}>Campaign Name</label>
+                <input
+                  type="text"
+                  placeholder="e.g. Summer Furniture Launch"
+                  value={editName}
+                  onChange={(e) => setEditName(e.target.value)}
+                  className={inputCls}
+                  required
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                {/* Placement */}
+                <div className="flex flex-col gap-1.5">
+                  <label className={labelCls}>Placement Slot</label>
+                  <select
+                    value={editPlacement}
+                    onChange={(e) => setEditPlacement(e.target.value)}
+                    className={inputCls}
+                  >
+                    <option value="header_banner">Header Banner (970x90 Leaderboard)</option>
+                    <option value="hero_sidebar">Hero Sidebar (300x600 Skyscraper)</option>
+                    <option value="daily_verse_sidebar">Daily Verse Sidebar (300x250)</option>
+                    <option value="news_desk_sidebar">News Desk Sidebar (300x600)</option>
+                    <option value="sports_sidebar">Sports Sidebar (300x600)</option>
+                    <option value="sponsored_content">Sponsored Content Block (Tax Corner)</option>
+                    <option value="grid_sidebar_stack_1">Grid Sidebar Stack Ad 1 (300x250)</option>
+                    <option value="grid_sidebar_stack_2">Grid Sidebar Stack Ad 2 (300x250)</option>
+                    <option value="grid_sidebar_stack_3">Grid Sidebar Stack Ad 3 (300x250)</option>
+                    <option value="flyer_1">Flyer Ad 1 (Square/Portrait)</option>
+                    <option value="flyer_2">Flyer Ad 2 (Square/Portrait)</option>
+                    <option value="flyer_3">Flyer Ad 3 (Square/Portrait)</option>
+                    <option value="full_width_1">Full Width Banner 1 (728x90)</option>
+                    <option value="full_width_2">Full Width Banner 2 (728x90)</option>
+                    <option value="full_width_3">Full Width Banner 3 (728x90)</option>
+                    <option value="full_width_4">Full Width Banner 4 (728x90)</option>
+                    <option value="in-article-inline">In-Article Inline (336x280)</option>
+                    <option value="footer-banner">Footer Leaderboard (728x90)</option>
+                  </select>
+                </div>
+
+                {/* Priority */}
+                <div className="flex flex-col gap-1.5">
+                  <label className={labelCls}>Priority Weight</label>
+                  <input
+                    type="number"
+                    value={editPriority}
+                    onChange={(e) => setEditPriority(Number(e.target.value))}
+                    className={inputCls}
+                    min="0"
+                    required
+                  />
+                </div>
+              </div>
+
+              {/* Target URL & CTA Text */}
+              <div className="grid grid-cols-2 gap-4">
+                <div className="flex flex-col gap-1.5">
+                  <label className={labelCls}>Target URL</label>
+                  <input
+                    type="url"
+                    placeholder="https://example.com/campaign"
+                    value={editTargetUrl}
+                    onChange={(e) => setEditTargetUrl(e.target.value)}
+                    className={inputCls}
+                  />
+                </div>
+
+                <div className="flex flex-col gap-1.5">
+                  <label className={labelCls}>CTA Text</label>
+                  <input
+                    type="text"
+                    value={editCtaText}
+                    onChange={(e) => setEditCtaText(e.target.value)}
+                    className={inputCls}
+                  />
+                </div>
+              </div>
+
+              {/* Uploads */}
+              <div className="grid grid-cols-2 gap-4 border border-theme-gray-100 p-3 bg-theme-light-gray/50">
+                <div className="flex flex-col gap-1.5">
+                  <label className={labelCls}>Campaign Banner Image</label>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => {
+                      if (e.target.files && e.target.files[0]) {
+                        setEditImage(e.target.files[0]);
+                      }
+                    }}
+                    className="text-xs file:mr-2 file:py-1 file:px-2 file:border-0 file:text-xs file:font-mono file:bg-theme-blue file:text-white cursor-pointer"
+                  />
+                  {editImage ? (
+                    <span className="text-[9px] text-theme-blue font-mono truncate">{editImage.name}</span>
+                  ) : editExistingImage ? (
+                    <span className="text-[9px] text-theme-gray-400 font-mono truncate">Existing: {editExistingImage.split('/').pop()}</span>
+                  ) : null}
+                </div>
+
+                <div className="flex flex-col gap-1.5">
+                  <label className={labelCls}>Sponsored Brand Logo (Optional)</label>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => {
+                      if (e.target.files && e.target.files[0]) {
+                        setEditSponsoredLogo(e.target.files[0]);
+                      }
+                    }}
+                    className="text-xs file:mr-2 file:py-1 file:px-2 file:border-0 file:text-xs file:font-mono file:bg-theme-blue file:text-white cursor-pointer"
+                  />
+                  {editSponsoredLogo ? (
+                    <span className="text-[9px] text-theme-blue font-mono truncate">{editSponsoredLogo.name}</span>
+                  ) : editExistingLogo ? (
+                    <span className="text-[9px] text-theme-gray-400 font-mono truncate">Existing: {editExistingLogo.split('/').pop()}</span>
+                  ) : null}
+                </div>
+              </div>
+
+              {/* Sponsored rich text overrides (Headline & Video) */}
+              <div className="border border-theme-gray-100 p-3 flex flex-col gap-3">
+                <span className="text-[9px] font-mono font-bold text-theme-blue uppercase tracking-widest">Sponsored Content Fields (Only for Tax Corner / Rich Content slots)</span>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="flex flex-col gap-1.5">
+                    <label className={labelCls}>Sponsored Headline</label>
+                    <input
+                      type="text"
+                      placeholder="e.g. Flight Discounts this December"
+                      value={editSponsoredHeadline}
+                      onChange={(e) => setEditSponsoredHeadline(e.target.value)}
+                      className={inputCls}
+                    />
+                  </div>
+
+                  <div className="flex flex-col gap-1.5">
+                    <label className={labelCls}>Sponsored Video Embed URL</label>
+                    <input
+                      type="url"
+                      placeholder="e.g. YouTube video url link"
+                      value={editSponsoredVideoUrl}
+                      onChange={(e) => setEditSponsoredVideoUrl(e.target.value)}
+                      className={inputCls}
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* Banner custom HTML */}
+              <div className="flex flex-col gap-1.5">
+                <label className={labelCls}>Banner HTML / AdSense Code</label>
+                <textarea
+                  rows={3}
+                  placeholder="Insert custom HTML banner code..."
+                  value={editHtmlContent}
+                  onChange={(e) => setEditHtmlContent(e.target.value)}
+                  className="bg-white border border-theme-gray-100 px-4 py-2.5 text-xs text-theme-black focus:outline-none focus:border-theme-blue font-mono w-full"
+                />
+              </div>
+
+              {/* Dates grid */}
+              <div className="grid grid-cols-2 gap-4">
+                {/* Start Date */}
+                <div className="flex flex-col gap-1.5">
+                  <label className={labelCls}>Start Date</label>
+                  <input
+                    type="datetime-local"
+                    value={editStartDate}
+                    onChange={(e) => setEditStartDate(e.target.value)}
+                    className={inputCls}
+                    required
+                  />
+                </div>
+
+                {/* End Date */}
+                <div className="flex flex-col gap-1.5">
+                  <label className={labelCls}>End Date</label>
+                  <input
+                    type="datetime-local"
+                    value={editEndDate}
+                    onChange={(e) => setEditEndDate(e.target.value)}
+                    className={inputCls}
+                    required
+                  />
+                </div>
+              </div>
+
+              <div className="flex gap-2 items-center py-2 border-y border-theme-gray-100">
+                <input
+                  type="checkbox"
+                  checked={editIsActive}
+                  onChange={(e) => setEditIsActive(e.target.checked)}
+                  className="rounded border-theme-gray-100 text-theme-blue w-4 h-4 cursor-pointer"
+                  id="edit-modal-active"
+                />
+                <label htmlFor="edit-modal-active" className="text-xs font-mono font-bold uppercase cursor-pointer text-theme-black tracking-wider">
+                  Activate Campaign immediately
+                </label>
+              </div>
+
+              <button
+                type="submit"
+                className="w-full py-3 bg-theme-blue hover:bg-theme-blue-glow text-white font-mono font-bold uppercase tracking-wider text-xs transition-all flex items-center justify-center gap-1.5 cursor-pointer mt-2"
+              >
+                <Save className="w-4 h-4" />
+                Save Changes
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* PREVIEW CAMPAIGN MODAL */}
+      {showPreviewModal && previewAd && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-6 animate-fade-in">
+          <div className="border border-theme-gray-100 bg-white text-theme-black w-full max-w-xl p-6 flex flex-col gap-5 shadow-xl max-h-[90vh] overflow-y-auto rounded animate-fade-in">
+            <div className="flex justify-between items-center pb-3 border-b border-theme-gray-100">
+              <h3 className="serif-title text-base font-bold text-theme-black uppercase flex items-center gap-1.5">
+                <Eye className="w-4 h-4 text-theme-blue" />
+                Simulation Preview: {previewAd.name}
+              </h3>
+              <button
+                onClick={() => {
+                  setShowPreviewModal(false);
+                  setPreviewAd(null);
+                }}
+                className="text-theme-gray-400 hover:text-theme-black cursor-pointer font-bold text-base"
+              >
+                ✕
+              </button>
+            </div>
+
+            {/* Campaign simulated render */}
+            <div className="flex flex-col gap-4">
+              <div className="text-xs text-theme-gray-400 font-mono flex items-center gap-2 bg-theme-light-gray p-3 border border-theme-gray-100 rounded">
+                <span><strong>Target Slot:</strong> {previewAd.placement.toUpperCase()}</span>
+                <span>|</span>
+                <span><strong>Dimension Class:</strong> {previewAd.placement.includes('sidebar') ? '300x250 or 300x600' : '728x90 or 970x90'}</span>
+              </div>
+
+              <div className="border-2 border-dashed border-theme-blue-deep/40 p-6 flex justify-center bg-theme-light-gray/20 rounded">
+                {previewAd.image ? (
+                  <div className="w-full flex flex-col gap-3 max-w-lg bg-theme-charcoal text-white p-4 border border-theme-blue-deep rounded-lg relative overflow-hidden group">
+                    <div className="flex gap-4 items-center">
+                      <div className="w-20 h-16 shrink-0 bg-black/20 border border-white/10 rounded overflow-hidden">
+                        <img 
+                          src={previewAd.image.startsWith('http') ? previewAd.image : API_BASE_URL + previewAd.image} 
+                          alt={previewAd.name} 
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
+                      <div className="flex-grow min-w-0">
+                        <span className="text-[8px] text-theme-blue font-mono font-bold uppercase tracking-wider block">Sponsored Brand</span>
+                        <h4 className="serif-title text-sm font-bold uppercase text-white truncate">{previewAd.name}</h4>
+                        {previewAd.sponsored_headline && (
+                          <p className="text-[10px] text-theme-gray-400 line-clamp-1 mt-0.5">{previewAd.sponsored_headline}</p>
+                        )}
+                      </div>
+                    </div>
+                    
+                    <div className="flex justify-between items-center mt-2 pt-2 border-t border-white/5">
+                      <span className="px-3 py-1 bg-theme-blue text-white text-[9px] font-mono font-bold uppercase tracking-wider rounded">
+                        {previewAd.cta_text || 'Learn More'}
+                      </span>
+                      <span className="text-[8px] text-theme-gray-400 font-mono uppercase tracking-widest font-bold">SPONSOR</span>
+                    </div>
+                  </div>
+                ) : previewAd.html_content ? (
+                  <div 
+                    dangerouslySetInnerHTML={{ __html: previewAd.html_content }}
+                    className="w-full min-h-[90px] border border-theme-gray-100 bg-white p-2 rounded shadow-sm text-xs font-mono text-center flex items-center justify-center"
+                  />
+                ) : (
+                  <div className="w-full max-w-sm p-6 bg-theme-blue text-white flex flex-col items-center justify-center text-center gap-3 rounded-lg">
+                    <Megaphone className="w-8 h-8 opacity-40" />
+                    <h4 className="serif-title text-base font-bold uppercase">{previewAd.name}</h4>
+                    <span className="px-3 py-1 bg-white text-theme-blue text-[9px] font-mono font-bold uppercase tracking-wider rounded">
+                      {previewAd.cta_text || 'Learn More'}
+                    </span>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            <div className="flex justify-end pt-3 border-t border-theme-gray-100">
+              <button
+                type="button"
+                onClick={() => {
+                  setShowPreviewModal(false);
+                  setPreviewAd(null);
+                }}
+                className="px-4 py-2 bg-theme-black hover:bg-theme-blue text-white text-xs font-mono font-bold uppercase rounded cursor-pointer"
+              >
+                Close Preview
+              </button>
+            </div>
           </div>
         </div>
       )}

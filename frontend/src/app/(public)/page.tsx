@@ -1258,6 +1258,62 @@ export default function Homepage() {
               </div>
             );
 
+          case 'rich-text':
+            return (
+              <section key={block.id || `rich-text-${blockIdx}`} className="bg-white border border-theme-gray-100 rounded-md p-8 text-theme-black shadow-sm animate-fade-in">
+                {block.title && (
+                  <h2 className="serif-title text-xl font-bold uppercase tracking-wider text-theme-black border-b border-theme-gray-100 pb-3 mb-6">
+                    {block.title}
+                  </h2>
+                )}
+                <div 
+                  className="text-sm font-sans leading-relaxed text-theme-black prose prose-sm max-w-none"
+                  dangerouslySetInnerHTML={{ __html: block.content || '' }}
+                />
+              </section>
+            );
+
+          case 'contact-form':
+            return (
+              <section key={block.id || `contact-${blockIdx}`} className="bg-white border border-theme-gray-100 rounded-md p-8 text-theme-black shadow-sm animate-fade-in max-w-2xl mx-auto w-full">
+                {block.title && (
+                  <h2 className="serif-title text-xl font-bold uppercase tracking-wider text-theme-black border-b border-theme-gray-100 pb-3 mb-6 text-center">
+                    {block.title}
+                  </h2>
+                )}
+                <form 
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    alert("Thank you! Your inquiry has been submitted successfully.");
+                    (e.target as HTMLFormElement).reset();
+                  }}
+                  className="flex flex-col gap-4"
+                >
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="flex flex-col gap-1">
+                      <label className="text-[10px] font-mono text-theme-gray-400 uppercase font-bold tracking-wider">Your Name</label>
+                      <input type="text" required className="bg-theme-light-gray/40 border border-theme-gray-100 px-3 py-2 text-xs rounded focus:outline-none focus:border-theme-blue" />
+                    </div>
+                    <div className="flex flex-col gap-1">
+                      <label className="text-[10px] font-mono text-theme-gray-400 uppercase font-bold tracking-wider">Your Email</label>
+                      <input type="email" required className="bg-theme-light-gray/40 border border-theme-gray-100 px-3 py-2 text-xs rounded focus:outline-none focus:border-theme-blue" />
+                    </div>
+                  </div>
+                  <div className="flex flex-col gap-1">
+                    <label className="text-[10px] font-mono text-theme-gray-400 uppercase font-bold tracking-wider">Message Subject</label>
+                    <input type="text" required className="bg-theme-light-gray/40 border border-theme-gray-100 px-3 py-2 text-xs rounded focus:outline-none focus:border-theme-blue" />
+                  </div>
+                  <div className="flex flex-col gap-1">
+                    <label className="text-[10px] font-mono text-theme-gray-400 uppercase font-bold tracking-wider">Message Content</label>
+                    <textarea rows={5} required className="bg-theme-light-gray/40 border border-theme-gray-100 px-3 py-2 text-xs rounded focus:outline-none focus:border-theme-blue" />
+                  </div>
+                  <button type="submit" className="w-full py-2.5 bg-theme-blue hover:bg-theme-blue-glow text-white text-xs font-mono font-bold uppercase tracking-wider rounded">
+                    Send Inquiry
+                  </button>
+                </form>
+              </section>
+            );
+
           default:
             return null;
         }

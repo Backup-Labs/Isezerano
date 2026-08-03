@@ -19,7 +19,8 @@ from ads.views import ActiveAdView, TrackAnalyticsView, CMSAdSlotViewSet, Reques
 from newsletter.views import SubscribeView, CMSSubscriberViewSet, CMSNewsletterCampaignViewSet
 from layout.views import (
     PublicHomepageLayoutView, PublicSiteSettingView, CMSHomepageLayoutViewSet,
-    CMSSiteSettingViewSet, DailyVerseTodayView, CMSDailyVerseViewSet
+    CMSSiteSettingViewSet, DailyVerseTodayView, CMSDailyVerseViewSet,
+    CMSSocialLinkViewSet, PublicSocialLinkListView
 )
 from media_library.views import CMSMediaAssetViewSet
 from announcements.views import (
@@ -38,9 +39,9 @@ cms_router.register(r'campaigns', CMSNewsletterCampaignViewSet, basename='cms-ca
 cms_router.register(r'layout', CMSHomepageLayoutViewSet, basename='cms-layout')
 cms_router.register(r'daily-verses', CMSDailyVerseViewSet, basename='cms-daily-verses')
 cms_router.register(r'announcements', CMSAnnouncementViewSet, basename='cms-announcements')
-# Map site settings to a viewport that always fetches the singleton instance
 cms_router.register(r'settings', CMSSiteSettingViewSet, basename='cms-settings')
 cms_router.register(r'media', CMSMediaAssetViewSet, basename='cms-media')
+cms_router.register(r'social-links', CMSSocialLinkViewSet, basename='cms-social-links')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -68,9 +69,10 @@ urlpatterns = [
     
     # Newsletter & Layout endpoints
     path('api/v1/newsletter/subscribe/', SubscribeView.as_view(), name='newsletter-subscribe'),
-    path('api/v1/homepage-layout/', PublicHomepageLayoutView.as_view(), name='homepage-layout'),
+    path('api/v1/homepage-layout/', PublicHomepageLayoutView.as_view(), name='public-homepage-layout'),
     path('api/v1/site-settings/', PublicSiteSettingView.as_view(), name='site-settings'),
     path('api/v1/daily-verse/today/', DailyVerseTodayView.as_view(), name='daily-verse-today'),
+    path('api/v1/social-links/', PublicSocialLinkListView.as_view(), name='public-social-links'),
 
     # CMS Protected endpoints
     path('api/v1/cms/', include(cms_router.urls)),

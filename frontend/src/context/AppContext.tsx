@@ -22,6 +22,17 @@ export interface SiteSettings {
   logo_light: string | null;
   logo_dark: string | null;
   primary_color: string;
+  secondary_color: string;
+  font_color: string;
+  bg_color: string;
+  btn_bg_color: string;
+  btn_text_color: string;
+  link_color: string;
+  hover_color: string;
+  font_family_body: string;
+  font_family_headings: string;
+  active_theme: string;
+  custom_css: string;
   maintenance_mode: boolean;
   facebook_url: string;
   twitter_url: string;
@@ -64,12 +75,9 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   useEffect(() => {
     // 1. Theme Check
     const savedTheme = localStorage.getItem('theme') as 'dark' | 'light' | null;
-    if (savedTheme) {
-      setTheme(savedTheme);
-      document.documentElement.className = savedTheme;
-    } else {
-      document.documentElement.className = 'dark';
-    }
+    const currentTheme = savedTheme || 'dark';
+    setTheme(currentTheme);
+    document.documentElement.classList.add(currentTheme);
 
     // 2. Bookmarks Check
     const savedBookmarks = localStorage.getItem('bookmarks');
@@ -105,7 +113,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     const nextTheme = theme === 'dark' ? 'light' : 'dark';
     setTheme(nextTheme);
     localStorage.setItem('theme', nextTheme);
-    document.documentElement.className = nextTheme;
+    document.documentElement.classList.remove('dark', 'light');
+    document.documentElement.classList.add(nextTheme);
   };
 
   const fetchUserProfile = async (authToken: string) => {
@@ -129,6 +138,18 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     }
   };
 
+  const loadGoogleFont = (fontName: string) => {
+    if (!fontName || ['Satoshi', 'Space Mono', 'Inter', 'system-ui', 'sans-serif', 'serif', 'monospace'].includes(fontName)) return;
+    const fontId = `google-font-${fontName.toLowerCase().replace(/\s+/g, '-')}`;
+    if (document.getElementById(fontId)) return;
+
+    const link = document.createElement('link');
+    link.id = fontId;
+    link.rel = 'stylesheet';
+    link.href = `https://fonts.googleapis.com/css2?family=${fontName.replace(/\s+/g, '+')}:ital,wght@0,300;0,400;0,500;0,700;0,900;1,300;1,400;1,500;1,700;1,900&display=swap`;
+    document.head.appendChild(link);
+  };
+
   const fetchSiteSettings = async () => {
     try {
       const res = await fetch(API_BASE_URL + '/api/v1/site-settings/');
@@ -136,9 +157,68 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         const settings = await res.json();
         setSiteSettings(settings);
         
-        // Dynamically override primary color accent
+        const root = document.documentElement;
+        // Dynamically override styles
         if (settings.primary_color) {
-          document.documentElement.style.setProperty('--color-blue', settings.primary_color);
+          root.style.setProperty('--color-blue', settings.primary_color);
+          root.style.setProperty('--color-dark-section', settings.primary_color);
+          root.style.setProperty('--color-dark-blue', settings.primary_color);
+        }
+        if (settings.secondary_color) {
+          root.style.setProperty('--color-light-gray', settings.secondary_color);
+        }
+        if (settings.font_color) {
+          root.style.setProperty('--color-black', settings.font_color);
+        }
+        if (settings.bg_color) {
+          root.style.setProperty('--color-white', settings.bg_color);
+        }
+        if (settings.btn_bg_color) {
+          root.style.setProperty('--color-btn-bg', settings.btn_bg_color);
+        }
+        if (settings.btn_text_color) {
+          root.style.setProperty('--color-btn-text', settings.btn_text_color);
+        }
+        if (settings.link_color) {
+          root.style.setProperty('--color-link', settings.link_color);
+        }
+        if (settings.hover_color) {
+          root.style.setProperty('--color-blue-glow', settings.hover_color);
+        }
+
+        // Typography settings
+        if (settings.font_family_body) {
+          loadGoogleFont(settings.font_family_body);
+          const bodyFont = ['Satoshi', 'Inter', 'Roboto', 'Outfit', 'Open Sans'].includes(settings.font_family_body)
+            ? `'${settings.font_family_body}', Satoshi, system-ui, sans-serif`
+            : `'${settings.font_family_body}', sans-serif`;
+          root.style.setProperty('--font-sans', bodyFont);
+        }
+        if (settings.font_family_headings) {
+          loadGoogleFont(settings.font_family_headings);
+          const headingFont = ['Playfair Display', 'Lora', 'Merriweather', 'Instrument Serif', 'Cinzel'].includes(settings.font_family_headings)
+            ? `'${settings.font_family_headings}', 'Instrument Serif', Georgia, serif`
+            : `'${settings.font_family_headings}', serif`;
+          root.style.setProperty('--font-serif', headingFont);
+        }
+
+        // Active Theme Class Settings
+        const activeTheme = settings.active_theme || 'theme-classic';
+        root.classList.remove('theme-classic', 'theme-editorial', 'theme-minimal');
+        root.classList.add(activeTheme);
+
+        // Inject Custom CSS block
+        const customCssId = 'cms-custom-css';
+        let styleTag = document.getElementById(customCssId) as HTMLStyleElement;
+        if (settings.custom_css) {
+          if (!styleTag) {
+            styleTag = document.createElement('style');
+            styleTag.id = customCssId;
+            document.head.appendChild(styleTag);
+          }
+          styleTag.innerHTML = settings.custom_css;
+        } else if (styleTag) {
+          styleTag.remove();
         }
       }
     } catch (err) {
