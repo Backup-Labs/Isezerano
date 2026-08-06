@@ -36,3 +36,20 @@ export const getMediaUrl = (path: string | null) => {
   const cleanPath = path.startsWith('/') ? path : `/${path}`;
   return `${API_BASE_URL}${cleanPath}`;
 };
+
+export const translateCategory = (name: string, slug: string | null | undefined, lang: 'RW' | 'EN' | 'FR') => {
+  if (!slug) return name;
+  const translations: Record<string, { RW: string; EN: string; FR: string }> = {
+    'business': { RW: 'Ubucuruzi', EN: 'Business', FR: 'Économie' },
+    'fashion': { RW: 'Imyambarire', EN: 'Fashion', FR: 'Mode' },
+    'culture': { RW: 'Umuco', EN: 'Culture', FR: 'Culture' },
+    'sports': { RW: 'Imikino', EN: 'Sports', FR: 'Sports' },
+    'faith': { RW: 'Iyobokamana', EN: 'Faith', FR: 'Foi' },
+  };
+  const key = slug.toLowerCase();
+  if (translations[key]) {
+    return translations[key][lang];
+  }
+  return name;
+};
+

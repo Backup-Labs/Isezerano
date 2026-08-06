@@ -1,5 +1,5 @@
 "use client";
-import { API_BASE_URL, getMediaUrl } from '@/config';
+import { API_BASE_URL, getMediaUrl, translateCategory } from '@/config';
 
 import React, { useEffect, useState, useRef } from 'react';
 import Link from 'next/link';
@@ -148,7 +148,7 @@ export default function CustomDynamicPage({ params }: PageProps) {
 
   // Translations
   const t = {
-    breakingNews: { RW: 'IBYARI BYO', EN: 'BREAKING NEWS', FR: 'DERNIÈRES INFOS' },
+    breakingNews: { RW: 'INKURU ZIHUTIRWA', EN: 'BREAKING NEWS', FR: 'DERNIÈRES INFOS' },
     announcements: { RW: 'AMATANGAZO', EN: 'CLASSIFIEDS', FR: 'ANNONCES' },
     dailyVerse: { RW: 'ISOMO RY\'UMUNSI', EN: 'DAILY VERSE', FR: 'VERSET DU JOUR' },
     trending: { RW: 'IZIKUNZWE CYANE', EN: 'TRENDING STORIES', FR: 'TENDANCES' },
@@ -157,15 +157,15 @@ export default function CustomDynamicPage({ params }: PageProps) {
     bookmarkAdded: { RW: 'Yabitswe', EN: 'Bookmarked', FR: 'Enregistré' },
     bookmarkAdd: { RW: 'Bika', EN: 'Bookmark', FR: 'Enregistrer' },
     readingTime: { RW: 'IMINOTA', EN: 'MIN READ', FR: 'MIN LECTURE' },
-    views: { RW: 'IBYEREKANWA', EN: 'VIEWS', FR: 'VUES' },
-    deadline: { RW: 'ITARIKI NTAMURANGA:', EN: 'DEADLINE:', FR: 'DATE LIMITE:' },
-    attachment: { RW: 'KURAHO DOKIMA', EN: 'DOWNLOAD ATTACHMENT', FR: 'TÉLÉCHARGER' },
+    views: { RW: 'Abasomye', EN: 'VIEWS', FR: 'VUES' },
+    deadline: { RW: 'Itariki ntarengwa:', EN: 'DEADLINE:', FR: 'DATE LIMITE:' },
+    attachment: { RW: 'Kumanura dosiye', EN: 'DOWNLOAD ATTACHMENT', FR: 'TÉLÉCHARGER' },
     tabAll: { RW: 'Byose', EN: 'All Classifieds', FR: 'Tout' },
     tabTenders: { RW: 'Amasoko', EN: 'Tenders', FR: 'Appels d\'offres' },
     tabJobs: { RW: 'Akazi', EN: 'Jobs', FR: 'Emplois' },
     tabCourt: { RW: 'Ibyemezo by\'Urukiko', EN: 'Court Decisions', FR: 'Décisions Judiciaires' },
     tabNameChange: { RW: 'Guhindura Amazina', EN: 'Name Changes', FR: 'Changement de Noms' },
-    youMissed: { RW: 'IZO USHOBORA KURA GUSOMA', EN: 'YOU MIGHT HAVE MISSED', FR: 'VOUS AVEZ PEUT-ÊTRE MANQUÉ' },
+    youMissed: { RW: 'Izo ushobora kuba utarasomye', EN: 'YOU MIGHT HAVE MISSED', FR: 'VOUS AVEZ PEUT-ÊTRE MANQUÉ' },
     featuredPostsSec: { RW: 'INKURU ZATORANYIJWE', EN: 'FEATURED STORIES', FR: 'ARTICLES VEDETTES' }
   };
 
@@ -400,7 +400,7 @@ export default function CustomDynamicPage({ params }: PageProps) {
                         <div className="flex items-center gap-2 mb-1.5">
                           {art.category && (
                             <span className="text-[8px] font-mono font-bold text-theme-blue uppercase tracking-widest">
-                              {art.category.name}
+                              {translateCategory(art.category.name, art.category.slug, language)}
                             </span>
                           )}
                           <span className="text-[8px] text-theme-gray-400 font-mono">
@@ -715,7 +715,7 @@ export default function CustomDynamicPage({ params }: PageProps) {
                         <div className="flex items-center gap-2 mb-1.5">
                           {art.category && (
                             <span className="text-[8px] font-mono font-bold text-theme-blue uppercase tracking-widest">
-                              {art.category.name}
+                              {translateCategory(art.category.name, art.category.slug, language)}
                             </span>
                           )}
                           <span className="text-[8px] text-theme-gray-400 font-mono">
@@ -799,7 +799,7 @@ export default function CustomDynamicPage({ params }: PageProps) {
                         <div className="flex items-center gap-2 mb-1.5">
                           {art.category && (
                             <span className="text-[8px] font-mono font-bold text-theme-blue uppercase tracking-widest">
-                              {art.category.name}
+                              {translateCategory(art.category.name, art.category.slug, language)}
                             </span>
                           )}
                           <span className="text-[8px] text-theme-gray-400 font-mono">

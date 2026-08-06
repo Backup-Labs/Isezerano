@@ -7,7 +7,7 @@ import Link from 'next/link';
 import { 
   LayoutGrid, BookOpen, Layers, Megaphone, 
   MessageSquare, Settings, LogOut, Globe, Notebook,
-  Users, FolderHeart
+  Users, FolderHeart, UserCog
 } from 'lucide-react';
 
 export default function NewsroomLayout({
@@ -43,6 +43,7 @@ export default function NewsroomLayout({
     { name: 'Ad Campaigns', icon: <Megaphone className="w-4 h-4" />, href: '/newsroom/ads', roles: ['editor', 'admin'] },
     { name: 'Moderate Comments', icon: <MessageSquare className="w-4 h-4" />, href: '/newsroom/comments', roles: ['editor', 'admin'] },
     { name: 'Newsletter Subscribers', icon: <Users className="w-4 h-4" />, href: '/newsroom/subscribers', roles: ['editor', 'admin'] },
+    { name: 'User Management', icon: <UserCog className="w-4 h-4" />, href: '/newsroom/users', roles: ['admin'] },
     { name: 'General Settings', icon: <Settings className="w-4 h-4" />, href: '/newsroom/settings', roles: ['editor', 'admin'] },
   ];
 

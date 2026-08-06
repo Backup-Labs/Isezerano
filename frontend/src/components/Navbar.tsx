@@ -1,5 +1,5 @@
 "use client";
-import { API_BASE_URL } from '@/config';
+import { API_BASE_URL, translateCategory } from '@/config';
 
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
@@ -95,9 +95,9 @@ export const Navbar: React.FC = () => {
       FR: 'Connexion'
     },
     console: {
-      RW: 'Console',
-      EN: 'Console',
-      FR: 'Console'
+      RW: 'Ubwanditsi',
+      EN: 'Newsroom',
+      FR: 'Rédaction'
     },
     latestNews: {
       RW: 'Inkuru nshya',
@@ -188,7 +188,7 @@ export const Navbar: React.FC = () => {
                     isActive ? 'text-theme-blue' : 'text-theme-black hover:text-theme-blue'
                   }`}
                 >
-                  {cat.name}
+                  {translateCategory(cat.name, cat.slug, language)}
                 </Link>
               );
             })}
@@ -312,7 +312,7 @@ export const Navbar: React.FC = () => {
                 onClick={() => setMobileMenuOpen(false)}
                 className={`font-bold ${pathname === `/c/${cat.slug}` ? 'text-theme-blue' : 'text-theme-black'}`}
               >
-                {cat.name}
+                {translateCategory(cat.name, cat.slug, language)}
               </Link>
             ))}
           </div>

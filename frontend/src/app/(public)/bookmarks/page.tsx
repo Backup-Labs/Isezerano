@@ -1,5 +1,5 @@
 "use client";
-import { API_BASE_URL, getMediaUrl } from '@/config';
+import { API_BASE_URL, getMediaUrl, translateCategory } from '@/config';
 
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
@@ -18,7 +18,7 @@ interface Article {
 }
 
 export default function BookmarksPage() {
-  const { bookmarks, toggleBookmark } = useApp();
+  const { bookmarks, toggleBookmark, language } = useApp();
   const [articles, setArticles] = useState<Article[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -47,11 +47,49 @@ export default function BookmarksPage() {
     fetchBookmarkedArticles();
   }, [bookmarks]);
 
+  const t = {
+    loading: {
+      RW: 'GUTUNGANYA IBIKUBIYEMO...',
+      EN: 'LOADING BOOKMARKS...',
+      FR: 'CHARGEMENT DE VOS FAVORIS...'
+    },
+    savedArticles: {
+      RW: 'Inkuru Zabitswe',
+      EN: 'Saved Articles',
+      FR: 'Articles Enregistrés'
+    },
+    myBookmarks: {
+      RW: 'Ibibitswe Byanjye',
+      EN: 'My Bookmarks',
+      FR: 'Mes Enregistrements'
+    },
+    min: {
+      RW: 'MIN',
+      EN: 'MIN',
+      FR: 'MIN'
+    },
+    views: {
+      RW: 'Abasomye',
+      EN: 'VIEWS',
+      FR: 'VUES'
+    },
+    remove: {
+      RW: 'KURAHO',
+      EN: 'REMOVE',
+      FR: 'SUPPRIMER'
+    },
+    emptyList: {
+      RW: 'Nta nkuru wigeze ubika hano.',
+      EN: 'Your bookmark list is empty.',
+      FR: 'Votre liste de favoris est vide.'
+    }
+  };
+
   if (loading) {
     return (
       <div className="max-w-7xl mx-auto px-6 py-20 flex flex-col items-center justify-center min-h-[50vh]">
         <div className="w-12 h-12 border-t-2 border-r-2 border-theme-blue rounded-full animate-spin mb-4" />
-        <span className="font-mono text-xs tracking-widest text-theme-gray-400 uppercase font-bold">LOADING BOOKMARKS...</span>
+        <span className="font-mono text-xs tracking-widest text-theme-gray-400 uppercase font-bold">{t.loading[language]}</span>
       </div>
     );
   }
@@ -60,11 +98,11 @@ export default function BookmarksPage() {
     <div className="max-w-7xl mx-auto px-4 md:px-8 py-8 flex flex-col gap-8 bg-theme-white text-theme-black animate-fade-in">
       {/* Header */}
       <div className="flex flex-col gap-2 pb-6 border-b border-theme-gray-100">
-        <span className="text-[10px] font-mono text-theme-blue uppercase font-bold tracking-widest">Saved Articles</span>
+        <span className="text-[10px] font-mono text-theme-blue uppercase font-bold tracking-widest">{t.savedArticles[language]}</span>
         <div className="flex items-center gap-3">
           <Bookmark className="w-6 h-6 text-theme-blue" />
           <h1 className="serif-title text-3xl md:text-5xl font-black uppercase text-theme-black">
-            My Bookmarks ({articles.length})
+            {t.myBookmarks[language]} ({articles.length})
           </h1>
         </div>
       </div>
@@ -88,7 +126,7 @@ export default function BookmarksPage() {
               <div className="p-5 flex flex-col gap-2">
                 {art.category && (
                   <span className="text-[9px] font-mono font-bold text-theme-blue uppercase tracking-wider">
-                    {art.category.name}
+                    {translateCategory(art.category.name, art.category.slug, language)}
                   </span>
                 )}
                 <Link href={`/a/${art.slug}`} className="hover:text-theme-blue transition-colors">
@@ -106,11 +144,11 @@ export default function BookmarksPage() {
               <div className="flex items-center justify-between pt-4 border-t border-theme-gray-100 text-[9px] font-mono text-theme-black uppercase font-bold tracking-widest">
                 <span className="flex items-center gap-1 text-theme-gray-400">
                   <Clock className="w-3.5 h-3.5 text-theme-blue" />
-                  {art.reading_time} MIN
+                  {art.reading_time} {t.min[language]}
                 </span>
                 <span className="flex items-center gap-1 text-theme-gray-400">
                   <Eye className="w-3.5 h-3.5 text-theme-blue" />
-                  {art.view_count} VIEWS
+                  {art.view_count} {t.views[language]}
                 </span>
                 <button 
                   onClick={() => toggleBookmark(art.slug)}
@@ -118,7 +156,7 @@ export default function BookmarksPage() {
                   title="Remove Bookmark"
                 >
                   <Trash2 className="w-3.5 h-3.5" />
-                  <span>REMOVE</span>
+                  <span>{t.remove[language]}</span>
                 </button>
               </div>
             </div>
@@ -128,7 +166,7 @@ export default function BookmarksPage() {
 
       {articles.length === 0 && (
         <div className="text-center py-20 border border-theme-gray-100 font-mono text-xs uppercase tracking-widest text-theme-gray-400 bg-theme-light-gray/40">
-          Your bookmark list is empty.
+          {t.emptyList[language]}
         </div>
       )}
     </div>

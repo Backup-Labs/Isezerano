@@ -1,5 +1,5 @@
 "use client";
-import { API_BASE_URL, getMediaUrl } from '@/config';
+import { API_BASE_URL, getMediaUrl, translateCategory } from '@/config';
 
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
@@ -58,7 +58,7 @@ export default function ArticleDetail() {
   const params = useParams();
   const slug = (params?.slug as string) || '';
   const router = useRouter();
-  const { user, token, toggleBookmark, isBookmarked } = useApp();
+  const { user, token, toggleBookmark, isBookmarked, language } = useApp();
   
   const [article, setArticle] = useState<Article | null>(null);
   const [comments, setComments] = useState<Comment[]>([]);
@@ -135,11 +135,114 @@ export default function ArticleDetail() {
     }
   };
 
+  const t = {
+    loading: {
+      RW: 'GUTUNGANYA INKURU...',
+      EN: 'LOADING ARTICLE...',
+      FR: "CHARGEMENT DE L'ARTICLE..."
+    },
+    returnHome: {
+      RW: '← Subira ku rupapuro rubanza',
+      EN: '← Return to Homepage',
+      FR: "← Retour à l'accueil"
+    },
+    by: {
+      RW: 'YANDIKITSWE NA',
+      EN: 'BY',
+      FR: 'PAR'
+    },
+    minRead: {
+      RW: 'MIN SOMA',
+      EN: 'MIN READ',
+      FR: 'MIN LECTURE'
+    },
+    bookmark: {
+      RW: 'Bika',
+      EN: 'Bookmark',
+      FR: 'Enregistrer'
+    },
+    bookmarked: {
+      RW: 'Yabitswe',
+      EN: 'Bookmarked',
+      FR: 'Enregistré'
+    },
+    share: {
+      RW: 'Sangiza',
+      EN: 'Share',
+      FR: 'Partager'
+    },
+    shareAlert: {
+      RW: "Imbarutso y'inkuru yanakopiwe.",
+      EN: 'Article link copied to clipboard.',
+      FR: "Lien de l'article copié dans le presse-papiers."
+    },
+    authorLabel: {
+      RW: 'UMWANDITSI:',
+      EN: 'AUTHOR:',
+      FR: 'AUTEUR :'
+    },
+    defaultBio: {
+      RW: "Umunyamakuru wandika amakuru y'ubucuruzi, iterambere n'umuco.",
+      EN: 'Staff journalist covering core sectors of business, sustainable growth, and culture.',
+      FR: "Journaliste de la rédaction couvrant les secteurs clés de l'économie, de la croissance durable et de la culture."
+    },
+    twitterFeed: {
+      RW: 'Imbuga nkoranyambaga',
+      EN: 'Twitter Feed',
+      FR: 'Fil Twitter'
+    },
+    commentsTitle: {
+      RW: 'Ibitekerezo',
+      EN: 'Comments',
+      FR: 'Commentaires'
+    },
+    postComment: {
+      RW: 'Tanga Igitekerezo',
+      EN: 'Post a Comment',
+      FR: 'Poster un commentaire'
+    },
+    placeholder: {
+      RW: 'Andika ibitekerezo byawe hano...',
+      EN: 'Add your thoughts...',
+      FR: 'Ajoutez vos réflexions...'
+    },
+    posting: {
+      RW: 'GUSHIRAHO...',
+      EN: 'POSTING...',
+      FR: 'ENVOI...'
+    },
+    postBtn: {
+      RW: 'OHEREZA IGITEKEREZO',
+      EN: 'POST COMMENT',
+      FR: 'POSTER LE COMMENTAIRE'
+    },
+    authRequired: {
+      RW: 'Ubanza kwinjira kugira ngo utange igitekerezo',
+      EN: 'Authentication required to comment',
+      FR: 'Authentification requise pour commenter'
+    },
+    authDesc: {
+      RW: 'Komeza winjire muri konti yawe kugira ngo utange ibitekerezo.',
+      EN: 'Please sign in to your reader account to post comments.',
+      FR: 'Veuillez vous connecter à votre compte lecteur pour publier des commentaires.'
+    },
+    signInBtn: {
+      RW: 'Kwinjira',
+      EN: 'Sign In',
+      FR: 'Se connecter'
+    },
+    noComments: {
+      RW: 'Nta gitekerezo kiratangwa kuri iyi nkuru.',
+      EN: 'No comments posted yet.',
+      FR: 'Aucun commentaire publié pour le moment.'
+    }
+  };
+
   if (loading) {
     return (
       <div className="max-w-7xl mx-auto px-6 py-20 flex flex-col items-center justify-center min-h-[50vh]">
         <div className="w-12 h-12 border-t-2 border-r-2 border-theme-blue rounded-full animate-spin mb-4" />
-        <span className="font-mono text-xs tracking-widest text-theme-gray-400 uppercase font-bold">LOADING ARTICLE...</span>
+        <span className="font-mono text-xs tracking-widest text-theme-gray-400 uppercase font-bold">{t.loading[language]}</span>
       </div>
     );
   }
@@ -201,14 +304,14 @@ export default function ArticleDetail() {
       {/* Back link */}
       <Link href="/" className="flex items-center gap-1 text-xs font-mono text-theme-gray-400 hover:text-theme-blue transition-colors mr-auto uppercase font-bold tracking-wider">
         <ArrowLeft className="w-4 h-4" />
-        Return to Homepage
+        {t.returnHome[language]}
       </Link>
 
       {/* Header Info */}
       <div className="flex flex-col gap-4">
         {article.category && (
           <span className="text-xs font-mono font-bold uppercase tracking-widest text-theme-blue w-max">
-            {article.category.name}
+            {translateCategory(article.category.name, article.category.slug, language)}
           </span>
         )}
 
@@ -223,14 +326,14 @@ export default function ArticleDetail() {
         {/* Byline / Metadata */}
         <div className="flex flex-wrap items-center justify-between gap-6 pt-4 border-t border-theme-gray-100 text-[10px] font-mono text-theme-black uppercase font-bold tracking-widest">
           <div className="flex items-center gap-4">
-            <span>BY {article.author.first_name || article.author.username} {article.author.last_name}</span>
+            <span>{t.by[language]} {article.author.first_name || article.author.username} {article.author.last_name}</span>
             <span className="flex items-center gap-1">
               <Calendar className="w-3.5 h-3.5 text-theme-blue" />
               {new Date(article.published_at || article.created_at).toLocaleDateString()}
             </span>
             <span className="flex items-center gap-1">
               <Clock className="w-3.5 h-3.5 text-theme-blue" />
-              {article.reading_time} MIN READ
+              {article.reading_time} {t.minRead[language]}
             </span>
           </div>
 
@@ -240,17 +343,17 @@ export default function ArticleDetail() {
               className="flex items-center gap-1 hover:text-theme-blue cursor-pointer"
             >
               <Bookmark className={`w-3.5 h-3.5 ${isBookmarked(article.slug) ? 'fill-theme-blue text-theme-blue' : 'text-theme-black'}`} />
-              <span>{isBookmarked(article.slug) ? 'Bookmarked' : 'Bookmark'}</span>
+              <span>{isBookmarked(article.slug) ? t.bookmarked[language] : t.bookmark[language]}</span>
             </button>
             <button 
               onClick={() => {
                 navigator.clipboard.writeText(window.location.href);
-                alert("Article link copied to clipboard.");
+                alert(t.shareAlert[language]);
               }}
               className="flex items-center gap-1 hover:text-theme-blue cursor-pointer"
             >
               <Share2 className="w-3.5 h-3.5" />
-              <span>Share</span>
+              <span>{t.share[language]}</span>
             </button>
           </div>
         </div>
@@ -290,14 +393,14 @@ export default function ArticleDetail() {
         </div>
         <div className="flex flex-col gap-2">
           <h4 className="font-mono text-xs font-bold text-theme-black uppercase tracking-widest">
-            AUTHOR: {article.author.first_name || article.author.username}
+            {t.authorLabel[language]} {article.author.first_name || article.author.username}
           </h4>
           <p className="text-xs text-theme-gray-400 leading-relaxed">
-            {article.author.bio || "Staff journalist covering core sectors of business, sustainable growth, and culture."}
+            {article.author.bio || t.defaultBio[language]}
           </p>
           {article.author.twitter && (
             <a href={article.author.twitter} target="_blank" rel="noopener noreferrer" className="text-[10px] text-theme-blue font-mono hover:underline mt-2 uppercase font-bold tracking-widest">
-              Twitter Feed
+              {t.twitterFeed[language]}
             </a>
           )}
         </div>
@@ -306,16 +409,16 @@ export default function ArticleDetail() {
       {/* Comments Section */}
       <div className="max-w-3xl mx-auto w-full mt-12 flex flex-col gap-6">
         <h3 className="serif-title text-xl font-bold uppercase tracking-tight text-theme-black border-b border-theme-gray-100 pb-2">
-          Comments ({comments.length})
+          {t.commentsTitle[language]} ({comments.length})
         </h3>
 
         {/* Comment post form */}
         {user ? (
           <form onSubmit={handlePostComment} className="flex flex-col gap-4 p-5 border border-theme-gray-100 bg-theme-light-gray">
-            <h4 className="text-xs text-theme-black font-mono uppercase tracking-widest font-bold">Post a Comment</h4>
+            <h4 className="text-xs text-theme-black font-mono uppercase tracking-widest font-bold">{t.postComment[language]}</h4>
             <textarea 
               rows={4}
-              placeholder="Add your thoughts..."
+              placeholder={t.placeholder[language]}
               value={commentBody}
               onChange={(e) => setCommentBody(e.target.value)}
               className="w-full bg-white border border-theme-gray-100 px-4 py-3 text-xs font-mono text-theme-black placeholder-theme-gray-400 focus:outline-none focus:border-theme-blue"
@@ -327,15 +430,15 @@ export default function ArticleDetail() {
               className="px-5 py-2.5 bg-theme-blue hover:bg-theme-blue-glow text-white text-xs font-mono font-bold uppercase tracking-widest flex items-center gap-1.5 self-end cursor-pointer transition-all"
             >
               <Send className="w-3.5 h-3.5" />
-              {submittingComment ? 'POSTING...' : 'POST COMMENT'}
+              {submittingComment ? t.posting[language] : t.postBtn[language]}
             </button>
           </form>
         ) : (
           <div className="border border-theme-gray-100 p-6 text-center bg-theme-light-gray">
-            <h4 className="text-xs font-mono font-bold uppercase tracking-widest text-theme-black mb-2">Authentication required to comment</h4>
-            <p className="text-xs text-theme-gray-400 mb-4">Please sign in to your reader account to post comments.</p>
+            <h4 className="text-xs font-mono font-bold uppercase tracking-widest text-theme-black mb-2">{t.authRequired[language]}</h4>
+            <p className="text-xs text-theme-gray-400 mb-4">{t.authDesc[language]}</p>
             <Link href="/login" className="px-4 py-2 bg-theme-blue hover:bg-theme-blue-glow text-white text-xs font-mono font-bold uppercase tracking-widest transition-all">
-              Sign In
+              {t.signInBtn[language]}
             </Link>
           </div>
         )}
@@ -365,7 +468,7 @@ export default function ArticleDetail() {
 
           {comments.length === 0 && (
             <div className="text-center py-6 text-[10px] font-mono text-theme-gray-400 uppercase tracking-widest">
-              No updates posted yet.
+              {t.noComments[language]}
             </div>
           )}
         </div>

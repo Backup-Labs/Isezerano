@@ -1,5 +1,5 @@
 "use client";
-import { API_BASE_URL, getMediaUrl } from '@/config';
+import { API_BASE_URL, getMediaUrl, translateCategory } from '@/config';
 
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
@@ -168,7 +168,7 @@ export const Footer: React.FC = () => {
       FR: 'Isezerano.com est un portail indépendant offrant des informations fiables, du sport, de l’économie et du contenu confessionnel au Rwanda.'
     },
     getQuote: {
-      RW: 'Habwa quotes / Serivisi',
+      RW: 'Saba Igiciro / Serivisi',
       EN: 'Get a Quote',
       FR: 'Demander un devis'
     },
@@ -199,7 +199,7 @@ export const Footer: React.FC = () => {
       FR: 'Liens Utiles'
     },
     tagsTitle: {
-      RW: 'Ibipimo Bikunzwe',
+      RW: 'Ibirango Bikunzwe',
       EN: 'Tag Cloud',
       FR: 'Mots-clés'
     },
@@ -344,7 +344,7 @@ export const Footer: React.FC = () => {
             {categories.slice(0, 6).map((cat) => (
               <li key={cat.id}>
                 <Link href={`/c/${cat.slug}`} className="hover:text-theme-blue transition-colors">
-                  {cat.name}
+                  {translateCategory(cat.name, cat.slug, language)}
                 </Link>
               </li>
             ))}

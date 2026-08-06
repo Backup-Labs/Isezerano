@@ -1,5 +1,5 @@
 "use client";
-import { API_BASE_URL, getMediaUrl } from '@/config';
+import { API_BASE_URL, getMediaUrl, translateCategory } from '@/config';
 
 import React, { useEffect, useState, useRef } from 'react';
 import Link from 'next/link';
@@ -53,6 +53,11 @@ interface DailyVerse {
 
 export default function Homepage() {
   const { siteSettings, toggleBookmark, isBookmarked, language } = useApp();
+
+  const getCatName = (art?: Article | null) => {
+    if (!art || !art.category) return '';
+    return translateCategory(art.category.name, art.category.slug, language);
+  };
   
   // Data State
   const [articles, setArticles] = useState<Article[]>([]);
@@ -192,18 +197,18 @@ export default function Homepage() {
 
   // Translations Map
   const t = {
-    breakingNews: { RW: 'IBYARI BYO', EN: 'BREAKING NEWS', FR: 'DERNIÈRES INFOS' },
+    breakingNews: { RW: 'INKURU ZIHUTIRWA', EN: 'BREAKING NEWS', FR: 'DERNIÈRES INFOS' },
     featuredStory: { RW: 'Inkuru Yatoranyijwe', EN: 'Featured Story', FR: 'En Vedette' },
-    editorsPick: { RW: 'Inkuru z’Umwanditsi', EN: "Editor's Pick", FR: 'Choix de l’éditeur' },
+    editorsPick: { RW: 'Ibyatoranyijwe n\'Ubwanditsi', EN: "Editor's Pick", FR: 'Choix de l’éditeur' },
     trending: { RW: 'Izikunzwe cyane', EN: 'Trending Stories', FR: 'Tendances' },
     dailyVerseTitle: { RW: "Ijambo ry'Imana", EN: 'Daily Word of God', FR: 'Parole de Dieu' },
     latestNews: { RW: 'Inkuru Ziheruka', EN: 'Latest News', FR: 'Fils d’actualités' },
     topNews: { RW: 'Inkuru Nyamukuru', EN: 'Top News', FR: 'Principales Nouvelles' },
-    announcements: { RW: 'Amatangazo n’Amasoko', EN: 'Amatangazo (Classifieds)', FR: 'Annonces & Appels d’offres' },
+    announcements: { RW: 'Amatangazo n’Amasoko', EN: 'Announcements & Tenders', FR: 'Annonces & Appels d’offres' },
     tabAll: { RW: 'YOSE', EN: 'ALL', FR: 'TOUT' },
-    tabTenders: { RW: 'AMASOKO', EN: 'AMASOKO', FR: 'OFFRES' },
+    tabTenders: { RW: 'AMASOKO', EN: 'TENDERS', FR: 'OFFRES' },
     tabCourt: { RW: "IBYEMEZO BY'URUKIKO", EN: 'COURT DECISIONS', FR: 'JUSTICE' },
-    tabJobs: { RW: 'AKAZI', EN: 'AKAZI', FR: 'EMPLOIS' },
+    tabJobs: { RW: 'AKAZI', EN: 'JOBS', FR: 'EMPLOIS' },
     tabNameChange: { RW: 'GUHINDURA AMAZINA', EN: 'NAME CHANGES', FR: 'REPT. NOMS' },
     popularPosts: { RW: 'Inkuru Zikunzwe', EN: 'Popular Posts', FR: 'Populaires' },
     sportsVertical: { RW: 'Imikino n’Imyidagaduro', EN: 'Sports Vertical', FR: 'Sports' },
@@ -212,8 +217,8 @@ export default function Homepage() {
     readMore: { RW: 'Komeza usome →', EN: 'Continue reading →', FR: 'Lire la suite →' },
     deadline: { RW: 'Itariki ntarengwa:', EN: 'Deadline:', FR: 'Date limite:' },
     attachment: { RW: 'Gukuramo PDF', EN: 'Download PDF', FR: 'Télécharger PDF' },
-    designSection: { RW: 'Ubushushanyuze', EN: 'Design & Architecture', FR: 'Design & Architecture' },
-    businessSection: { RW: 'Ubucuruzi n’Ivugurura', EN: 'Business & Innovation', FR: 'Business & Innovation' },
+    designSection: { RW: 'Ubugeni n’Imyubakire', EN: 'Design & Architecture', FR: 'Design & Architecture' },
+    businessSection: { RW: 'Ubucuruzi n’Udushya', EN: 'Business & Innovation', FR: 'Business & Innovation' },
     officialCampaigns: { RW: 'Kampanye Zemewe', EN: 'Official Campaigns', FR: 'Campagnes Officielles' },
   };
 
@@ -312,7 +317,7 @@ export default function Homepage() {
                           <div className="flex items-center gap-2.5">
                             {heroArticles[heroSlideIndex].category && (
                               <span className="px-2 py-0.5 bg-theme-blue text-white text-[9px] font-mono font-bold uppercase tracking-widest rounded-sm">
-                                {heroArticles[heroSlideIndex].category.name}
+                                {getCatName(heroArticles[heroSlideIndex])}
                               </span>
                             )}
                             <span className="text-[10px] text-gray-300 font-mono">
@@ -372,7 +377,7 @@ export default function Homepage() {
                           <div className="flex items-center gap-2">
                             {art.category && (
                               <span className="text-[9px] font-mono font-bold text-theme-blue uppercase tracking-wider">
-                                {art.category.name}
+                                {getCatName(art)}
                               </span>
                             )}
                             <span className="text-[9px] font-mono text-theme-gray-400">
@@ -461,7 +466,7 @@ export default function Homepage() {
                         <div className="flex items-center gap-2 mb-1.5">
                           {art.category && (
                             <span className="text-[8px] font-mono font-bold text-theme-blue uppercase tracking-widest">
-                              {art.category.name}
+                              {getCatName(art)}
                             </span>
                           )}
                           <span className="text-[8px] text-theme-gray-400 font-mono">
@@ -514,7 +519,7 @@ export default function Homepage() {
                         <div className="flex items-center gap-2">
                           {editorsPickLead.category && (
                             <span className="text-[9px] font-mono font-bold text-theme-blue uppercase tracking-widest">
-                              {editorsPickLead.category.name}
+                              {getCatName(editorsPickLead)}
                             </span>
                           )}
                           <span className="text-[9px] text-theme-gray-400 font-mono">
@@ -644,7 +649,7 @@ export default function Homepage() {
                           <div className="flex items-center gap-2">
                             {art.category && (
                               <span className="text-[9px] font-mono font-bold text-theme-blue uppercase tracking-widest">
-                                {art.category.name}
+                                {getCatName(art)}
                               </span>
                             )}
                             <span className="text-[9px] text-theme-gray-400 font-mono">
@@ -868,7 +873,7 @@ export default function Homepage() {
                             <div className="flex items-center gap-2">
                               {lifestyleLead.category && (
                                 <span className="text-[9px] font-mono font-bold text-theme-blue uppercase tracking-widest">
-                                  {lifestyleLead.category.name}
+                                  {getCatName(lifestyleLead)}
                                 </span>
                               )}
                               <span className="text-[9px] text-theme-gray-400 font-mono">
@@ -959,7 +964,7 @@ export default function Homepage() {
                       <div className="flex items-center gap-2">
                         {grid1Lead.category && (
                           <span className="text-[9px] font-mono font-bold text-theme-blue uppercase tracking-widest">
-                            {grid1Lead.category.name}
+                            {getCatName(grid1Lead)}
                           </span>
                         )}
                         <span className="text-[9px] text-theme-gray-400 font-mono">
@@ -1010,7 +1015,7 @@ export default function Homepage() {
                       <div className="flex items-center gap-2">
                         {grid2Lead.category && (
                           <span className="text-[9px] font-mono font-bold text-theme-blue uppercase tracking-widest">
-                            {grid2Lead.category.name}
+                            {getCatName(grid2Lead)}
                           </span>
                         )}
                         <span className="text-[9px] text-theme-gray-400 font-mono">
@@ -1133,7 +1138,7 @@ export default function Homepage() {
                         <div className="flex items-center gap-2 mb-1.5">
                           {art.category && (
                             <span className="text-[8px] font-mono font-bold text-theme-blue uppercase tracking-widest">
-                              {art.category.name}
+                              {getCatName(art)}
                             </span>
                           )}
                           <span className="text-[8px] text-theme-gray-400 font-mono">
@@ -1225,7 +1230,7 @@ export default function Homepage() {
                         <div className="flex items-center gap-2 mb-1.5">
                           {art.category && (
                             <span className="text-[8px] font-mono font-bold text-theme-blue uppercase tracking-widest">
-                              {art.category.name}
+                              {getCatName(art)}
                             </span>
                           )}
                           <span className="text-[8px] text-theme-gray-400 font-mono">

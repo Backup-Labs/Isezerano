@@ -41,14 +41,14 @@ export const AdSpace: React.FC<AdSpaceProps> = ({ placement, onDismiss }) => {
   const trackedImpression = useRef(false);
 
   const t = {
-    sponsor: { RW: 'Umushyitsi', EN: 'Sponsor', FR: 'Sponsor' },
+    sponsor: { RW: 'Umuterankunga', EN: 'Sponsor', FR: 'Sponsor' },
     advertise: {
       RW: 'TANGAZA KURI ISEZERANO',
       EN: 'ADVERTISE ON ISEZERANO',
       FR: 'ANNONCEZ SUR ISEZERANO',
     },
     advertiseDesc: {
-      RW: 'Huza n’abasomyi benshi ba buri munsi mu bucuruzi, ubushushanyuze n’iyobokamana mu Rwanda.',
+      RW: 'Huza n’abasomyi benshi ba buri munsi b’ubucuruzi, ubugeni, n’iyobokamana mu Rwanda.',
       EN: 'Connect with thousands of daily business, design, and faith readers in Rwanda.',
       FR: 'Touchez des milliers de lecteurs quotidiens business, design et foi au Rwanda.',
     },

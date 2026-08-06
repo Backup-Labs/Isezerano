@@ -9,7 +9,7 @@ from rest_framework.routers import DefaultRouter
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
 # Import views from our custom apps
-from users.views import RegisterView, UserMeView
+from users.views import RegisterView, UserMeView, CMSUserViewSet, UserAuditLogViewSet
 from articles.views import (
     CategoryListView, TagListView, ArticleListView, ArticleDetailView,
     CommentCreateView, ArticleCommentListView,
@@ -42,6 +42,8 @@ cms_router.register(r'announcements', CMSAnnouncementViewSet, basename='cms-anno
 cms_router.register(r'settings', CMSSiteSettingViewSet, basename='cms-settings')
 cms_router.register(r'media', CMSMediaAssetViewSet, basename='cms-media')
 cms_router.register(r'social-links', CMSSocialLinkViewSet, basename='cms-social-links')
+cms_router.register(r'users', CMSUserViewSet, basename='cms-users')
+cms_router.register(r'user-audit-logs', UserAuditLogViewSet, basename='cms-user-audit-logs')
 
 urlpatterns = [
     path('admin/', admin.site.urls),

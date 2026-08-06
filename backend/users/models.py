@@ -18,3 +18,19 @@ class User(AbstractUser):
 
     def __str__(self):
         return f"{self.username} ({self.get_role_display()})"
+
+
+class UserAuditLog(models.Model):
+    actor = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name='performed_audit_logs')
+    target_user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='target_audit_logs')
+    action = models.CharField(max_length=50)  # 'create', 'update', 'role_change', 'status_change', 'password_reset'
+    details = models.TextField()
+    timestamp = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-timestamp']
+
+    def __str__(self):
+        actor_name = self.actor.username if self.actor else "System"
+        return f"{actor_name} performed {self.action} on {self.target_user.username} at {self.timestamp}"
+
