@@ -21,16 +21,6 @@ class ResilientCloudinaryStorage(MediaCloudinaryStorage):
         try:
             return super()._save(name, content)
         except Exception as exc:
-            message = str(exc).lower()
-            permission_denied = (
-                'notallowed' in type(exc).__name__.lower()
-                or 'forbidden' in message
-                or 'missing permissions' in message
-                or 'unauthorized' in message
-            )
-            if not permission_denied and 'cloudinary' not in type(exc).__module__.lower():
-                raise
-
             print(
                 f'Cloudinary upload failed ({exc}); '
                 'falling back to local MEDIA_ROOT storage.'

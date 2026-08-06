@@ -130,9 +130,20 @@ export default function EditArticle() {
         headers: { 'Authorization': `Bearer ${token}` },
         body: formData
       });
-      if (res.ok) { router.push('/newsroom/articles'); }
-      else { alert("Failed to save article modifications."); }
-    } catch (err) { console.error(err); }
+      if (res.ok) {
+        router.push('/newsroom/articles');
+      } else {
+        const errData = await res.json().catch(() => ({}));
+        const msg = typeof errData === 'object'
+          ? Object.entries(errData).map(([k, v]) => `${k}: ${Array.isArray(v) ? v.join(', ') : v}`).join('\n')
+          : 'Failed to save article modifications.';
+        alert(`Save failed:\n${msg}`);
+        console.error('Article edit error:', errData);
+      }
+    } catch (err) {
+      console.error(err);
+      alert('Network error — check your connection.');
+    }
     finally { setSubmitting(false); }
   };
 
